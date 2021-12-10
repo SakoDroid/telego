@@ -78,6 +78,7 @@ type PassportElementError struct {
 	Message string `json:"message"`
 }
 
+/*Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.*/
 type PassportElementErrorDataField struct {
 	/*Error source, must be data*/
 	Source string `json:"source"`
@@ -91,22 +92,27 @@ type PassportElementErrorDataField struct {
 	DataHash string `json:"data_hash"`
 }
 
+/*Represents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.*/
 type PassportElementErrorFrontSide struct {
 	PassportElementError
 }
 
+/*Represents an issue with the reverse side of a document. The error is considered resolved when the file with reverse side of the document changes.*/
 type PassportElementErrorReverseSide struct {
 	PassportElementError
 }
 
+/*Represents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.*/
 type PassportElementErrorSelfie struct {
 	PassportElementError
 }
 
+/*Represents an issue with a document scan. The error is considered resolved when the file with the document scan changes.*/
 type PassportElementErrorFile struct {
 	PassportElementError
 }
 
+/*Represents an issue with a list of scans. The error is considered resolved when the list of files containing the scans changes.*/
 type PassportElementErrorFiles struct {
 	/*Error source, must be data*/
 	Source string `json:"source"`
@@ -116,4 +122,26 @@ type PassportElementErrorFiles struct {
 	FileHashes []string `json:"file_hashes"`
 	/*Error message*/
 	Message string `json:"message"`
+}
+
+/*Represents an issue with one of the files that constitute the translation of a document. The error is considered resolved when the file changes.*/
+type PassportElementErrorTranslationFile struct {
+	PassportElementError
+}
+
+/*Represents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.*/
+type PassportElementErrorTranslationFiles struct {
+	PassportElementErrorFiles
+}
+
+/*Represents an issue in an unspecified place. The error is considered resolved when new data is added.*/
+type PassportElementErrorUnspecified struct {
+	/*Error source, must be unspecified*/
+	Source string `json:"source"`
+	/*Type of element of the user's Telegram Passport which has the issue*/
+	Type string `json:"type"`
+	/*Base64-encoded element hash*/
+	ElementHash string `json:"element_hash"`
+	/*Error message*/
+	Message string `json:"mesaage"`
 }

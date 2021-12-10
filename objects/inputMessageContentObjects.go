@@ -113,8 +113,8 @@ type InputVoiceMessageContent struct {
 	PhotoSize int `json:"photo_size,omitempty"`
 	/*	Optional. Photo width*/
 	PhotoWidth int `json:"photo_width,omitempty"`
-	/*	Optional. Photo heigth*/
-	PhotoHeigth int `json:"photo_heigth,omitempty"`
+	/*	Optional. Photo height*/
+	PhotoHeight int `json:"photo_height,omitempty"`
 	/*Optional. Pass True, if you require the user's full name to complete the order*/
 	NeedName bool `json:"need_name,omitempty"`
 	/*Optional. Pass True, if you require the user's phone number to complete the order*/

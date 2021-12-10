@@ -8,8 +8,8 @@ type Sticker struct {
 	FileUniqueId string `json:"file_unique_id"`
 	/*Sticker width*/
 	Width int `json:"width"`
-	/*Sticker heigth*/
-	Heigth int `json:"heigth"`
+	/*Sticker height*/
+	Height int `json:"height"`
 	/*True, if the sticker is animated*/
 	IsAnimated bool `json:"is_animated"`
 	/*Optional. Sticker thumbnail in the .WEBP or .JPG format*/

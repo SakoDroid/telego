@@ -26,8 +26,8 @@ type InputMediaVideo struct {
 	Thumb string `json:"thumb,omitempty"`
 	/*Optional. Video width*/
 	Width int `json:"width,omitempty"`
-	/*Optional. Video heigth*/
-	Heigth int `json:"heigth,omitempty"`
+	/*Optional. Video height*/
+	Height int `json:"height,omitempty"`
 	/*Optional. Video duration in seconds*/
 	Duration int `json:"duration,omitempty"`
 	/*Optional. Pass True, if the uploaded video is suitable for streaming*/
@@ -41,8 +41,8 @@ type InputMediaAnimation struct {
 	Thumb string `json:"thumb,omitempty"`
 	/*Optional. Animation width*/
 	Width int `json:"width,omitempty"`
-	/*Optional. Animation heigth*/
-	Heigth int `json:"heigth,omitempty"`
+	/*Optional. Animation height*/
+	Height int `json:"height,omitempty"`
 	/*Optional. Animation duration in seconds*/
 	Duration int `json:"duration,omitempty"`
 }
