@@ -14,29 +14,33 @@ import (
 	objs "github.com/SakoDroid/telebot/objects"
 )
 
-type HttpSenderClient struct {
-	BotApi, APIKey string
-}
-
-type HttpRecevierClient struct {
-	BotApi, APIKey string
+/*Client used for sending http requests to bot api*/
+type httpSenderClient struct {
+	botApi, apiKey string
 }
 
 /*This method sends an http request (without processing the response) as application/json. Returns the body of the response.*/
-func (hsc *HttpSenderClient) SendHttpReqJson(method string, args objs.MethodArguments) (io.Reader, error) {
+func (hsc *httpSenderClient) sendHttpReqJson(method string, args objs.MethodArguments) ([]byte, error) {
 	bd := args.ToJson()
 	res, err2 := hsc.sendHttpReq(method, "application/json", bd)
 	if err2 != nil {
 		return nil, &errs.MethodNotSentError{Method: method, Reason: err2.Error()}
 	}
 	if res.StatusCode < 300 {
-		return res.Body, nil
+		out := make([]byte, res.ContentLength)
+		_, err3 := res.Body.Read(out)
+		if err3 != nil {
+			return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to parse body into byte slice. " + err3.Error()}
+		}
+		return out, nil
 	} else {
 		return nil, &errs.MethodNotSentError{Method: method, Reason: "received status code " + strconv.Itoa(res.StatusCode)}
 	}
 }
 
-func (hsc *HttpSenderClient) SendHttpReqMultiPart(method string, file *os.File, args objs.MethodArguments) (io.Reader, error) {
+/*This method sends an http request (without processing the response) as multipart/formdata. Returns the body of the response.
+This method is only used for uploading files to bot api server.*/
+func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, file *os.File, args objs.MethodArguments) ([]byte, error) {
 	body := &bytes.Buffer{}
 	writer := mp.NewWriter(body)
 	args.ToMultiPart(writer)
@@ -49,7 +53,12 @@ func (hsc *HttpSenderClient) SendHttpReqMultiPart(method string, file *os.File, 
 			return nil, &errs.MethodNotSentError{Method: method, Reason: err2.Error()}
 		}
 		if res.StatusCode < 300 {
-			return res.Body, nil
+			out := make([]byte, res.ContentLength)
+			_, err3 := res.Body.Read(out)
+			if err3 != nil {
+				return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to parse body into byte slice. " + err3.Error()}
+			}
+			return out, nil
 		} else {
 			return nil, &errs.MethodNotSentError{Method: method, Reason: "received status code " + strconv.Itoa(res.StatusCode)}
 		}
@@ -58,7 +67,7 @@ func (hsc *HttpSenderClient) SendHttpReqMultiPart(method string, file *os.File, 
 	}
 }
 
-func (hsc *HttpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer, fieldName string) error {
+func (hsc *httpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer, fieldName string) error {
 	fileStat, err := file.Stat()
 	if err != nil {
 		return err
@@ -74,21 +83,13 @@ func (hsc *HttpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer
 	return nil
 }
 
-func (hsc *HttpSenderClient) sendHttpReq(method, contetType string, body []byte) (*http.Response, error) {
+func (hsc *httpSenderClient) sendHttpReq(method, contetType string, body []byte) (*http.Response, error) {
 	cl := http.Client{}
-	req, err := http.NewRequest("POST", hsc.BotApi+hsc.APIKey+"/"+method, bytes.NewReader(body))
+	req, err := http.NewRequest("POST", hsc.botApi+hsc.apiKey+"/"+method, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Add(textproto.CanonicalMIMEHeaderKey("content-type"), contetType)
 	req.Header.Add(textproto.CanonicalMIMEHeaderKey("content-length"), strconv.Itoa(len(body)))
 	return cl.Do(req)
-}
-
-func (hrc *HttpRecevierClient) ReceiveUpdates() (io.Reader, error) {
-	res, err := http.Get(hrc.BotApi + hrc.APIKey + "/getUpdates")
-	if err != nil {
-		return nil, err
-	}
-	return res.Body, nil
 }
