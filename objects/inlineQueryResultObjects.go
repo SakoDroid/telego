@@ -1,7 +1,7 @@
 package objects
 
 type InlineQueryResult interface {
-	getResultType() string
+	GetResultType() string
 }
 
 /*This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.*/
@@ -51,7 +51,7 @@ Photo
 Venue
 Video
 Voice*/
-func (i *inlineQueryResultDefault) getResultType() string {
+func (i *inlineQueryResultDefault) GetResultType() string {
 	return i.Type
 }
 

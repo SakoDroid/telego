@@ -9,7 +9,7 @@ InputContactMessageContent
 InputInvoiceMessageContent*/
 type InputMessageContent interface {
 	/*Returns the full name of this object*/
-	getType() string
+	GetType() string
 }
 
 /*Represents the content of a text message to be sent as the result of an inline query.*/
@@ -24,7 +24,7 @@ type InputTextMessageContent struct {
 	DisableWebPagePreview bool `json:"disable_web_page_preview,omitempty"`
 }
 
-func (*InputTextMessageContent) getType() string {
+func (*InputTextMessageContent) GetType() string {
 	return "InputTextMessageContent"
 }
 
@@ -44,7 +44,7 @@ type InputLocationMessageContent struct {
 	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
 }
 
-func (*InputLocationMessageContent) getType() string {
+func (*InputLocationMessageContent) GetType() string {
 	return "InputLocationMessageContent"
 }
 
@@ -68,7 +68,7 @@ type InputVenueMessageContent struct {
 	GooglePlaceType string `json:"google_place_type,omitempty"`
 }
 
-func (*InputVenueMessageContent) getType() string {
+func (*InputVenueMessageContent) GetType() string {
 	return "InputVenueMessageContent"
 }
 
@@ -84,7 +84,7 @@ type InputContactMessageContent struct {
 	Vcard string `json:"vcard,omitempty"`
 }
 
-func (*InputContactMessageContent) getType() string {
+func (*InputContactMessageContent) GetType() string {
 	return "InputContactMessageContent"
 }
 
@@ -131,7 +131,7 @@ type InputVoiceMessageContent struct {
 	IsFlexible bool `json:"is_flexible,omitempty"`
 }
 
-func (*InputVoiceMessageContent) getType() string {
+func (*InputVoiceMessageContent) GetType() string {
 	return "InputVoiceMessageContent"
 }
 
@@ -149,6 +149,6 @@ type ChosenInlineResult struct {
 	Query string `json:"query,omitempty"`
 }
 
-func (*ChosenInlineResult) getType() string {
+func (*ChosenInlineResult) GetType() string {
 	return "ChosenInlineResult"
 }
