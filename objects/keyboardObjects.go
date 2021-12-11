@@ -1,5 +1,9 @@
 package objects
 
+type ReplyMarkup interface {
+	blah()
+}
+
 /*This object represents a custom keyboard with reply options*/
 type ReplyKeyboardMarkup struct {
 	/*Array of button rows, each represented by an Array of KeyboardButton objects*/
@@ -15,6 +19,8 @@ type ReplyKeyboardMarkup struct {
 	Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.*/
 	Selective bool `json:"selective,omitempty"`
 }
+
+func (rm *ReplyKeyboardMarkup) blah() {}
 
 /*This object represents one button of the reply keyboard. For simple text buttons String can be used instead of this object to specify text of the button. Optional fields request_contact, request_location, and request_poll are mutually exclusive*/
 type KeyboardButton struct {
@@ -46,11 +52,15 @@ type ReplyKeyboardRemove struct {
 	Selective bool `json:"selective,omitempty"`
 }
 
+func (rm *ReplyKeyboardRemove) blah() {}
+
 /*This object represents an inline keyboard that appears right next to the message it belongs to.*/
 type InlineKeyboardMarkup struct {
 	/*Array of button rows, each represented by an Array of InlineKeyboardButton objects*/
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
+
+func (rm *InlineKeyboardMarkup) blah() {}
 
 /*This object represents one button of an inline keyboard. You must use exactly one of the optional fields.*/
 type InlineKeyboardButton struct {
