@@ -1,8 +1,12 @@
 package objects
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	mp "mime/multipart"
+	"strconv"
+	"strings"
 )
 
 type MethodArguments interface {
@@ -39,7 +43,7 @@ func (args *GetUpdatesArgs) GetMediaType() string {
 	return "update"
 }
 
-type defaultSendMethodsArguments struct {
+type DefaultSendMethodsArguments struct {
 	/*Unique identifier for the target chat.(only one of ChatIdInt and ChatIdString should be present.)*/
 	ChatIdInt int `json:"chat_id,omitempty"`
 	/*Username of the target channel (in the format @channelusername). (only one of ChatIdInt and ChatIdString should be present.)*/
@@ -54,8 +58,30 @@ type defaultSendMethodsArguments struct {
 	ReplyMarkup ReplyMarkup `json:"reply_markup,omitempty"`
 }
 
+func (df *DefaultSendMethodsArguments) toMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("chat_id")
+	if df.ChatIdString != "" {
+		_, _ = io.Copy(fw, strings.NewReader(df.ChatIdString))
+	} else {
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(df.ChatIdInt)))
+	}
+	fw, _ = wr.CreateFormField("disable_notification")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(df.DisableNotification)))
+	if df.ReplyToMessageId != 0 {
+		fw, _ = wr.CreateFormField("reply_to_message_id")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(df.ReplyToMessageId)))
+	}
+	fw, _ = wr.CreateFormField("allow_sending_without_reply")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(df.AllowSendingWithoutReply)))
+	if df.ReplyMarkup != nil {
+		fw, _ = wr.CreateFormField("reply_markup")
+		bt, _ := json.Marshal(df.ReplyMarkup)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+}
+
 type SendMessageArgs struct {
-	defaultSendMethodsArguments
+	DefaultSendMethodsArguments
 	/*Text of the message to be sent, 1-4096 characters after entities parsing*/
 	Text string `json:"text"`
 	/*Mode for parsing entities in the message text. */
@@ -75,7 +101,7 @@ func (args *SendMessageArgs) ToJson() []byte {
 }
 
 func (args *SendMessageArgs) ToMultiPart(wr *mp.Writer) {
-
+	//The arguments of this method are never passed as multipart.
 }
 
 func (args *SendMessageArgs) GetMediaType() string {
@@ -106,7 +132,7 @@ func (args *ForwardMessageArgs) ToJson() []byte {
 }
 
 func (args *ForwardMessageArgs) ToMultiPart(wr *mp.Writer) {
-
+	//The arguments of this method are never passed as multipart.
 }
 
 func (args *ForwardMessageArgs) GetMediaType() string {
@@ -138,7 +164,7 @@ func (args *CopyMessageArgs) ToJson() []byte {
 }
 
 func (args *CopyMessageArgs) ToMultiPart(wr *mp.Writer) {
-
+	//The arguments of this method are never passed as multipart.
 }
 
 func (args *CopyMessageArgs) GetMediaType() string {
@@ -146,7 +172,7 @@ func (args *CopyMessageArgs) GetMediaType() string {
 }
 
 type SendPhotoArgs struct {
-	defaultSendMethodsArguments
+	DefaultSendMethodsArguments
 	/*Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20.*/
 	Photo string `json:"photo"`
 	/*Photo caption (may also be used when resending photos by file_id), 0-1024 characters after entities parsing*/
@@ -166,7 +192,7 @@ func (args *SendPhotoArgs) ToJson() []byte {
 }
 
 func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
-
+	args.toMultiPart(wr)
 }
 
 func (args *SendPhotoArgs) GetMediaType() string {
@@ -174,7 +200,7 @@ func (args *SendPhotoArgs) GetMediaType() string {
 }
 
 type SendAudioArgs struct {
-	defaultSendMethodsArguments
+	DefaultSendMethodsArguments
 	/*Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data.*/
 	Audio           string          `json:"audio"`
 	Caption         string          `json:"caption,omitempty"`
@@ -206,7 +232,7 @@ func (args *SendAudioArgs) GetMediaType() string {
 }
 
 type SendDocumentArgs struct {
-	defaultSendMethodsArguments
+	DefaultSendMethodsArguments
 	Document string `json:"document"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
 	Thumb           string          `json:"thumb,omitempty"`
@@ -234,7 +260,7 @@ func (args *SendDocumentArgs) GetMediaType() string {
 }
 
 type SendVideoArgs struct {
-	defaultSendMethodsArguments
+	DefaultSendMethodsArguments
 	Video string `json:"video"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
 	Thumb           string          `json:"thumb,omitempty"`

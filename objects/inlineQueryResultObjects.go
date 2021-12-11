@@ -21,7 +21,7 @@ type InlineQuery struct {
 }
 
 /*This object should not be used at all.*/
-type inlineQueryResultDefault struct {
+type InlineQueryResultDefault struct {
 	/*Type of the result*/
 	Type string `json:"type"`
 	/*Unique identifier for this result, 1-64 Bytes*/
@@ -51,13 +51,13 @@ Photo
 Venue
 Video
 Voice*/
-func (i *inlineQueryResultDefault) GetResultType() string {
+func (i *InlineQueryResultDefault) GetResultType() string {
 	return i.Type
 }
 
 /*Represents a link to an article or web page.*/
 type InlineQueryResultArticle struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*Content of the message to be sent*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
@@ -78,7 +78,7 @@ type InlineQueryResultArticle struct {
 
 /*Represents a link to a photo. By default, this photo will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.*/
 type InlineQueryResultPhoto struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB*/
 	PhotoURL string `json:"photo_url"`
 	/*URL of the thumbnail for the photo*/
@@ -103,7 +103,7 @@ type InlineQueryResultPhoto struct {
 
 /*Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the animation.*/
 type InlineQueryResultGif struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the GIF file. File size must not exceed 1MB*/
 	GifURL string `json:"gif_url"`
 	/*Optional. Width of the GIF*/
@@ -130,7 +130,7 @@ type InlineQueryResultGif struct {
 
 /*Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the animation.*/
 type InlineQueryResultMpeg4Gif struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the MP4 file. File size must not exceed 1MB*/
 	Mpeg4URL string `json:"mpeg4_url"`
 	/*Optional. Video width*/
@@ -159,7 +159,7 @@ type InlineQueryResultMpeg4Gif struct {
 
 If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you must replace its content using input_message_content.*/
 type InlineQueryResultVideo struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the embedded video player or video file*/
 	VideoURL string `json:"video_url"`
 	/*Mime type of the content of video url, “text/html” or “video/mp4”*/
@@ -190,7 +190,7 @@ type InlineQueryResultVideo struct {
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 */
 type InlineQueryResultAudio struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the audio file*/
 	AudioURL string `json:"audio_url"`
 	/*Optional. Performer*/
@@ -212,7 +212,7 @@ type InlineQueryResultAudio struct {
 /*Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the the voice message.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultVocie struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the voice recording*/
 	VoiceURL string `json:"voice_url"`
 	/*Optional. Recording duration in seconds*/
@@ -232,7 +232,7 @@ type InlineQueryResultVocie struct {
 /*Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultDocument struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid URL for the file*/
 	DocumentURL string `json:"document_url"`
 	/*Mime type of the content of the file, either “application/pdf” or “application/zip”*/
@@ -260,7 +260,7 @@ type InlineQueryResultDocument struct {
 /*Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultLocation struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*Location latitude in degrees*/
 	Latitude float32 `json:"latitude"`
 	/*Location longitude in degrees*/
@@ -288,7 +288,7 @@ type InlineQueryResultLocation struct {
 /*Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the venue.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultVenu struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*Latitude of the venue location in degrees*/
 	Latitude float32 `json:"latitude"`
 	/*Longitude of the venue location in degrees*/
@@ -318,7 +318,7 @@ type InlineQueryResultVenu struct {
 /*Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the contact.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultContact struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*Contact's phone number*/
 	PhoneNumber string `json:"phone_number"`
 	/*Optional. Contact's first name*/
@@ -342,7 +342,7 @@ type InlineQueryResultContact struct {
 /*Represents a Game.
 Note: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.*/
 type InlineQueryResultGame struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*Type of the result, must be game*/
 	GameShortName string `json:"game_short_name"`
 	/*Optional. Inline keyboard attached to the message*/
@@ -351,7 +351,7 @@ type InlineQueryResultGame struct {
 
 /*Represents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.*/
 type InlineQueryResultCachedPhoto struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the photo*/
 	PhotoFileId string `json:"photo_file_id"`
 	/*Optional. Short description of the result*/
@@ -370,7 +370,7 @@ type InlineQueryResultCachedPhoto struct {
 
 /*Represents a link to an animated GIF file stored on the Telegram servers. By default, this animated GIF file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with specified content instead of the animation.*/
 type InlineQueryResultCachedGif struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the gif*/
 	GifFileId string `json:"gif_file_id"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
@@ -387,7 +387,7 @@ type InlineQueryResultCachedGif struct {
 
 /*Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers. By default, this animated MPEG-4 file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the animation.*/
 type InlineQueryResultCachedMpeg4Gif struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the animation*/
 	Mpeg4FileId string `json:"mpeg4_file_id"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
@@ -405,7 +405,7 @@ type InlineQueryResultCachedMpeg4Gif struct {
 /*Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.
 This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.*/
 type InlineQueryResultCachedSticker struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the sticker*/
 	StickerFileId string `json:"sticker_file_id"`
 	/*Optional. Inline keyboard attached to the message*/
@@ -416,7 +416,7 @@ type InlineQueryResultCachedSticker struct {
 
 /*Represents a link to a video file stored on the Telegram servers. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the video.*/
 type InlineQueryResultCachedVideo struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the video*/
 	VideoFileId string `json:"video_file_id"`
 	/*Optional. Short description of the result*/
@@ -436,7 +436,7 @@ type InlineQueryResultCachedVideo struct {
 /*Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.
 This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultCachedAudio struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the audio*/
 	AudioFileId string `json:"audio_file_id"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
@@ -454,7 +454,7 @@ type InlineQueryResultCachedAudio struct {
 /*Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the voice message.
 This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultCachedVocie struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the video*/
 	VoiceFileId string `json:"voice_file_id"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
@@ -472,7 +472,7 @@ type InlineQueryResultCachedVocie struct {
 /*Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
 type InlineQueryResultCachedDocument struct {
-	inlineQueryResultDefault
+	InlineQueryResultDefault
 	/*A valid file identifier for the file*/
 	DocumentFileId string `json:"document_file_id"`
 	/*Optional. Short description of the result*/

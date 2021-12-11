@@ -31,3 +31,18 @@ type UpdateNotOk struct {
 func (uno *UpdateNotOk) Error() string {
 	return "getUpdates returned \"ok\" : false. Offset used in request : " + strconv.Itoa(uno.Offset)
 }
+
+type RequiredArgumentError struct {
+	ArgName, MethodName string
+}
+
+func (ram *RequiredArgumentError) Error() string {
+	return "Required argument \"" + ram.ArgName + " missing or has wrong value in " + ram.MethodName + " method."
+}
+
+type ChatIdProblem struct {
+}
+
+func (cip *ChatIdProblem) Error() string {
+	return "Cannot have both chatIdInt and chatIdString at the same time. Only one of them is allowed."
+}
