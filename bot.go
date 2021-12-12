@@ -12,14 +12,20 @@ type Bot struct {
 	updateChannel *chan *objs.Update
 }
 
-/*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success*/
-func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.Message, error) {
-	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
-}
-
 /*Starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run() error {
 	return bot.apiInterface.StartUpdateRoutine()
+}
+
+/*Returns the channel which new updates received from api server are pushed into.*/
+func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
+	return bot.updateChannel
+}
+
+/*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success
+If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
+func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.Message, error) {
+	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
 }
 
 /*Stops the bot*/
