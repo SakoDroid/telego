@@ -1,11 +1,5 @@
 package objects
 
-/*This object represents the response of getUpdates method*/
-type UpdateResult struct {
-	Ok     bool     `json:"ok"`
-	Result []Update `json:"result"`
-}
-
 /*This object represents an incoming update.
 At most one of the optional parameters can be present in any given update.*/
 type Update struct {

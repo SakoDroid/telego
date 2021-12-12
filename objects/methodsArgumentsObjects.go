@@ -44,10 +44,8 @@ func (args *GetUpdatesArgs) GetMediaType() string {
 }
 
 type DefaultSendMethodsArguments struct {
-	/*Unique identifier for the target chat.(only one of ChatIdInt and ChatIdString should be present.)*/
-	ChatIdInt int `json:"chat_id,omitempty"`
-	/*Username of the target channel (in the format @channelusername). (only one of ChatIdInt and ChatIdString should be present.)*/
-	ChatIdString string `json:"chat_id,omitempty"`
+	/*Unique identifier for the target chat or Username of the target channel (in the format @channelusername).*/
+	ChatId json.RawMessage `json:"chat_id"`
 	/*Sends the message silently. Users will receive a notification with no sound.*/
 	DisableNotification bool `json:"disable_notification,omitempty"`
 	/*If the message is a reply, ID of the original message*/
@@ -60,11 +58,7 @@ type DefaultSendMethodsArguments struct {
 
 func (df *DefaultSendMethodsArguments) toMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
-	if df.ChatIdString != "" {
-		_, _ = io.Copy(fw, strings.NewReader(df.ChatIdString))
-	} else {
-		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(df.ChatIdInt)))
-	}
+	_, _ = io.Copy(fw, strings.NewReader(string(df.ChatId)))
 	fw, _ = wr.CreateFormField("disable_notification")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(df.DisableNotification)))
 	if df.ReplyToMessageId != 0 {

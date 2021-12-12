@@ -1,13 +1,22 @@
 package Errors
 
-import "strconv"
+import (
+	"strconv"
+
+	objs "github.com/SakoDroid/telebot/objects"
+)
 
 type MethodNotSentError struct {
 	Method, Reason string
+	FailureResult  *objs.FailureResult
 }
 
 func (mnse *MethodNotSentError) Error() string {
-	return "Unable to send " + mnse.Method + ". " + mnse.Reason
+	out := "Unable to send " + mnse.Method + ". " + mnse.Reason
+	if mnse.FailureResult != nil {
+		out += "\nError code : " + strconv.Itoa(mnse.FailureResult.ErrorCode) + ", Description : " + mnse.FailureResult.Description
+	}
+	return out
 }
 
 type BotInterfaceAlreadyCreated struct {

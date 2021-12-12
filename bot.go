@@ -24,7 +24,7 @@ func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
 
 /*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.Message, error) {
+func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
 }
 

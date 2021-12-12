@@ -57,7 +57,7 @@ loop:
 		case <-bai.updateRoutineChannel:
 			break loop
 		default:
-			args := objs.GetUpdatesArgs{Offset: bai.lastOffset, Limit: bai.botConfigs.UpdateConfigs.Limit, Timeout: bai.botConfigs.UpdateConfigs.Timeout}
+			args := objs.GetUpdatesArgs{Offset: bai.lastOffset + 1, Limit: bai.botConfigs.UpdateConfigs.Limit, Timeout: bai.botConfigs.UpdateConfigs.Timeout}
 			if bai.botConfigs.UpdateConfigs.AllowedUpdates != nil {
 				args.AllowedUpdates = bai.botConfigs.UpdateConfigs.AllowedUpdates
 			}
@@ -103,26 +103,12 @@ func (bai *BotAPIInterface) isChatIdOk(chatIdInt int, chatIdString string) bool 
 
 /*Sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
 "chatId" and "text" arguments are required. other arguments are optional for bot api.*/
-func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply bool, reply_to_message_id int, reply_markup objs.ReplyMarkup) (*objs.Message, error) {
+func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply bool, reply_to_message_id int, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
-		def := objs.DefaultSendMethodsArguments{
-			DisableNotification:      disable_notification,
-			AllowSendingWithoutReply: allow_sending_without_reply,
-		}
-		if chatIdInt == 0 {
-			def.ChatIdString = chatIdString
-		} else {
-			def.ChatIdInt = chatIdInt
-		}
-		if reply_to_message_id != 0 {
-			def.ReplyToMessageId = reply_to_message_id
-		}
-		if reply_markup != nil {
-			def.ReplyMarkup = reply_markup
-		}
+		def := bai.fixTheDefaultArguments(chatIdInt, reply_to_message_id, chatIdString, disable_notification, allow_sending_without_reply, reply_markup)
 		args := &objs.SendMessageArgs{
 			Text:                        text,
 			DisableWebPagePreview:       disable_web_page_preview,
@@ -140,7 +126,7 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 		if err2 != nil {
 			return nil, err2
 		}
-		msg := &objs.Message{}
+		msg := &objs.SendMethodsResult{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -149,6 +135,27 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "sendMessage"}
 	}
+}
+
+func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
+	def := objs.DefaultSendMethodsArguments{
+		DisableNotification:      disable_notification,
+		AllowSendingWithoutReply: allow_sending_without_reply,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		def.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		def.ChatId = bt
+	}
+	if reply_to_message_id != 0 {
+		def.ReplyToMessageId = reply_to_message_id
+	}
+	if reply_markup != nil {
+		def.ReplyMarkup = reply_markup
+	}
+	return def
 }
 
 /*This method returns an iterface to communicate with the bot api.
