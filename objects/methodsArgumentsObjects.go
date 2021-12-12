@@ -103,14 +103,10 @@ func (args *SendMessageArgs) GetMediaType() string {
 }
 
 type ForwardMessageArgs struct {
-	/*Unique identifier for the target chat. (only one of ChatIdInt and ChatIdString should be present.)*/
-	ChatIdInt int `json:"chat_id,omitempty"`
-	/*Username of the target channel (in the format @channelusername). (only one of ChatIdInt and ChatIdString should be present.)*/
-	ChatIdString string `json:"chat_id,omitempty"`
-	/*Unique identifier for the chat where the original message was sent*/
-	FromChatIdInt int `json:"from_chat_id,omitempty"`
-	/*Channel username in the format @channelusername*/
-	FromChatIdString string `json:"from_chat_id,omitempty"`
+	/*Unique identifier for the target chat or Username of the target channel (in the format @channelusername).*/
+	ChatId json.RawMessage `json:"chat_id"`
+	/*Unique identifier for the chat where the original message was sent or Channel username in the format @channelusername*/
+	FromChatId json.RawMessage `json:"from_chat_id"`
 	/*Sends the message silently. Users will receive a notification with no sound.*/
 	DisableNotification bool `json:"disable_notification,omitempty"`
 	/*Message identifier in the chat specified in from_chat_id*/
@@ -234,7 +230,7 @@ type SendDocumentArgs struct {
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Disables automatic server-side content type detection for files uploaded using multipart/form-data*/
-	DisableContentTypeDetection bool `json:"disable_content_type_detection,omitempty`
+	DisableContentTypeDetection bool `json:"disable_content_type_detection,omitempty"`
 }
 
 func (args *SendDocumentArgs) ToJson() []byte {

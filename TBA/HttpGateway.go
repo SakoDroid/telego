@@ -3,7 +3,6 @@ package TBA
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/textproto"
@@ -24,7 +23,6 @@ type httpSenderClient struct {
 /*This method sends an http request (without processing the response) as application/json. Returns the body of the response.*/
 func (hsc *httpSenderClient) sendHttpReqJson(method string, args objs.MethodArguments) ([]byte, error) {
 	bd := args.ToJson()
-	fmt.Println(string(bd))
 	return hsc.sendHttpReq(method, "application/json", bd)
 }
 

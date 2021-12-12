@@ -113,28 +113,101 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 			Text:                        text,
 			DisableWebPagePreview:       disable_web_page_preview,
 			DefaultSendMethodsArguments: def,
-		}
-		if parseMode != "" {
-			args.ParseMode = parseMode
-		}
-		if entities != nil {
-			args.Entities = entities
+			ParseMode:                   parseMode,
+			Entities:                    entities,
 		}
 
-		cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
-		res, err2 := cl.sendHttpReqJson("sendMessage", args)
-		if err2 != nil {
-			return nil, err2
-		}
-		msg := &objs.SendMethodsResult{}
-		err3 := json.Unmarshal(res, msg)
-		if err3 != nil {
-			return nil, err3
-		}
-		return msg, nil
+		return bai.SendCustom("sendMessage", args)
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "sendMessage"}
 	}
+}
+
+/*Forwards a message from a user or channel to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
+"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
+func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, disableNotif bool, messageId int) (*objs.SendMethodsResult, error) {
+	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) && bai.isChatIdOk(fromChatIdInt, fromChatIdString) {
+		fm := &objs.ForwardMessageArgs{
+			DisableNotification: disableNotif,
+			MessageId:           messageId,
+		}
+		if chatIdInt == 0 {
+			bt, _ := json.Marshal(chatIdString)
+			fm.ChatId = bt
+		} else {
+			bt, _ := json.Marshal(chatIdInt)
+			fm.ChatId = bt
+		}
+		if fromChatIdInt == 0 {
+			bt, _ := json.Marshal(fromChatIdString)
+			fm.FromChatId = bt
+		} else {
+			bt, _ := json.Marshal(fromChatIdInt)
+			fm.FromChatId = bt
+		}
+		return bai.SendCustom("forwardMessage", fm)
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+/*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
+"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
+func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) && bai.isChatIdOk(fromChatIdInt, fromChatIdString) {
+		fm := objs.ForwardMessageArgs{
+			DisableNotification: disableNotif,
+			MessageId:           messageId,
+		}
+		if chatIdInt == 0 {
+			bt, _ := json.Marshal(chatIdString)
+			fm.ChatId = bt
+		} else {
+			bt, _ := json.Marshal(chatIdInt)
+			fm.ChatId = bt
+		}
+		if fromChatIdInt == 0 {
+			bt, _ := json.Marshal(fromChatIdString)
+			fm.FromChatId = bt
+		} else {
+			bt, _ := json.Marshal(fromChatIdInt)
+			fm.FromChatId = bt
+		}
+		cp := &objs.CopyMessageArgs{
+			ForwardMessageArgs:       fm,
+			Caption:                  caption,
+			ParseMode:                parseMode,
+			AllowSendingWithoutReply: allowSendingWihtoutReply,
+			ReplyMarkup:              replyMarkUp,
+			CaptionEntities:          captionEntities,
+		}
+		if replyTo != 0 {
+			cp.ReplyToMessageId = replyTo
+		}
+		return bai.SendCustom("copyMessage", cp)
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments) (*objs.SendMethodsResult, error) {
+	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
+	res, err2 := cl.sendHttpReqJson(methdName, args)
+	if err2 != nil {
+		return nil, err2
+	}
+	msg := &objs.SendMethodsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
 }
 
 func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {

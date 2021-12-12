@@ -28,6 +28,15 @@ func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, sil
 	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
 }
 
+/*Returns a MessageForwarder which has several methods for forwarding a message*/
+func (bot *Bot) ForwardMessage(messageId int, disableNotif bool) *MessageForwarder {
+	return &MessageForwarder{bot: bot, messageId: messageId, disableNotif: disableNotif}
+}
+
+func (bot *Bot) CopyMessage(messageId int, disableNotif bool) *MessageCopier {
+	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif}
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
