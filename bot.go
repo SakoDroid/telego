@@ -46,13 +46,52 @@ func (bot *Bot) CopyMessage(messageId int, disableNotif bool) *MessageCopier {
 	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif}
 }
 
-/*Returns a PhotoSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.*/
+/*Returns a PhotoSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
 func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string) *PhotoSender {
 	return &PhotoSender{bot: bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
+/*Returns a PhotoSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
 func (bot *Bot) SendPhotoToChannel(chatId string, replyTo int, caption, parseMode string) *PhotoSender {
 	return &PhotoSender{bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns a VideoSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoToChannel" method.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendVideo(chatId int, replyTo int, caption, parseMode string) *VideoSender {
+	return &VideoSender{bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns a VideoSender which has several methods for sending a video. This method is only used for sending a video to a channels.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendVideoToChannel(chatId string, replyTo int, caption, parseMode string) *VideoSender {
+	return &VideoSender{bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns an AudioSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioToChannel" method.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendAudio(chatId, replyTo int, caption, parseMode string) *AudioSender {
+	return &AudioSender{bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns a AudioSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendAudioToChannel(chatId string, replyTo int, caption, parseMode string) *AudioSender {
+	return &AudioSender{bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns an DocumentSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentToChannel" method.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendDocument(chatId, replyTo int, caption, parseMode string) *DocumentSender {
+	return &DocumentSender{bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+}
+
+/*Returns a DocumentSender which has several methods for sending a document. This method is only used for sending a document to a channels.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
+func (bot *Bot) SendDocumentToChannel(chatId string, replyTo int, caption, parseMode string) *DocumentSender {
+	return &DocumentSender{bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
 /*Stops the bot*/

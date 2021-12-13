@@ -32,11 +32,14 @@ func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.Metho
 	body := &bytes.Buffer{}
 	writer := mp.NewWriter(body)
 	args.ToMultiPart(writer)
-	stat, er := file.Stat()
-	if er != nil {
-		return nil, er
+	var err error
+	if file != nil {
+		stat, er := file.Stat()
+		if er != nil {
+			return nil, er
+		}
+		err = hsc.addFileToMultiPartForm(file, writer, stat.Name())
 	}
-	err := hsc.addFileToMultiPartForm(file, writer, stat.Name())
 	var err2 error
 	if thumbFile != nil {
 		tStats, er2 := thumbFile.Stat()
@@ -59,17 +62,19 @@ func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.Metho
 }
 
 func (hsc *httpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer, fieldName string) error {
-	fileStat, err := file.Stat()
-	if err != nil {
-		return err
-	}
-	fw, err2 := wr.CreateFormFile(fieldName, fileStat.Name())
-	if err2 != nil {
-		return err2
-	}
-	_, err3 := io.Copy(fw, file)
-	if err3 != nil {
-		return err3
+	if file != nil {
+		fileStat, err := file.Stat()
+		if err != nil {
+			return err
+		}
+		fw, err2 := wr.CreateFormFile(fieldName, fileStat.Name())
+		if err2 != nil {
+			return err2
+		}
+		_, err3 := io.Copy(fw, file)
+		if err3 != nil {
+			return err3
+		}
 	}
 	return nil
 }
