@@ -32,10 +32,18 @@ func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.Metho
 	body := &bytes.Buffer{}
 	writer := mp.NewWriter(body)
 	args.ToMultiPart(writer)
-	err := hsc.addFileToMultiPartForm(file, writer, args.GetMediaType())
+	stat, er := file.Stat()
+	if er != nil {
+		return nil, er
+	}
+	err := hsc.addFileToMultiPartForm(file, writer, stat.Name())
 	var err2 error
 	if thumbFile != nil {
-		err2 = hsc.addFileToMultiPartForm(thumbFile, writer, "thumb")
+		tStats, er2 := thumbFile.Stat()
+		if er2 != nil {
+			return nil, er2
+		}
+		err2 = hsc.addFileToMultiPartForm(thumbFile, writer, tStats.Name())
 	}
 	if err == nil {
 		if err2 == nil {

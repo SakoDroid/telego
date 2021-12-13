@@ -36,7 +36,7 @@ func (ps *PhotoSender) SendByFile(file *os.File, silent bool) (*objs.SendMethods
 		return nil, err
 	}
 	return ps.bot.apiInterface.SendPhoto(
-		ps.chatIdInt, ps.chatidString, "attach://"+stats.Name(), nil, ps.caption, ps.parseMode,
+		ps.chatIdInt, ps.chatidString, "attach://"+stats.Name(), file, ps.caption, ps.parseMode,
 		ps.replyTo, silent, ps.allowSendingWihoutReply, ps.replyMarkup, ps.captionEntities,
 	)
 }
