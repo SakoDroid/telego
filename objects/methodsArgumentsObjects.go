@@ -183,6 +183,21 @@ func (args *SendPhotoArgs) ToJson() []byte {
 
 func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("photo")
+	_, _ = io.Copy(fw, strings.NewReader(args.Photo))
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
 }
 
 func (args *SendPhotoArgs) GetMediaType() string {
@@ -196,8 +211,8 @@ type SendAudioArgs struct {
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
-	/*Duration of the audio in secconds"
-	Duration int `json:"duration,omitempty"`
+	/*Duration of the audio in secconds*/
+	Duration  int    `json:"duration,omitempty"`
 	Performer string `json:"performer,omitempty"`
 	/*Track name*/
 	Title string `json:"title,omitempty"`
@@ -214,7 +229,38 @@ func (args *SendAudioArgs) ToJson() []byte {
 }
 
 func (args *SendAudioArgs) ToMultiPart(wr *mp.Writer) {
-
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("audio")
+	_, _ = io.Copy(fw, strings.NewReader(args.Audio))
+	if args.Duration != 0 {
+		fw, _ = wr.CreateFormField("duration")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
+	}
+	if args.Thumb != "" {
+		fw, _ = wr.CreateFormField("thumb")
+		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+	if args.Performer != "" {
+		fw, _ = wr.CreateFormField("performer")
+		_, _ = io.Copy(fw, strings.NewReader(args.Performer))
+	}
+	if args.Title != "" {
+		fw, _ = wr.CreateFormField("title")
+		_, _ = io.Copy(fw, strings.NewReader(args.Title))
+	}
 }
 
 func (args *SendAudioArgs) GetMediaType() string {
@@ -242,7 +288,28 @@ func (args *SendDocumentArgs) ToJson() []byte {
 }
 
 func (args *SendDocumentArgs) ToMultiPart(wr *mp.Writer) {
-
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("document")
+	_, _ = io.Copy(fw, strings.NewReader(args.Document))
+	if args.Thumb != "" {
+		fw, _ = wr.CreateFormField("thumb")
+		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+	fw, _ = wr.CreateFormField("disable_content_type_detection")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.DisableContentTypeDetection)))
 }
 
 func (args *SendDocumentArgs) GetMediaType() string {
@@ -272,7 +339,32 @@ func (args *SendVideoArgs) ToJson() []byte {
 }
 
 func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
-
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("video")
+	_, _ = io.Copy(fw, strings.NewReader(args.Video))
+	fw, _ = wr.CreateFormField("supports_streaming")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.SupportsStreaming)))
+	if args.Duration != 0 {
+		fw, _ = wr.CreateFormField("duration")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
+	}
+	if args.Thumb != "" {
+		fw, _ = wr.CreateFormField("thumb")
+		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
 }
 
 func (args *SendVideoArgs) GetMediaType() string {

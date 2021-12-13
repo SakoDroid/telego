@@ -28,15 +28,23 @@ func (hsc *httpSenderClient) sendHttpReqJson(method string, args objs.MethodArgu
 
 /*This method sends an http request (without processing the response) as multipart/formdata. Returns the body of the response.
 This method is only used for uploading files to bot api server.*/
-func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, file *os.File, args objs.MethodArguments) ([]byte, error) {
+func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.MethodArguments, file *os.File, thumbFile *os.File) ([]byte, error) {
 	body := &bytes.Buffer{}
 	writer := mp.NewWriter(body)
 	args.ToMultiPart(writer)
 	err := hsc.addFileToMultiPartForm(file, writer, args.GetMediaType())
+	var err2 error
+	if thumbFile != nil {
+		err2 = hsc.addFileToMultiPartForm(thumbFile, writer, "thumb")
+	}
 	if err == nil {
-		_ = writer.Close()
-		bts := body.Bytes()
-		return hsc.sendHttpReq(method, writer.FormDataContentType(), bts)
+		if err2 == nil {
+			_ = writer.Close()
+			bts := body.Bytes()
+			return hsc.sendHttpReq(method, writer.FormDataContentType(), bts)
+		} else {
+			return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to add file to the multipart form. " + err2.Error()}
+		}
 	} else {
 		return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to add file to the multipart form. " + err.Error()}
 	}

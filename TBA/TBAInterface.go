@@ -3,6 +3,7 @@ package TBA
 import (
 	"encoding/json"
 	"errors"
+	"os"
 	"time"
 
 	errs "github.com/SakoDroid/telebot/Errors"
@@ -117,7 +118,7 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 			Entities:                    entities,
 		}
 
-		return bai.SendCustom("sendMessage", args)
+		return bai.SendCustom("sendMessage", args, false, nil, nil)
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "sendMessage"}
 	}
@@ -148,7 +149,112 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 			bt, _ := json.Marshal(fromChatIdInt)
 			fm.FromChatId = bt
 		}
-		return bai.SendCustom("forwardMessage", fm)
+		return bai.SendCustom("forwardMessage", fm, false, nil, nil)
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+/*Sends a photo (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "photo" arguments are required. other arguments are optional for bot api.*/
+func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id int, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.SendPhotoArgs{
+			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
+				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				allow_sending_without_reply, reply_markup,
+			),
+			Photo:           photo,
+			Caption:         caption,
+			ParseMode:       parseMode,
+			CaptionEntities: captionEntities,
+		}
+		if photoFile != nil {
+			return bai.SendCustom("sendPhoto", args, true, photoFile, nil)
+		} else {
+			return bai.SendCustom("sendPhoto", args, false, nil, nil)
+		}
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+/*Sends a video (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "video" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
+func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.SendVideoArgs{
+			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
+				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				allow_sending_without_reply, reply_markup,
+			),
+			Video:             video,
+			Caption:           caption,
+			Thumb:             thumb,
+			ParseMode:         parseMode,
+			CaptionEntities:   captionEntities,
+			Duration:          duration,
+			SupportsStreaming: supportsStreaming,
+		}
+		return bai.SendCustom("sendVideo", args, true, videoFile, thumbFile)
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+/*Sends an audio (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "audio" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0,to ignore string arguments pass "")*/
+func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string, audioFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply bool, captionEntities []objs.MessageEntity, duration int, performer, title string, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.SendAudioArgs{
+			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
+				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				allow_sending_without_reply, reply_markup,
+			),
+			Audio:           audio,
+			Caption:         caption,
+			Thumb:           thumb,
+			ParseMode:       parseMode,
+			CaptionEntities: captionEntities,
+			Duration:        duration,
+			Performer:       performer,
+			Title:           title,
+		}
+		return bai.SendCustom("sendAudio", args, true, audioFile, thumbFile)
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
+	}
+}
+
+/*Sends a document (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "document" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
+func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document string, documentFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply bool, captionEntities []objs.MessageEntity, DisableContentTypeDetection bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.SendDocumentArgs{
+			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
+				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				allow_sending_without_reply, reply_markup,
+			),
+			Document:                    document,
+			Caption:                     caption,
+			Thumb:                       thumb,
+			ParseMode:                   parseMode,
+			CaptionEntities:             captionEntities,
+			DisableContentTypeDetection: DisableContentTypeDetection,
+		}
+		return bai.SendCustom("sendDocument", args, true, documentFile, thumbFile)
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
 	}
@@ -190,15 +296,21 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 		if replyTo != 0 {
 			cp.ReplyToMessageId = replyTo
 		}
-		return bai.SendCustom("copyMessage", cp)
+		return bai.SendCustom("copyMessage", cp, false, nil, nil)
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString or fromChatIdInt or fromChatIdString", MethodName: "sendMessage"}
 	}
 }
 
-func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments, MP bool, file *os.File, thumbFile *os.File) (*objs.SendMethodsResult, error) {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
-	res, err2 := cl.sendHttpReqJson(methdName, args)
+	var res []byte
+	var err2 error
+	if MP {
+		res, err2 = cl.sendHttpReqMultiPart(methdName, args, file, thumbFile)
+	} else {
+		res, err2 = cl.sendHttpReqJson(methdName, args)
+	}
 	if err2 != nil {
 		return nil, err2
 	}
