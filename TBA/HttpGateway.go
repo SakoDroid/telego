@@ -28,46 +28,31 @@ func (hsc *httpSenderClient) sendHttpReqJson(method string, args objs.MethodArgu
 
 /*This method sends an http request (without processing the response) as multipart/formdata. Returns the body of the response.
 This method is only used for uploading files to bot api server.*/
-func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.MethodArguments, file *os.File, thumbFile *os.File) ([]byte, error) {
+func (hsc *httpSenderClient) sendHttpReqMultiPart(method string, args objs.MethodArguments, files ...*os.File) ([]byte, error) {
 	body := &bytes.Buffer{}
 	writer := mp.NewWriter(body)
 	args.ToMultiPart(writer)
-	var err error
-	if file != nil {
-		stat, er := file.Stat()
-		if er != nil {
-			return nil, er
+	for _, file := range files {
+		if file == nil {
+			continue
 		}
-		err = hsc.addFileToMultiPartForm(file, writer, stat.Name())
-	}
-	var err2 error
-	if thumbFile != nil {
-		tStats, er2 := thumbFile.Stat()
-		if er2 != nil {
-			return nil, er2
+		err := hsc.addFileToMultiPartForm(file, writer)
+		if err != nil {
+			return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to add file to the multipart form. " + err.Error()}
 		}
-		err2 = hsc.addFileToMultiPartForm(thumbFile, writer, tStats.Name())
 	}
-	if err == nil {
-		if err2 == nil {
-			_ = writer.Close()
-			bts := body.Bytes()
-			return hsc.sendHttpReq(method, writer.FormDataContentType(), bts)
-		} else {
-			return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to add file to the multipart form. " + err2.Error()}
-		}
-	} else {
-		return nil, &errs.MethodNotSentError{Method: method, Reason: "unable to add file to the multipart form. " + err.Error()}
-	}
+	_ = writer.Close()
+	bts := body.Bytes()
+	return hsc.sendHttpReq(method, writer.FormDataContentType(), bts)
 }
 
-func (hsc *httpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer, fieldName string) error {
+func (hsc *httpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer) error {
 	if file != nil {
 		fileStat, err := file.Stat()
 		if err != nil {
 			return err
 		}
-		fw, err2 := wr.CreateFormFile(fieldName, fileStat.Name())
+		fw, err2 := wr.CreateFormFile(fileStat.Name(), fileStat.Name())
 		if err2 != nil {
 			return err2
 		}

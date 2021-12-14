@@ -55,3 +55,10 @@ type ChatIdProblem struct {
 func (cip *ChatIdProblem) Error() string {
 	return "Cannot have both chatIdInt and chatIdString at the same time. Only one of them is allowed."
 }
+
+type MediaGroupFullError struct {
+}
+
+func (mgfe *MediaGroupFullError) Error() string {
+	return "the media group is full. (10 files)"
+}

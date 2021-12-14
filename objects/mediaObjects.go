@@ -89,7 +89,7 @@ type Contact struct {
 
 type Dice struct {
 	Emoji string `json:"emoji"`
-	Value string `json:"value"`
+	Value int    `json:"value"`
 }
 
 type PollOption struct {

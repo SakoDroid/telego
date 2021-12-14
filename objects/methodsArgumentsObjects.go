@@ -370,3 +370,431 @@ func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
 func (args *SendVideoArgs) GetMediaType() string {
 	return "video"
 }
+
+type SendAnimationArgs struct {
+	DefaultSendMethodsArguments
+	Animation string `json:"animation"`
+	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
+	Thumb           string          `json:"thumb,omitempty"`
+	Caption         string          `json:"caption,omitempty"`
+	ParseMode       string          `json:"parse_mode,omitempty"`
+	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	Width           int             `json:"width,omitempty"`
+	Height          int             `json:"height,omitempty"`
+	/*Duration of sent video in seconds.*/
+	Duration int `json:"duration,omitempty"`
+}
+
+func (args *SendAnimationArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendAnimationArgs) ToMultiPart(wr *mp.Writer) {
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("animation")
+	_, _ = io.Copy(fw, strings.NewReader(args.Animation))
+	if args.Duration != 0 {
+		fw, _ = wr.CreateFormField("duration")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
+	}
+	if args.Thumb != "" {
+		fw, _ = wr.CreateFormField("thumb")
+		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+	if args.Width != 0 {
+		fw, _ = wr.CreateFormField("width")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Width)))
+	}
+	if args.Height != 0 {
+		fw, _ = wr.CreateFormField("height")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Height)))
+	}
+}
+
+func (args *SendAnimationArgs) GetMediaType() string {
+	return "animation"
+}
+
+type SendVoiceArgs struct {
+	DefaultSendMethodsArguments
+	Voice           string          `json:"voice"`
+	Caption         string          `json:"caption,omitempty"`
+	ParseMode       string          `json:"parse_mode,omitempty"`
+	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	/*Duration of sent video in seconds.*/
+	Duration int `json:"duration,omitempty"`
+}
+
+func (args *SendVoiceArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendVoiceArgs) ToMultiPart(wr *mp.Writer) {
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("voice")
+	_, _ = io.Copy(fw, strings.NewReader(args.Voice))
+	if args.Duration != 0 {
+		fw, _ = wr.CreateFormField("duration")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+}
+
+func (args *SendVoiceArgs) GetMediaType() string {
+	return "voice"
+}
+
+type SendVideoNoteArgs struct {
+	DefaultSendMethodsArguments
+	VideoNote string `json:"video_note"`
+	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
+	Thumb           string          `json:"thumb,omitempty"`
+	Caption         string          `json:"caption,omitempty"`
+	ParseMode       string          `json:"parse_mode,omitempty"`
+	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	Length          int             `json:"length,omitempty"`
+	/*Duration of sent video in seconds.*/
+	Duration int `json:"duration,omitempty"`
+}
+
+func (args *SendVideoNoteArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendVideoNoteArgs) ToMultiPart(wr *mp.Writer) {
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("video_note")
+	_, _ = io.Copy(fw, strings.NewReader(args.VideoNote))
+	if args.Duration != 0 {
+		fw, _ = wr.CreateFormField("duration")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
+	}
+	if args.Thumb != "" {
+		fw, _ = wr.CreateFormField("thumb")
+		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+	}
+	if args.Caption != "" {
+		fw, _ = wr.CreateFormField("caption")
+		_, _ = io.Copy(fw, strings.NewReader(args.Caption))
+	}
+	if args.ParseMode != "" {
+		fw, _ = wr.CreateFormField("parse_mode")
+		_, _ = io.Copy(fw, strings.NewReader(args.ParseMode))
+	}
+	if args.CaptionEntities != nil {
+		fw, _ = wr.CreateFormField("caption_entities")
+		bt, _ := json.Marshal(args.CaptionEntities)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+	if args.Length != 0 {
+		fw, _ = wr.CreateFormField("lengt")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Length)))
+	}
+}
+
+func (args *SendVideoNoteArgs) GetMediaType() string {
+	return "video_note"
+}
+
+type SendMediaGroupArgs struct {
+	DefaultSendMethodsArguments
+	Media []InputMedia `json:"media"`
+}
+
+func (args *SendMediaGroupArgs) ToJson() []byte {
+	args.ReplyMarkup = nil
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendMediaGroupArgs) ToMultiPart(wr *mp.Writer) {
+	args.ReplyMarkup = nil
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("media")
+	bt, _ := json.Marshal(args.Media)
+	_, _ = io.Copy(fw, bytes.NewReader(bt))
+}
+
+func (args *SendMediaGroupArgs) GetMediaType() string {
+	return "media"
+}
+
+type SendLocationArgs struct {
+	DefaultSendMethodsArguments
+	/*Latitude of the location*/
+	Latitude float32 `json:"latitude"`
+	/*Longitude of the location*/
+	Longitude float32 `json:"longitude"`
+	/*The radius of uncertainty for the location, measured in meters; 0-1500*/
+	HorizontalAccuracy float32 `json:"horizontal_accuracy,omitempty"`
+	/*Period in seconds for which the location will be updated (see Live Locations, should be between 60 and 86400.*/
+	LivePeriod int `json:"live_period,omitempty"`
+	/*	For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.*/
+	Heading int `json:"heading,omitempty"`
+	/*For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.*/
+	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
+}
+
+func (args *SendLocationArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendLocationArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendLocationArgs) GetMediaType() string {
+	return "location"
+}
+
+type EditMessageLiveLocationArgs struct {
+	/*Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)*/
+	ChatId json.RawMessage `json:"chat_id,omitempty"`
+	/*Required if inline_message_id is not specified. Identifier of the message to edit*/
+	MessageId int `json:"message_id,omitempty"`
+	/*Required if chat_id and message_id are not specified. Identifier of the inline message*/
+	InlineMessageId string `json:"inline_message_id,omitempty"`
+	/*Latitude of the location*/
+	Latitude float32 `json:"latitude"`
+	/*Longitude of the location*/
+	Longitude float32 `json:"longitude"`
+	/*The radius of uncertainty for the location, measured in meters; 0-1500*/
+	HorizontalAccuracy float32 `json:"horizontal_accuracy,omitempty"`
+	/*	For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.*/
+	Heading int `json:"heading,omitempty"`
+	/*For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.*/
+	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
+	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
+	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+func (args *EditMessageLiveLocationArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *EditMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *EditMessageLiveLocationArgs) GetMediaType() string {
+	return "edit_message_live_location"
+}
+
+type StopMessageLiveLocationArgs struct {
+	/*Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)*/
+	ChatId json.RawMessage `json:"chat_id,omitempty"`
+	/*Required if inline_message_id is not specified. Identifier of the message to edit*/
+	MessageId int `json:"message_id,omitempty"`
+	/*Required if chat_id and message_id are not specified. Identifier of the inline message*/
+	InlineMessageId string `json:"inline_message_id,omitempty"`
+	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
+	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+func (args *StopMessageLiveLocationArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *StopMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *StopMessageLiveLocationArgs) GetMediaType() string {
+	return "edit_message_live_location"
+}
+
+type SendVenueArgs struct {
+	DefaultSendMethodsArguments
+	/*Latitude of the location*/
+	Latitude float32 `json:"latitude"`
+	/*Longitude of the location*/
+	Longitude float32 `json:"longitude"`
+	Title     string  `json:"title"`
+	Address   string  `json:"address"`
+	/*Foursquare identifier of the venue*/
+	FoursquareId string `json:"foursquare_id,omitempty"`
+	/*Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)*/
+	FoursquareType  string `json:"foursquare_type,omitempty"`
+	GooglePlaceId   string `json:"google_place_id,omitempty"`
+	GooglePlaceType string `json:"google_place_type,omitempty"`
+}
+
+func (args *SendVenueArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendVenueArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendVenueArgs) GetMediaType() string {
+	return "venue"
+}
+
+type SendContactArgs struct {
+	DefaultSendMethodsArguments
+	PhoneNumber string `json:"phone_number"`
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name,omitempty"`
+	Vcard       string `json:"vcard,omitempty"`
+}
+
+func (args *SendContactArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendContactArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendContactArgs) GetMediaType() string {
+	return "contact"
+}
+
+type SendPollArgs struct {
+	DefaultSendMethodsArguments
+	/*Poll question, 1-300 characters*/
+	Question string `json:"question"`
+	/*A JSON-serialized list of answer options, 2-10 strings 1-100 characters each*/
+	Options []string `json:"options"`
+	/*Pass True, if the poll needs to be immediately closed. This can be useful for poll preview.*/
+	IsClosed bool `json:"is_closed,omitempty"`
+	/*True, if the poll needs to be anonymous, defaults to True*/
+	IsAnonymous bool `json:"is_anonymous,omitempty"`
+	/*Poll type, “quiz” or “regular”, defaults to “regular”*/
+	Type string `json:"type,omitempty"`
+	/*	True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False*/
+	AllowsMultipleAnswers bool `json:"allows_multiple_answers,omitempty"`
+	/*0-based identifier of the correct answer option, required for polls in quiz mode*/
+	CorrectOptionId int `json:"correct_option_id,omitempty"`
+	/*Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing*/
+	Explanation string `json:"explanation,omitempty"`
+	/*Mode for parsing entities in the explanation. See formatting options for more details.*/
+	ExplanationParseMode string `json:"explanation_parse_mode,omitempty"`
+	/*	A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of parse_mode*/
+	ExplanationEntities []MessageEntity `json:"explanation_entities,omitempty"`
+	/*	Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.*/
+	OpenPeriod int `json:"open_period,omitempty"`
+	/*the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.*/
+	CloseDate int `json:"close_date,omitempty"`
+}
+
+func (args *SendPollArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendPollArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendPollArgs) GetMediaType() string {
+	return "poll"
+}
+
+type SendDiceArgs struct {
+	DefaultSendMethodsArguments
+	/*Emoji on which the dice throw animation is based. Currently, must be one of “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”. Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”. Defaults to “🎲”*/
+	Emoji string `json:"emoji,omitempty"`
+}
+
+func (args *SendDiceArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendDiceArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendDiceArgs) GetMediaType() string {
+	return "dice"
+}
+
+type SendChatActionArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	/*Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
+	Action string `json:"action"`
+}
+
+func (args *SendChatActionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendChatActionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *SendChatActionArgs) GetMediaType() string {
+	return "chat_action"
+}
