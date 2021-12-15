@@ -1031,9 +1031,9 @@ func (args *SetChatPhotoArgs) ToJson() []byte {
 
 func (args *SetChatPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
-	_, _ = io.Copy(fw, strings.NewReader(string(args.ChatId)))
+	_, _ = io.Copy(fw, bytes.NewReader(args.ChatId))
 	fw, _ = wr.CreateFormField("photo")
-	_, _ = io.Copy(fw, strings.NewReader(string(args.Photo)))
+	_, _ = io.Copy(fw, strings.NewReader(args.Photo))
 }
 
 type SetChatTitleArgs struct {
@@ -1123,8 +1123,8 @@ func (args *GetChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type SetChatStcikerSet struct {
-	ChatId json.RawMessage `json:"chat_id"`
-	UserId int             `json:"user_id"`
+	ChatId         json.RawMessage `json:"chat_id"`
+	StickerSetName string          `json:"sticker_set_name"`
 }
 
 func (args *SetChatStcikerSet) ToJson() []byte {

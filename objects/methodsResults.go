@@ -31,6 +31,31 @@ type DefaultResult struct {
 	Result json.RawMessage `json:"result"`
 }
 
+type StringResult struct {
+	Ok     bool   `json:"ok"`
+	Result string `json:"result"`
+}
+
+type IntResult struct {
+	Ok     bool `json:"ok"`
+	Result int  `json:"result"`
+}
+
+type ChatInviteLinkResult struct {
+	Ok     bool           `json:"ok"`
+	Result ChatInviteLink `json:"result"`
+}
+
+type ChatResult struct {
+	Ok     bool `json:"ok"`
+	Result Chat `json:"result"`
+}
+
+type ChatAdministratorsResult struct {
+	Ok     bool              `json:"ok"`
+	Result []ChatMemberOwner `json:"result"`
+}
+
 type LogicalResult struct {
 	Ok     bool `json:"ok"`
 	Result bool `json:"result"`

@@ -420,6 +420,20 @@ func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File
 	return &res.Result, nil
 }
 
+/*Creates and returnes a ChatManager for groups and other chats witch an integer id.
+
+To manage supergroups and channels which have usernames use "GetChatManagerByUsername".*/
+func (bot *Bot) GetChatManagerById(chatId int) *ChatManager {
+	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
+}
+
+/*Creates and returnes a ChatManager for supergroups and channels which have usernames
+
+To manage groups and other chats witch an integer id use "GetChatManagerById".*/
+func (bot *Bot) GetChatManagerByUsrename(chatId int) *ChatManager {
+	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

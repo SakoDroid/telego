@@ -798,6 +798,671 @@ func (bai *BotAPIInterface) DownloadFile(fileObject objs.File, file *os.File) er
 	}
 }
 
+/*Bans a chat member*/
+func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.LogicalResult, error) {
+	args := &objs.BanChatMemberArgs{
+		UserId:         userId,
+		UntilDate:      untilDate,
+		RevokeMessages: revokeMessages,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("banChatMember", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Unbans a chat member*/
+func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.LogicalResult, error) {
+	args := &objs.UnbanChatMemberArgsArgs{
+		UserId:       userId,
+		OnlyIfBanned: onlyIfBanned,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("unbanChatMember", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Restricts a chat member*/
+func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString string, userId int, permissions objs.ChatPermissions, untilDate int) (*objs.LogicalResult, error) {
+	args := &objs.RestrictChatMemberArgs{
+		UserId:     userId,
+		Permission: permissions,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("restrictChatMember", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Promotes a chat member*/
+func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVoiceChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+	args := &objs.PromoteChatMemberArgs{
+		UserId:              userId,
+		IsAnonymous:         isAnonymous,
+		CanManageChat:       canManageChat,
+		CanPostMessages:     canPostmessages,
+		CanEditMessages:     canEditMessages,
+		CanDeleteMessages:   canDeleteMessages,
+		CanManageVoiceChats: canManageVoiceChats,
+		CanRestrictMembers:  canRestrictMembers,
+		CanPromoteMembers:   canPromoteMembers,
+		CanChangeInfo:       canChangeInfo,
+		CanInviteUsers:      canInviteUsers,
+		CanPinMessages:      canPinMessages,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("promoteChatMember", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets a custom title for the administrator.*/
+func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatIdString string, userId int, customTitle string) (*objs.LogicalResult, error) {
+	args := &objs.SetChatAdministratorCustomTitleArgs{
+		UserId:      userId,
+		CustomTitle: customTitle,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("setChatAdministratorCustomTitle", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Bans or unbans a channel in the group..*/
+func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString string, senderChatId int, ban bool) (*objs.LogicalResult, error) {
+	args := &objs.BanChatSenderChatArgs{
+		SenderChatId: senderChatId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	var method string
+	if ban {
+		method = "banChatSenderChat"
+	} else {
+		method = "unbanChatSenderChat"
+	}
+	res, err := bai.SendCustom(method, args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets default permissions for all users in the chat.*/
+func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString string, permissions objs.ChatPermissions) (*objs.LogicalResult, error) {
+	args := &objs.SetChatPermissionsArgs{
+		Permissions: permissions,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("setChatPermissions", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Exports the chat invite link and returns the new invite link as string.*/
+func (bai *BotAPIInterface) ExportChatInviteLink(chatIdInt int, chatIdString string) (*objs.StringResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("exprotChatInviteLink", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.StringResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Creates a new invite link for the chat.*/
+func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+	args := &objs.CreateChatInviteLinkArgs{
+		Name:               name,
+		ExpireDate:         expireDate,
+		MemberLimit:        memberLimit,
+		CreatesjoinRequest: createsJoinRequest,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("createChatInviteLink", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatInviteLinkResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Edits an existing invite link for the chat.*/
+func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, inviteLink, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+	args := &objs.EditChatInviteLinkArgs{
+		InviteLink:         inviteLink,
+		Name:               name,
+		ExpireDate:         expireDate,
+		MemberLimit:        memberLimit,
+		CreatesjoinRequest: createsJoinRequest,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("editChatInviteLink", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatInviteLinkResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Revokes the given invite link.*/
+func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, inviteLink string) (*objs.ChatInviteLinkResult, error) {
+	args := &objs.RevokeChatInviteLinkArgs{
+		InviteLink: inviteLink,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("revokeChatInviteLink", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatInviteLinkResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Approves a request from the given user to join the chat.*/
+func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.LogicalResult, error) {
+	args := &objs.ApproveChatJoinRequestArgs{
+		UserId: userId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("approveChatJoinRequest", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Declines a request from the given user to join the chat.*/
+func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.LogicalResult, error) {
+	args := &objs.DeclineChatJoinRequestArgs{
+		UserId: userId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("declineChatJoinRequest", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the chat photo to given file.*/
+func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, file *os.File) (*objs.LogicalResult, error) {
+	args := &objs.SetChatPhotoArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	stats, er := file.Stat()
+	if er != nil {
+		return nil, er
+	}
+	args.Photo = "attach://" + stats.Name()
+	res, err := bai.SendCustom("setChatPhoto", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes chat photo.*/
+func (bai *BotAPIInterface) DeleteChatPhoto(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("deleteChatPhoto", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the chat title.*/
+func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title string) (*objs.LogicalResult, error) {
+	args := &objs.SetChatTitleArgs{
+		Title: title,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("setChatTitle", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the chat description.*/
+func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, descriptions string) (*objs.LogicalResult, error) {
+	args := &objs.SetChatDescriptionArgs{
+		Description: descriptions,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("setChatDescription", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Pines the message in the chat.*/
+func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.LogicalResult, error) {
+	args := &objs.PinChatMessageArgs{
+		MessageId:           messageId,
+		DisableNotification: disableNotification,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("pinChatMessage", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Unpines the pinned message in the chat.*/
+func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string, messageId int) (*objs.LogicalResult, error) {
+	args := &objs.UnpinChatMessageArgs{
+		MessageId: messageId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("unpinChatMessage", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Unpines all the pinned messages in the chat.*/
+func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("unpinAllChatMessages", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*The bot will leave the chat if this method is called.*/
+func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("leaveChat", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*A Chat object containing the information of the chat will be returned*/
+func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.ChatResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("getChat", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Returnes an array of ChatMember containing the informations of the chat administrators.*/
+func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString string) (*objs.ChatAdministratorsResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("getChatAdministrators", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatAdministratorsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Returns the number of the memebrs of the chat.*/
+func (bai *BotAPIInterface) GetChatMemberCount(chatIdInt int, chatIdString string) (*objs.IntResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("getChatMemberCount", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.IntResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Returns the information of the member in a ChatMember object.*/
+func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.DefaultResult, error) {
+	args := &objs.GetChatMemberArgs{
+		UserId: userId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("getChatMember", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the sticker set of the chat.*/
+func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stickerSetName string) (*objs.LogicalResult, error) {
+	args := &objs.SetChatStcikerSet{
+		StickerSetName: stickerSetName,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("setChatStickerSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes the sticker set of the chat..*/
+func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	args := &objs.DefaultChatArgs{}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("deleteChatStickerSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
