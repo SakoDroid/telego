@@ -3,7 +3,11 @@ package TBA
 import (
 	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	errs "github.com/SakoDroid/telebot/Errors"
@@ -54,6 +58,7 @@ func (bai *BotAPIInterface) startReceiving() {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 loop:
 	for {
+		time.Sleep(bai.botConfigs.UpdateConfigs.UpdateFrequency)
 		select {
 		case <-bai.updateRoutineChannel:
 			break loop
@@ -65,18 +70,25 @@ loop:
 			res, err := cl.sendHttpReqJson("getUpdates", &args)
 			if err != nil {
 				logger.Logger.Println("Error receiving updates.", err)
-				continue
+				continue loop
 			}
 			err = bai.parseUpdateresults(res)
 			if err != nil {
 				logger.Logger.Println("Error parsing the result of the update. " + err.Error())
 			}
 		}
-		time.Sleep(bai.botConfigs.UpdateConfigs.UpdateFrequency)
 	}
 }
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
+	def := &objs.DefaultResult{}
+	err2 := json.Unmarshal(body, def)
+	if err2 != nil {
+		return err2
+	}
+	if !def.Ok {
+		return &errs.MethodNotSentError{Method: "getUpdates", Reason: "server returned false for \"ok\" field."}
+	}
 	ur := &objs.UpdateResult{}
 	err := json.Unmarshal(body, ur)
 	if err != nil {
@@ -723,6 +735,66 @@ func (bai *BotAPIInterface) SendChatAction(chatIdInt int, chatIdString, chatActi
 		return msg, nil
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "sendChatAction"}
+	}
+}
+
+/*Gets the user profile photos*/
+func (bai *BotAPIInterface) GetUserProfilePhotos(userId, offset, limit int) (*objs.ProfilePhototsResult, error) {
+	args := &objs.GetUserProfilePhototsArgs{UserId: userId, Offset: offset, Limit: limit}
+	res, err := bai.SendCustom("getUserProfilePhotos", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ProfilePhototsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Gets the file based on the given file id and returns the file object. */
+func (bai *BotAPIInterface) GetFile(fileId string) (*objs.GetFileResult, error) {
+	args := &objs.GetFileArgs{FileId: fileId}
+	res, err := bai.SendCustom("getFile", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.GetFileResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Downloads a file from telegram servers and saves it into the given file.
+
+This method closes the given file. If the file is nil, this method will create a file based on the name of the file stored in telegram servers.*/
+func (bai *BotAPIInterface) DownloadFile(fileObject objs.File, file *os.File) error {
+	url := "https://api.telegram.org/file/bot" + bai.botConfigs.APIKey + "/" + fileObject.FilePath
+	res, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	if file == nil {
+		ar := strings.Split(fileObject.FilePath, "/")
+		name := ar[len(ar)-1]
+		var er error
+		file, er = os.OpenFile(name, os.O_CREATE|os.O_WRONLY, 0666)
+		if er != nil {
+			return er
+		}
+	}
+	if res.StatusCode < 300 {
+		_, err2 := io.Copy(file, res.Body)
+		if err2 != nil {
+			return err2
+		}
+		err3 := file.Close()
+		return err3
+	} else {
+		return &errs.MethodNotSentError{Method: "getFile", Reason: "server returned status code " + strconv.Itoa(res.StatusCode)}
 	}
 }
 

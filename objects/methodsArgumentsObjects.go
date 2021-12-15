@@ -726,7 +726,7 @@ type SendPollArgs struct {
 	/*	True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False*/
 	AllowsMultipleAnswers bool `json:"allows_multiple_answers,omitempty"`
 	/*0-based identifier of the correct answer option, required for polls in quiz mode*/
-	CorrectOptionId int `json:"correct_option_id,omitempty"`
+	CorrectOptionId int `json:"correct_option_id"`
 	/*Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing*/
 	Explanation string `json:"explanation,omitempty"`
 	/*Mode for parsing entities in the explanation. See formatting options for more details.*/
@@ -797,4 +797,49 @@ func (args *SendChatActionArgs) ToMultiPart(wr *mp.Writer) {
 
 func (args *SendChatActionArgs) GetMediaType() string {
 	return "chat_action"
+}
+
+type GetUserProfilePhototsArgs struct {
+	/*Unique identifier of the target user*/
+	UserId int `json:"user_id"`
+	/*Sequential number of the first photo to be returned. By default, all photos are returned.*/
+	Offset int `json:"offset,omitempty"`
+	/*Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.*/
+	Limit int `json:"limit,omitempty"`
+}
+
+func (args *GetUserProfilePhototsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *GetUserProfilePhototsArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *GetUserProfilePhototsArgs) GetMediaType() string {
+	return "user_profile_photos"
+}
+
+type GetFileArgs struct {
+	FileId string `json:"file_id"`
+}
+
+func (args *GetFileArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *GetFileArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+func (args *GetFileArgs) GetMediaType() string {
+	return "get_file"
 }

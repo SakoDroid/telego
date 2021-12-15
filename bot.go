@@ -336,7 +336,9 @@ Use this method when you need to tell the user that something is happening on th
 
 Example: The ImageBot needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use sendChatAction with action = upload_photo. The user will see a “sending photo” status for the bot.
 
-We only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.*/
+We only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.
+
+action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
 func (bot *Bot) SendChatAction(chatId int, action string) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendChatAction(chatId, "", action)
 }
@@ -351,7 +353,9 @@ Use this method when you need to tell the user that something is happening on th
 
 Example: The ImageBot needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use sendChatAction with action = upload_photo. The user will see a “sending photo” status for the bot.
 
-We only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.*/
+We only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.
+
+action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
 func (bot *Bot) SendChatActionToChannel(chatId, action string) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendChatAction(0, chatId, action)
 }
@@ -384,6 +388,36 @@ func (bot *Bot) SendLocationToChannel(chatId string, silent bool, latitude, long
 	return bot.apiInterface.SendLocation(
 		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
 	)
+}
+
+/*Gets the given user profile photos.
+
+"userId" argument is required. Other arguments are optinoal and to ignore them pass 0.
+
+---------------------------------
+
+Official telegram doc :
+
+Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.*/
+func (bot *Bot) GetUserProfilePhotos(userId, offset, limit int) (*objs.ProfilePhototsResult, error) {
+	return bot.apiInterface.GetUserProfilePhotos(userId, offset, limit)
+}
+
+/*Gets a file from telegram server. If it is successful the File object is returned.
+
+If "download option is true, the file will be saved into the given file and if the given file is nil file will be saved in the same name as it has been saved in telegram servers.*/
+func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File, error) {
+	res, err := bot.apiInterface.GetFile(fileId)
+	if err != nil {
+		return nil, err
+	}
+	if download {
+		err2 := bot.apiInterface.DownloadFile(res.Result, file)
+		if err2 != nil {
+			return &res.Result, err2
+		}
+	}
+	return &res.Result, nil
 }
 
 /*Stops the bot*/

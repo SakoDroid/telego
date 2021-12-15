@@ -30,3 +30,18 @@ type DefaultResult struct {
 	Ok     bool            `json:"ok"`
 	Result json.RawMessage `json:"result"`
 }
+
+type LogicalResult struct {
+	Ok     bool `json:"ok"`
+	Result bool `json:"result"`
+}
+
+type ProfilePhototsResult struct {
+	Ok     bool              `json:"ok"`
+	Result UserProfilePhotos `json:"result"`
+}
+
+type GetFileResult struct {
+	Ok     bool `json:"ok"`
+	Result File `json:"result"`
+}
