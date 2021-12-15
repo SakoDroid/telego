@@ -112,11 +112,11 @@ type Poll struct {
 	IsAnonymous           bool            `json:"is_anonymous"`
 	Type                  string          `json:"type"`
 	AllowsMultipleAnswers bool            `json:"allows_multiple_answers"`
-	CorrectOptionId       int             `json:"correct_option_id"`
-	Explanation           string          `json:"explanation"`
-	ExplanationEntities   []MessageEntity `json:"explanation_entities"`
-	OpenPeriod            int             `json:"open_period"`
-	CloseDate             int             `json:"close_date"`
+	CorrectOptionId       int             `json:"correct_option_id,omitempty"`
+	Explanation           string          `json:"explanation,omitempty"`
+	ExplanationEntities   []MessageEntity `json:"explanation_entities,omitempty"`
+	OpenPeriod            int             `json:"open_period,omitempty"`
+	CloseDate             int             `json:"close_date,omitempty"`
 }
 
 type Location struct {

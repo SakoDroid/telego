@@ -62,3 +62,10 @@ type MediaGroupFullError struct {
 func (mgfe *MediaGroupFullError) Error() string {
 	return "the media group is full. (10 files)"
 }
+
+type LiveLocationNotStarted struct {
+}
+
+func (llns *LiveLocationNotStarted) Error() string {
+	return "live location has not been started (sent)."
+}

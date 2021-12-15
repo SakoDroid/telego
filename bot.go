@@ -356,6 +356,36 @@ func (bot *Bot) SendChatActionToChannel(chatId, action string) (*objs.SendMethod
 	return bot.apiInterface.SendChatAction(0, chatId, action)
 }
 
+/*Sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationToChannel" method.
+
+You can not use this methods to send a live location. To send a live location use AdvancedBot.
+
+---------------------------------
+
+Official telegram doc :
+
+Use this method to send point on the map. On success, the sent Message is returned.*/
+func (bot *Bot) SendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendLocation(
+		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
+	)
+}
+
+/*Sends a location (not live) to a channel.
+
+You can not use this methods to send a live location. To send a live location use AdvancedBot.
+
+---------------------------------
+
+Official telegram doc :
+
+Use this method to send point on the map. On success, the sent Message is returned.*/
+func (bot *Bot) SendLocationToChannel(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendLocation(
+		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
+	)
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

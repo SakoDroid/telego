@@ -452,7 +452,7 @@ func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, r
 
 /*Sends a location to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id int, disable_notification, allow_sending_without_reply bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id int, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -473,7 +473,7 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.DefaultResult{}
+		msg := &objs.SendMethodsResult{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -486,7 +486,7 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 
 /*Edits a live location sent to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -512,7 +512,7 @@ func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.DefaultResult{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
