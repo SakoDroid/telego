@@ -12,7 +12,6 @@ import (
 type MethodArguments interface {
 	ToJson() []byte
 	ToMultiPart(wr *mp.Writer)
-	GetMediaType() string
 }
 
 type GetUpdatesArgs struct {
@@ -37,10 +36,6 @@ func (args *GetUpdatesArgs) ToJson() []byte {
 
 func (args *GetUpdatesArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
-}
-
-func (args *GetUpdatesArgs) GetMediaType() string {
-	return "update"
 }
 
 type DefaultSendMethodsArguments struct {
@@ -98,10 +93,6 @@ func (args *SendMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
 
-func (args *SendMessageArgs) GetMediaType() string {
-	return "text"
-}
-
 type ForwardMessageArgs struct {
 	/*Unique identifier for the target chat or Username of the target channel (in the format @channelusername).*/
 	ChatId json.RawMessage `json:"chat_id"`
@@ -123,10 +114,6 @@ func (args *ForwardMessageArgs) ToJson() []byte {
 
 func (args *ForwardMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
-}
-
-func (args *ForwardMessageArgs) GetMediaType() string {
-	return "text"
 }
 
 type CopyMessageArgs struct {
@@ -155,10 +142,6 @@ func (args *CopyMessageArgs) ToJson() []byte {
 
 func (args *CopyMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
-}
-
-func (args *CopyMessageArgs) GetMediaType() string {
-	return "text"
 }
 
 type SendPhotoArgs struct {
@@ -198,10 +181,6 @@ func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 		bt, _ := json.Marshal(args.CaptionEntities)
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
 	}
-}
-
-func (args *SendPhotoArgs) GetMediaType() string {
-	return "photo"
 }
 
 type SendAudioArgs struct {
@@ -263,10 +242,6 @@ func (args *SendAudioArgs) ToMultiPart(wr *mp.Writer) {
 	}
 }
 
-func (args *SendAudioArgs) GetMediaType() string {
-	return "audio"
-}
-
 type SendDocumentArgs struct {
 	DefaultSendMethodsArguments
 	Document string `json:"document"`
@@ -310,10 +285,6 @@ func (args *SendDocumentArgs) ToMultiPart(wr *mp.Writer) {
 	}
 	fw, _ = wr.CreateFormField("disable_content_type_detection")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.DisableContentTypeDetection)))
-}
-
-func (args *SendDocumentArgs) GetMediaType() string {
-	return "document"
 }
 
 type SendVideoArgs struct {
@@ -365,10 +336,6 @@ func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
 		bt, _ := json.Marshal(args.CaptionEntities)
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
 	}
-}
-
-func (args *SendVideoArgs) GetMediaType() string {
-	return "video"
 }
 
 type SendAnimationArgs struct {
@@ -428,10 +395,6 @@ func (args *SendAnimationArgs) ToMultiPart(wr *mp.Writer) {
 	}
 }
 
-func (args *SendAnimationArgs) GetMediaType() string {
-	return "animation"
-}
-
 type SendVoiceArgs struct {
 	DefaultSendMethodsArguments
 	Voice           string          `json:"voice"`
@@ -471,10 +434,6 @@ func (args *SendVoiceArgs) ToMultiPart(wr *mp.Writer) {
 		bt, _ := json.Marshal(args.CaptionEntities)
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
 	}
-}
-
-func (args *SendVoiceArgs) GetMediaType() string {
-	return "voice"
 }
 
 type SendVideoNoteArgs struct {
@@ -529,10 +488,6 @@ func (args *SendVideoNoteArgs) ToMultiPart(wr *mp.Writer) {
 	}
 }
 
-func (args *SendVideoNoteArgs) GetMediaType() string {
-	return "video_note"
-}
-
 type SendMediaGroupArgs struct {
 	DefaultSendMethodsArguments
 	Media []InputMedia `json:"media"`
@@ -553,10 +508,6 @@ func (args *SendMediaGroupArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("media")
 	bt, _ := json.Marshal(args.Media)
 	_, _ = io.Copy(fw, bytes.NewReader(bt))
-}
-
-func (args *SendMediaGroupArgs) GetMediaType() string {
-	return "media"
 }
 
 type SendLocationArgs struct {
@@ -585,10 +536,6 @@ func (args *SendLocationArgs) ToJson() []byte {
 
 func (args *SendLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
-}
-
-func (args *SendLocationArgs) GetMediaType() string {
-	return "location"
 }
 
 type EditMessageLiveLocationArgs struct {
@@ -624,10 +571,6 @@ func (args *EditMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *EditMessageLiveLocationArgs) GetMediaType() string {
-	return "edit_message_live_location"
-}
-
 type StopMessageLiveLocationArgs struct {
 	/*Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)*/
 	ChatId json.RawMessage `json:"chat_id,omitempty"`
@@ -649,10 +592,6 @@ func (args *StopMessageLiveLocationArgs) ToJson() []byte {
 
 func (args *StopMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
-}
-
-func (args *StopMessageLiveLocationArgs) GetMediaType() string {
-	return "edit_message_live_location"
 }
 
 type SendVenueArgs struct {
@@ -683,10 +622,6 @@ func (args *SendVenueArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *SendVenueArgs) GetMediaType() string {
-	return "venue"
-}
-
 type SendContactArgs struct {
 	DefaultSendMethodsArguments
 	PhoneNumber string `json:"phone_number"`
@@ -705,10 +640,6 @@ func (args *SendContactArgs) ToJson() []byte {
 
 func (args *SendContactArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
-}
-
-func (args *SendContactArgs) GetMediaType() string {
-	return "contact"
 }
 
 type SendPollArgs struct {
@@ -751,10 +682,6 @@ func (args *SendPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *SendPollArgs) GetMediaType() string {
-	return "poll"
-}
-
 type SendDiceArgs struct {
 	DefaultSendMethodsArguments
 	/*Emoji on which the dice throw animation is based. Currently, must be one of “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”. Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”. Defaults to “🎲”*/
@@ -773,10 +700,6 @@ func (args *SendDiceArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *SendDiceArgs) GetMediaType() string {
-	return "dice"
-}
-
 type SendChatActionArgs struct {
 	ChatId json.RawMessage `json:"chat_id"`
 	/*Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
@@ -793,10 +716,6 @@ func (args *SendChatActionArgs) ToJson() []byte {
 
 func (args *SendChatActionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
-}
-
-func (args *SendChatActionArgs) GetMediaType() string {
-	return "chat_action"
 }
 
 type GetUserProfilePhototsArgs struct {
@@ -820,10 +739,6 @@ func (args *GetUserProfilePhototsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *GetUserProfilePhototsArgs) GetMediaType() string {
-	return "user_profile_photos"
-}
-
 type GetFileArgs struct {
 	FileId string `json:"file_id"`
 }
@@ -840,6 +755,386 @@ func (args *GetFileArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
 
-func (args *GetFileArgs) GetMediaType() string {
-	return "get_file"
+type DefaultChatArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+}
+
+func (args *DefaultChatArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *DefaultChatArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type BanChatMemberArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+	/*Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.*/
+	UntilDate int `json:"until_date,omitempty"`
+	/*Pass True to delete all messages from the chat for the user that is being removed. If False, the user will be able to see messages in the group that were sent before the user was removed. Always True for supergroups and channels.*/
+	RevokeMessages bool `json:"revoke_messages,omitempty"`
+}
+
+func (args *BanChatMemberArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *BanChatMemberArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type UnbanChatMemberArgsArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+	/*Do nothing if the user is not banned*/
+	OnlyIfBanned bool `json:"only_if_banned,omitempty"`
+}
+
+func (args *UnbanChatMemberArgsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *UnbanChatMemberArgsArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type RestrictChatMemberArgs struct {
+	ChatId     json.RawMessage `json:"chat_id"`
+	UserId     int             `json:"user_id"`
+	Permission ChatPermissions `json:"permissions"`
+	UntilDate  int             `json:"until_date,omitempty"`
+}
+
+func (args *RestrictChatMemberArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *RestrictChatMemberArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type PromoteChatMemberArgs struct {
+	ChatId              json.RawMessage `json:"chat_id"`
+	UserId              int             `json:"user_id"`
+	IsAnonymous         bool            `json:"is_anonymous"`
+	CanManageChat       bool            `json:"can_manage_chat"`
+	CanPostMessages     bool            `json:"can_post_messages"`
+	CanEditMessages     bool            `json:"can_edit_messages"`
+	CanDeleteMessages   bool            `json:"can_delete_messages"`
+	CanManageVoiceChats bool            `json:"can_manage_voice_chats"`
+	CanRestrictMembers  bool            `json:"can_restrict_members"`
+	CanPromoteMembers   bool            `json:"can_promote_members"`
+	CanChangeInfo       bool            `json:"can_change_info"`
+	CanInviteUsers      bool            `json:"can_invite_users"`
+	CanPinMessages      bool            `json:"can_pin_messages"`
+}
+
+func (args *PromoteChatMemberArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *PromoteChatMemberArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetChatAdministratorCustomTitleArgs struct {
+	ChatId      json.RawMessage `json:"chat_id"`
+	UserId      int             `json:"user_id"`
+	CustomTitle string          `json:"custom_title"`
+}
+
+func (args *SetChatAdministratorCustomTitleArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetChatAdministratorCustomTitleArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type BanChatSenderChatArgs struct {
+	ChatId       json.RawMessage `json:"chat_id"`
+	SenderChatId int             `json:"sender_chat_id"`
+}
+
+func (args *BanChatSenderChatArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *BanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type UnbanChatSenderChatArgs struct {
+	ChatId       json.RawMessage `json:"chat_id"`
+	SenderChatId int             `json:"sender_chat_id"`
+}
+
+func (args *UnbanChatSenderChatArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *UnbanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetChatPermissionsArgs struct {
+	ChatId      json.RawMessage `json:"chat_id"`
+	Permissions ChatPermissions `json:"permissions"`
+}
+
+func (args *SetChatPermissionsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetChatPermissionsArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type CreateChatInviteLinkArgs struct {
+	ChatId             json.RawMessage `json:"chat_id"`
+	Name               string          `json:"name,omitempty"`
+	ExpireDate         int             `json:"expire_date,omitempty"`
+	MemberLimit        int             `json:"member_limit,omitempty"`
+	CreatesjoinRequest bool            `json:"creates_join_request,omitempty"`
+}
+
+func (args *CreateChatInviteLinkArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *CreateChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type EditChatInviteLinkArgs struct {
+	ChatId             json.RawMessage `json:"chat_id"`
+	InviteLink         string          `json:"invite_link"`
+	Name               string          `json:"name,omitempty"`
+	ExpireDate         int             `json:"expire_date,omitempty"`
+	MemberLimit        int             `json:"member_limit,omitempty"`
+	CreatesjoinRequest bool            `json:"creates_join_request,omitempty"`
+}
+
+func (args *EditChatInviteLinkArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *EditChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type RevokeChatInviteLinkArgs struct {
+	ChatId     json.RawMessage `json:"chat_id"`
+	InviteLink string          `json:"invite_link"`
+}
+
+func (args *RevokeChatInviteLinkArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *RevokeChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type ApproveChatJoinRequestArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+}
+
+func (args *ApproveChatJoinRequestArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *ApproveChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type DeclineChatJoinRequestArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+}
+
+func (args *DeclineChatJoinRequestArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *DeclineChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetChatPhotoArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	Photo  string          `json:"photo"`
+}
+
+func (args *SetChatPhotoArgs) ToJson() []byte {
+	//The arguments of this method are never passed as json.
+	return nil
+}
+
+func (args *SetChatPhotoArgs) ToMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("chat_id")
+	_, _ = io.Copy(fw, strings.NewReader(string(args.ChatId)))
+	fw, _ = wr.CreateFormField("photo")
+	_, _ = io.Copy(fw, strings.NewReader(string(args.Photo)))
+}
+
+type SetChatTitleArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	Title  string          `json:"title"`
+}
+
+func (args *SetChatTitleArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetChatTitleArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetChatDescriptionArgs struct {
+	ChatId      json.RawMessage `json:"chat_id"`
+	Description string          `json:"description"`
+}
+
+func (args *SetChatDescriptionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetChatDescriptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type PinChatMessageArgs struct {
+	ChatId              json.RawMessage `json:"chat_id"`
+	MessageId           int             `json:"message_id"`
+	DisableNotification bool            `json:"disable_notification"`
+}
+
+func (args *PinChatMessageArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *PinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type UnpinChatMessageArgs struct {
+	ChatId    json.RawMessage `json:"chat_id"`
+	MessageId int             `json:"message_id"`
+}
+
+func (args *UnpinChatMessageArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *UnpinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type GetChatMemberArgs struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+}
+
+func (args *GetChatMemberArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *GetChatMemberArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetChatStcikerSet struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	UserId int             `json:"user_id"`
+}
+
+func (args *SetChatStcikerSet) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetChatStcikerSet) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
 }
