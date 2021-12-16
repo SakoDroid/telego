@@ -70,3 +70,13 @@ type GetFileResult struct {
 	Ok     bool `json:"ok"`
 	Result File `json:"result"`
 }
+
+type GetCommandsResult struct {
+	Ok     bool         `json:"ok"`
+	Result []BotCommand `json:"result"`
+}
+
+type PollResult struct {
+	Ok     bool `json:"ok"`
+	Result Poll `json:"poll"`
+}

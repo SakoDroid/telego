@@ -1,5 +1,7 @@
 package objects
 
+import "encoding/json"
+
 type Chat struct {
 	/*Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.*/
 	Id int `json:"id"`
@@ -84,9 +86,9 @@ type ChatMemberUpdated struct {
 	/*Date the change was done in Unix time*/
 	Date int `json:"date"`
 	/*Previous information about the chat member*/
-	OldChatMember ChatMember `json:"old_chat_member"`
+	OldChatMember json.RawMessage `json:"old_chat_member"`
 	/*New information about the chat member*/
-	NewChatMember ChatMember `json:"new_chat_member"`
+	NewChatMember json.RawMessage `json:"new_chat_member"`
 	/*Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.*/
 	InviteLink ChatInviteLink `json:"invite_link,omitempty"`
 }

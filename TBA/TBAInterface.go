@@ -1463,6 +1463,253 @@ func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString str
 	return msg, nil
 }
 
+/*Answers a callback query*/
+func (bai *BotAPIInterface) AnswerCallbackQuery(callbackQueryId, text, url string, showAlert bool, CacheTime int) (*objs.LogicalResult, error) {
+	args := &objs.AnswerCallbackQueryArgs{
+		CallbackQueyId: callbackQueryId,
+		Text:           text,
+		ShowAlert:      showAlert,
+		URL:            url,
+		CacheTime:      CacheTime,
+	}
+	res, err := bai.SendCustom("answerCallbackQuery", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the commands of the bot*/
+func (bai *BotAPIInterface) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+	args := &objs.SetMyCommandsArgs{
+		Commands: commands,
+		MyCommandsDefault: objs.MyCommandsDefault{
+			Scope:        scope,
+			LanguageCode: languageCode,
+		},
+	}
+	res, err := bai.SendCustom("setMyCommands", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes the commands of the bot*/
+func (bai *BotAPIInterface) DeleteMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+	args := &objs.MyCommandsDefault{
+		Scope:        scope,
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("deleteMyCommands", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Gets the commands of the bot*/
+func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.GetCommandsResult, error) {
+	args := &objs.MyCommandsDefault{
+		Scope:        scope,
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("getMyCommands", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.GetCommandsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Edits the text of the given message in the given chat.*/
+func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, messageId int, inlineMessageId, text, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+	args := &objs.EditMessageTextArgs{
+		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
+			MessageId:       messageId,
+			InlineMessageId: inlineMessageId,
+			ReplyMarkup:     replyMakrup,
+		},
+		Text:                  text,
+		ParseMode:             parseMode,
+		Entities:              entities,
+		DisablewebpagePreview: disableWebPagePreview,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("editMessageText", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Edits the caption of the given message in the given chat.*/
+func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString string, messageId int, inlineMessageId, caption, parseMode string, captionEntities []objs.MessageEntity, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+	args := &objs.EditMessageCaptionArgs{
+		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
+			MessageId:       messageId,
+			InlineMessageId: inlineMessageId,
+			ReplyMarkup:     replyMakrup,
+		},
+		Caption:         caption,
+		ParseMode:       parseMode,
+		CaptionEntities: captionEntities,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("editMessageCaption", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Edits the media of the given message in the given chat.*/
+func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup objs.InlineKeyboardMarkup, file *os.File) (*objs.DefaultResult, error) {
+	args := &objs.EditMessageMediaArgs{
+		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
+			MessageId:       messageId,
+			InlineMessageId: inlineMessageId,
+			ReplyMarkup:     replyMakrup,
+		},
+		Media: media,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("editMessageMedia", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Edits the reply makrup of the given message in the given chat.*/
+func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+	args := &objs.EditMessageReplyMakrupArgs{
+		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
+			MessageId:       messageId,
+			InlineMessageId: inlineMessageId,
+			ReplyMarkup:     replyMakrup,
+		},
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("editMessageReplyMarkup", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Stops the poll.*/
+func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, messageId int, replyMakrup objs.InlineKeyboardMarkup) (*objs.PollResult, error) {
+	args := &objs.StopPollArgs{
+		MessageId:   messageId,
+		ReplyMarkup: replyMakrup,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("stopPoll", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.PollResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes the given message int the given chat.*/
+func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, messageId int) (*objs.LogicalResult, error) {
+	args := &objs.DeleteMessageArgs{
+		MessageId: messageId,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("deleteMessage", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
@@ -1514,6 +1761,7 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 	}
 }
 
+/*Calls the given method on api server wtih the given arguments. "MP" options indicates that the request should be made in multipart/formadata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 	var res []byte

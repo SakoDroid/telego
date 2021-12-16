@@ -1138,3 +1138,188 @@ func (args *SetChatStcikerSet) ToJson() []byte {
 func (args *SetChatStcikerSet) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
+
+type AnswerCallbackQueryArgs struct {
+	CallbackQueyId string `json:"callback_query_id"`
+	Text           string `json:"text,omitempty"`
+	ShowAlert      bool   `json:"show_alert"`
+	URL            string `json:"url,omitempty"`
+	CacheTime      int    `json:"cache_time,omitempty"`
+}
+
+func (args *AnswerCallbackQueryArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *AnswerCallbackQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type MyCommandsDefault struct {
+	Scope        BotCommandScope `json:"scope,omitempty"`
+	LanguageCode string          `json:"language_code,omitempty"`
+}
+
+func (args *MyCommandsDefault) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *MyCommandsDefault) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetMyCommandsArgs struct {
+	Commands []BotCommand `json:"commands"`
+	MyCommandsDefault
+}
+
+func (args *SetMyCommandsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetMyCommandsArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type EditMessageDefaultArgs struct {
+	ChatId          json.RawMessage      `json:"chat_id,omitempty"`
+	MessageId       int                  `json:"message_id,omitempty"`
+	InlineMessageId string               `json:"inline_message_id,omitempty"`
+	ReplyMarkup     InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+type EditMessageTextArgs struct {
+	EditMessageDefaultArgs
+	Text                  string          `json:"text"`
+	ParseMode             string          `json:"parse_mode,omitempty"`
+	Entities              []MessageEntity `json:"entities,omitempty"`
+	DisablewebpagePreview bool            `json:"disable_web_page_preview"`
+}
+
+func (args *EditMessageTextArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *EditMessageTextArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type EditMessageCaptionArgs struct {
+	EditMessageDefaultArgs
+	Caption               string          `json:"caption,omitempty"`
+	ParseMode             string          `json:"parse_mode,omitempty"`
+	CaptionEntities       []MessageEntity `json:"caption_entities,omitempty"`
+	DisablewebpagePreview bool            `json:"disable_web_page_preview"`
+}
+
+func (args *EditMessageCaptionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *EditMessageCaptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type EditMessageMediaArgs struct {
+	EditMessageDefaultArgs
+	Media InputMedia
+}
+
+func (args *EditMessageMediaArgs) ToJson() []byte {
+	//The arguments of this method are never passed as json.
+	return nil
+}
+
+func (args *EditMessageMediaArgs) ToMultiPart(wr *mp.Writer) {
+	if args.ChatId != nil {
+		fw, _ := wr.CreateFormField("chat_id")
+		_, _ = io.Copy(fw, strings.NewReader(string(args.ChatId)))
+	}
+	if args.MessageId != 0 {
+		fw, _ := wr.CreateFormField("message_id")
+		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.MessageId)))
+	}
+	if args.InlineMessageId != "" {
+		fw, _ := wr.CreateFormField("inline_message_id")
+		_, _ = io.Copy(fw, strings.NewReader(args.InlineMessageId))
+	}
+	bt, _ := json.Marshal(args.Media)
+	fw, _ := wr.CreateFormField("media")
+	_, _ = io.Copy(fw, bytes.NewReader(bt))
+	if args.ReplyMarkup.InlineKeyboard != nil {
+		bt, _ = json.Marshal(args.ReplyMarkup)
+		fw, _ = wr.CreateFormField("reply_markup")
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+}
+
+type EditMessageReplyMakrupArgs struct {
+	EditMessageDefaultArgs
+}
+
+func (args *EditMessageReplyMakrupArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *EditMessageReplyMakrupArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type DeleteMessageArgs struct {
+	ChatId    json.RawMessage `json:"chat_id"`
+	MessageId int             `json:"message_id"`
+}
+
+func (args *DeleteMessageArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *DeleteMessageArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type StopPollArgs struct {
+	ChatId      json.RawMessage      `json:"chat_id"`
+	MessageId   int                  `json:"message_id"`
+	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+func (args *StopPollArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *StopPollArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
