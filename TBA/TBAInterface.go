@@ -11,6 +11,7 @@ import (
 	"time"
 
 	errs "github.com/SakoDroid/telebot/Errors"
+	up "github.com/SakoDroid/telebot/Parser"
 	cfgs "github.com/SakoDroid/telebot/configs"
 	logger "github.com/SakoDroid/telebot/logger"
 	objs "github.com/SakoDroid/telebot/objects"
@@ -22,6 +23,7 @@ type BotAPIInterface struct {
 	botConfigs           *cfgs.BotConfigs
 	updateRoutineRunning bool
 	updateChannel        *chan *objs.Update
+	pollUpdateChannel    *chan *objs.Poll
 	updateRoutineChannel chan bool
 	lastOffset           int
 }
@@ -54,6 +56,11 @@ func (bai *BotAPIInterface) GetUpdateChannel() *chan *objs.Update {
 	return bai.updateChannel
 }
 
+/*Returns the poll update channel*/
+func (bai *BotAPIInterface) GetPollUpdateChannel() *chan *objs.Poll {
+	return bai.pollUpdateChannel
+}
+
 func (bai *BotAPIInterface) startReceiving() {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 loop:
@@ -81,27 +88,12 @@ loop:
 }
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
-	def := &objs.DefaultResult{}
-	err2 := json.Unmarshal(body, def)
-	if err2 != nil {
-		return err2
-	}
-	if !def.Ok {
-		return &errs.MethodNotSentError{Method: "getUpdates", Reason: "server returned false for \"ok\" field."}
-	}
-	ur := &objs.UpdateResult{}
-	err := json.Unmarshal(body, ur)
+	of, err := up.ParseUpdate(body, bai.updateChannel, bai.pollUpdateChannel)
 	if err != nil {
 		return err
 	}
-	if !ur.Ok {
-		return &errs.UpdateNotOk{Offset: bai.lastOffset}
-	}
-	for _, val := range ur.Result {
-		if val.Update_id > bai.lastOffset {
-			bai.lastOffset = val.Update_id
-		}
-		(*bai.updateChannel) <- &val
+	if of > bai.lastOffset {
+		bai.lastOffset = of
 	}
 	return nil
 }
@@ -1806,6 +1798,7 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	}
 	interfaceCreated = true
 	ch := make(chan *objs.Update)
-	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch}
+	ch2 := make(chan *objs.Poll)
+	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, pollUpdateChannel: &ch2}
 	return temp, nil
 }

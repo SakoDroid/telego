@@ -32,5 +32,5 @@ type UpdateConfigs struct {
 }
 
 func DefaultUpdateConfigs() *UpdateConfigs {
-	return &UpdateConfigs{Limit: 100, Timeout: 0, UpdateFrequency: time.Second, AllowedUpdates: nil}
+	return &UpdateConfigs{Limit: 100, Timeout: 0, UpdateFrequency: time.Duration(300 * time.Millisecond), AllowedUpdates: nil}
 }

@@ -249,34 +249,6 @@ func (bot *AdvancedBot) ASendContactToChannel(chatId string, replyTo int, phoneN
 	)
 }
 
-/*Sends a poll to all types of chat but channels. To send it to channels use "SendPollToChannel" method.
-
----------------------------------
-
-Official telegram doc :
-
-Use this method to send a native poll. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendPoll(chatId, replyTo int, question string, options []string, pollType string, correctOptionIndex int, silent bool, isClosed, isAnonymous, allowMultipleAnswers bool, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendPoll(
-		chatId, "", question, options, isClosed, isAnonymous, pollType, allowMultipleAnswers, correctOptionIndex,
-		explanation, explanationParseMode, explanationEntities, openPeriod, closeDate, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
-	)
-}
-
-/*Sends a poll to a channel.
-
----------------------------------
-
-Official telegram doc :
-
-Use this method to send a native poll. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendPollToChannel(chatId string, replyTo int, question string, options []string, pollType string, correctOptionIndex int, silent bool, isClosed, isAnonymous, allowMultipleAnswers bool, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendPoll(
-		0, chatId, question, options, isClosed, isAnonymous, pollType, allowMultipleAnswers, correctOptionIndex,
-		explanation, explanationParseMode, explanationEntities, openPeriod, closeDate, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
-	)
-}
-
 /*Sends a dice message to all types of chat but channels. To send it to channels use "SendDiceToChannel" method.
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.

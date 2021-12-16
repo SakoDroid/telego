@@ -1,6 +1,7 @@
 package telebot
 
 import (
+	"errors"
 	"os"
 
 	tba "github.com/SakoDroid/telebot/TBA"
@@ -10,14 +11,17 @@ import (
 )
 
 type Bot struct {
-	botCfg        *cfg.BotConfigs
-	apiInterface  *tba.BotAPIInterface
-	updateChannel *chan *objs.Update
+	botCfg             *cfg.BotConfigs
+	apiInterface       *tba.BotAPIInterface
+	updateChannel      *chan *objs.Update
+	pollUpdateChannel  *chan *objs.Poll
+	pollRoutineChannel *chan bool
 }
 
 /*Starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run() error {
 	logger.InitTheLogger(bot.botCfg)
+	go bot.startPollUpdateRoutine()
 	return bot.apiInterface.StartUpdateRoutine()
 }
 
@@ -268,32 +272,24 @@ func (bot *Bot) SendContactToChannel(chatId string, replyTo int, phoneNumber, fi
 	)
 }
 
-/*Sends a poll to all types of chat but channels. To send it to channels use "SendPollToChannel" method.
+/*Creates a poll for all types of chat but channels. To create a poll for channels use "CreatePollForChannel" method.
 
----------------------------------
-
-Official telegram doc :
-
-Use this method to send a native poll. On success, the sent Message is returned.*/
-func (bot *Bot) SendPoll(chatId, replyTo int, question string, options []string, pollType string, correctOptionIndex int, silent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendPoll(
-		chatId, "", question, options, false, false, pollType, false, correctOptionIndex,
-		"", "", nil, 0, 0, replyTo, silent, false, nil,
-	)
+The poll type can be "regular" or "quiz"*/
+func (bot *Bot) CreatePoll(chatId int, question, pollType string) (*Poll, error) {
+	if pollType != "quiz" && pollType != "regular" {
+		return nil, errors.New("poll type invalid : " + pollType)
+	}
+	return &Poll{bot: bot, pollType: pollType, chatIdInt: chatId, question: question, options: make([]string, 0)}, nil
 }
 
-/*Sends a poll to a channel.
+/*Creates a poll for a channel.
 
----------------------------------
-
-Official telegram doc :
-
-Use this method to send a native poll. On success, the sent Message is returned.*/
-func (bot *Bot) SendPollToChannel(chatId string, replyTo int, question string, options []string, pollType string, correctOptionIndex int, silent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendPoll(
-		0, chatId, question, options, false, false, pollType, false, correctOptionIndex,
-		"", "", nil, 0, 0, replyTo, silent, false, nil,
-	)
+The poll type can be "regular" or "quiz"*/
+func (bot *Bot) CreatePollForChannel(chatId, question, pollType string) (*Poll, error) {
+	if pollType != "quiz" && pollType != "regular" {
+		return nil, errors.New("poll type invalid : " + pollType)
+	}
+	return &Poll{bot: bot, pollType: pollType, chatIdString: chatId, question: question, options: make([]string, 0)}, nil
 }
 
 /*Sends a dice message to all types of chat but channels. To send it to channels use "SendDiceToChannel" method.
@@ -461,11 +457,33 @@ func (bot *Bot) GetMsgEditorWithUN(chatId string) *MessageEditor {
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
+	*bot.pollRoutineChannel <- true
 }
 
 /*Returns and advanced version which gives more customized functions to iteract with the bot*/
 func (bot *Bot) AdvancedMode() *AdvancedBot {
 	return &AdvancedBot{Bot: bot}
+}
+
+func (bot *Bot) startPollUpdateRoutine() {
+loop:
+	for {
+		select {
+		case <-*bot.pollRoutineChannel:
+			break loop
+		default:
+			poll := <-*bot.pollUpdateChannel
+			pl := Polls[poll.Id]
+			if pl == nil {
+				logger.Logger.Println("Could not update poll `" + poll.Id + "`. Not found in the Polls map")
+				continue
+			}
+			err3 := pl.Update(poll)
+			if err3 != nil {
+				logger.Logger.Println("Could not update poll `" + poll.Id + "`." + err3.Error())
+			}
+		}
+	}
 }
 
 /*Return a new bot instance with the specified configs*/
@@ -474,5 +492,6 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Bot{botCfg: cfg, apiInterface: api, updateChannel: api.GetUpdateChannel()}, nil
+	ch := make(chan bool)
+	return &Bot{botCfg: cfg, apiInterface: api, updateChannel: api.GetUpdateChannel(), pollUpdateChannel: api.GetPollUpdateChannel(), pollRoutineChannel: &ch}, nil
 }
