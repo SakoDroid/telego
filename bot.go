@@ -434,6 +434,30 @@ func (bot *Bot) GetChatManagerByUsrename(chatId int) *ChatManager {
 	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
 }
 
+/*Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.
+
+Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @Botfather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.*/
+func (bot *Bot) AnswerCallbackQuery(callbackQueryId, text string, showAlert bool) (*objs.LogicalResult, error) {
+	return bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, "", showAlert, 0)
+}
+
+/*Returnes a command manager which has several method for manaing bot commands.*/
+func (bot *Bot) GetCommandManager() *CommandsManager {
+	return &CommandsManager{bot: bot}
+}
+
+/*Returnes a MessageEditor for a chat with id which has several methods for editing messages.
+
+To edit messages in a channel or a chat with username, use "GetMsgEditorWithUN"*/
+func (bot *Bot) GetMsgEditor(chatId int) *MessageEditor {
+	return &MessageEditor{bot: bot, chatIdInt: chatId}
+}
+
+/*Returnes a MessageEditor for a chat with username which has several methods for editing messages.*/
+func (bot *Bot) GetMsgEditorWithUN(chatId string) *MessageEditor {
+	return &MessageEditor{bot: bot, chatIdInt: 0, chatIdString: chatId}
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

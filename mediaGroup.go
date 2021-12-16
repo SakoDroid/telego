@@ -267,8 +267,9 @@ type DocumentInserter struct {
 /*Adds this file by file id or url*/
 func (di *DocumentInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaDocument{
-		InputMediaDefault: fixTheDefault("document", fileIdOrUrl, di.caption, di.parseMode, di.captionEntities),
-		Thumb:             di.thumb,
+		InputMediaDefault:           fixTheDefault("document", fileIdOrUrl, di.caption, di.parseMode, di.captionEntities),
+		Thumb:                       di.thumb,
+		DisableContentTypeDetection: di.disableContentTypeDetection,
 	}
 	di.mg.media = append(di.mg.media, im)
 	if di.thumbFile != nil {
@@ -283,8 +284,9 @@ func (di *DocumentInserter) AddByFile(file *os.File) error {
 		return err
 	}
 	im := &objs.InputMediaDocument{
-		InputMediaDefault: fixTheDefault("document", "attach://"+stat.Name(), di.caption, di.parseMode, di.captionEntities),
-		Thumb:             di.thumb,
+		InputMediaDefault:           fixTheDefault("document", "attach://"+stat.Name(), di.caption, di.parseMode, di.captionEntities),
+		Thumb:                       di.thumb,
+		DisableContentTypeDetection: di.disableContentTypeDetection,
 	}
 	di.mg.media = append(di.mg.media, im)
 	di.mg.files = append(di.mg.files, file)

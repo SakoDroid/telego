@@ -1605,7 +1605,7 @@ func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString strin
 }
 
 /*Edits the media of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup objs.InlineKeyboardMarkup, file *os.File) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup objs.InlineKeyboardMarkup, file ...*os.File) (*objs.DefaultResult, error) {
 	args := &objs.EditMessageMediaArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1621,7 +1621,7 @@ func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string,
 		bt, _ := json.Marshal(chatIdInt)
 		args.ChatId = bt
 	}
-	res, err := bai.SendCustom("editMessageMedia", args, true, file)
+	res, err := bai.SendCustom("editMessageMedia", args, true, file...)
 	if err != nil {
 		return nil, err
 	}
