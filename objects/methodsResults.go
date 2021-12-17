@@ -4,8 +4,8 @@ import "encoding/json"
 
 /*This object represents the response of getUpdates method*/
 type UpdateResult struct {
-	Ok     bool     `json:"ok"`
-	Result []Update `json:"result"`
+	Ok     bool      `json:"ok"`
+	Result []*Update `json:"result"`
 }
 
 type FailureResult struct {

@@ -10,7 +10,7 @@ var Polls = make(map[string]*Poll)
 
 type Poll struct {
 	bot                                                                     *Bot
-	chatIdInt, messageId                                                    int
+	chatIdInt, messageId, totalVoterCount                                   int
 	id, question, pollType, explanation, explanationParseMode, chatIdString string
 	options                                                                 []string
 	result                                                                  []objs.PollOption
@@ -130,14 +130,19 @@ func (p *Poll) GetCorrectOption() int {
 	return p.correctOptionId
 }
 
-/*Returnes the update channel for this poll. Everytime an update is received which contains update for this poll, true is passed into the channel.*/
+/*Returns the update channel for this poll. Everytime an update is received which contains update for this poll, true is passed into the channel.*/
 func (p *Poll) GetUpdateChannel() *chan bool {
 	return p.updateChannel
 }
 
-/*Resturnes the up to date result of the poll*/
+/*Returns the up to date result of the poll*/
 func (p *Poll) GetResult() []objs.PollOption {
 	return p.result
+}
+
+/*Returns the up to date total number of voters for this poll*/
+func (p *Poll) GetTotalVoters() int {
+	return p.totalVoterCount
 }
 
 /*Sends the poll. If you want more options foe sending the bot, use "SendAdvanced" method.*/

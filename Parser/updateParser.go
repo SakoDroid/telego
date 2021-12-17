@@ -2,15 +2,12 @@ package parser
 
 import (
 	"encoding/json"
-	"fmt"
 
 	errs "github.com/SakoDroid/telebot/Errors"
 	objs "github.com/SakoDroid/telebot/objects"
 )
 
 func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Poll) (int, error) {
-	fmt.Println(string(body))
-	fmt.Println("\n-------------------------------------")
 	def := &objs.DefaultResult{}
 	err2 := json.Unmarshal(body, def)
 	if err2 != nil {
@@ -33,12 +30,11 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, pu *chan *objs.Poll) (i
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		fmt.Println("\n", val.Message.Poll)
-		if val.Message.Poll.Id != "" {
-			pl := val.Message.Poll
+		if val.Poll.Id != "" {
+			pl := val.Poll
 			*pu <- &pl
 		} else {
-			*uc <- &val
+			*uc <- val
 		}
 	}
 	return lastOffset, nil

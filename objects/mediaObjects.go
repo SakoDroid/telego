@@ -105,7 +105,7 @@ type PollAnswer struct {
 
 type Poll struct {
 	Id                    string          `json:"id"`
-	Question              string          `json:"quetion"`
+	Question              string          `json:"question"`
 	Options               []PollOption    `json:"options"`
 	TotalVoterCount       int             `json:"total_voter_count"`
 	IsClosed              bool            `json:"is_closed"`
