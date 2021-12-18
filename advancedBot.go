@@ -29,20 +29,20 @@ func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo i
 	return &MessageCopier{bot: bot.Bot, messageId: messageId, disableNotif: disableNotif, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihtouReply: allowSendingWithoutReply, replyTo: replyTo, replyMarkup: replyMarkup}
 }
 
-/*Returns a PhotoSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.
+/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
-func (bot *AdvancedBot) ASendPhoto(chatId, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *PhotoSender {
-	return &PhotoSender{bot: bot.Bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendPhoto(chatId, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: PHOTO, bot: bot.Bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a PhotoSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
+/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *AdvancedBot) ASendPhotoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *PhotoSender {
-	return &PhotoSender{bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendPhotoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: PHOTO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a VideoSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoToChannel" method.
+/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -50,11 +50,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVideo(chatId int, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *VideoSender {
-	return &VideoSender{bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendVideo(chatId int, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VIDEO, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a VideoSender which has several methods for sending a video. This method is only used for sending a video to a channels.
+/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -62,11 +62,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVideoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *VideoSender {
-	return &VideoSender{bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendVideoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VIDEO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns an AudioSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioToChannel" method.
+/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -76,11 +76,11 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
 For sending voice messages, use the sendVoice method instead.*/
-func (bot *AdvancedBot) ASendAudio(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *AudioSender {
-	return &AudioSender{bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendAudio(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: AUDIO, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a AudioSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
+/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -90,11 +90,11 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
 For sending voice messages, use the sendVoice method instead.*/
-func (bot *AdvancedBot) ASendAudioToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *AudioSender {
-	return &AudioSender{bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendAudioToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: AUDIO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a DocumentSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentToChannel" method.
+/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -102,13 +102,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendDocument(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *DocumentSender {
-	return &DocumentSender{bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendDocument(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns an AnimationSender
-
-/*Returns a DocumentSender which has several methods for sending a document. This method is only used for sending a document to a channels.
+/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -116,11 +114,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendDocumentToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *DocumentSender {
-	return &DocumentSender{bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendDocumentToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns an AnimationSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationToChannel" method.
+/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -128,11 +126,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *AnimationSender {
-	return &AnimationSender{chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns an AnimationSender which has several methods for sending an animation. This method is only used for sending an animation to channels
+/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to channels
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -140,11 +138,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendAnimationToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *AnimationSender {
-	return &AnimationSender{chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendAnimationToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a VocieSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceToChannel" method.
+/*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -152,11 +150,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVoice(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *VoiceSender {
-	return &VoiceSender{chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendVoice(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns an VoiceSender which has several methods for sending a voice. This method is only used for sending a voice to channels.
+/*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -164,11 +162,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVoiceToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *VoiceSender {
-	return &VoiceSender{chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+func (bot *AdvancedBot) ASendVoiceToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
-/*Returns a VideoNoteSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteToChannel" method.
+/*Returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -176,11 +174,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *VideoNoteSender {
-	return &VideoNoteSender{chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
-/*Returns an VideoNoteSender which has several methods for sending a video note. This method is only used for sending a video note to channels.
+/*Returns an MediaSender which has several methods for sending a video note. This method is only used for sending a video note to channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -188,8 +186,8 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVideoNoteToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *VideoNoteSender {
-	return &VideoNoteSender{chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+func (bot *AdvancedBot) ASendVideoNoteToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*To ignore replyTo argument, pass 0.*/
