@@ -78,5 +78,10 @@ type GetCommandsResult struct {
 
 type PollResult struct {
 	Ok     bool `json:"ok"`
-	Result Poll `json:"poll"`
+	Result Poll `json:"result"`
+}
+
+type StickerSetResult struct {
+	Ok     bool       `json:"ok"`
+	Result StickerSet `json:"result"`
 }

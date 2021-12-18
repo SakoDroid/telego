@@ -1702,6 +1702,171 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 	return msg, nil
 }
 
+/*Sends a sticker to the given chat id.*/
+func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply bool, replyTo int, replyMarkup objs.ReplyMarkup, files ...*os.File) (*objs.SendMethodsResult, error) {
+	args := &objs.SendStickerArgs{
+		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
+			DisableNotification:      disableNotif,
+			AllowSendingWithoutReply: allowSendingWithoutreply,
+			ReplyToMessageId:         replyTo,
+			ReplyMarkup:              replyMarkup,
+		},
+		Sticker: sticker,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("sendSticker", args, true, files...)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.SendMethodsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Gets the sticker set by the given name*/
+func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.StickerSetResult, error) {
+	args := &objs.GetStickerSetArgs{
+		Name: name,
+	}
+	res, err := bai.SendCustom("getStickerSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.StickerSetResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Uploads the given file as an sticker on the telegram servers.*/
+func (bai *BotAPIInterface) UploadStickerFile(userId int, pngSticker string, file *os.File) (*objs.GetFileResult, error) {
+	args := &objs.UploadStickerFileArgs{
+		UserId:     userId,
+		PngSticker: pngSticker,
+	}
+	res, err := bai.SendCustom("uploadStickerFile", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.GetFileResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Creates a new sticker set with the given arguments*/
+func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, emojies string, containsMasks bool, maskPosition objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+	args := &objs.CreateNewStickerSetArgs{
+		UserId:        userId,
+		Name:          name,
+		Title:         title,
+		PngSticker:    pngSticker,
+		TgsSticker:    tgsSticker,
+		Emojies:       emojies,
+		ContainsMasks: containsMasks,
+		MaskPosition:  maskPosition,
+	}
+	res, err := bai.SendCustom("createNewStickerSet", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Adds a new sticker to the given set.*/
+func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, emojies string, maskPosition objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+	args := &objs.AddStickerSetArgs{
+		UserId:       userId,
+		Name:         name,
+		PngSticker:   pngSticker,
+		TgsSticker:   tgsSticker,
+		Emojies:      emojies,
+		MaskPosition: maskPosition,
+	}
+	res, err := bai.SendCustom("addStickerToSet", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the position of a sticker in an sticker set*/
+func (bai *BotAPIInterface) SetStickerPositionInSet(sticker string, position int) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerPositionInSetArgs{
+		Sticker:  sticker,
+		Position: position,
+	}
+	res, err := bai.SendCustom("setStickerPositionInSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes the given sticker from a set created by the bot*/
+func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.LogicalResult, error) {
+	args := &objs.DeleteStickerFromSetArgs{
+		Sticker: sticker,
+	}
+	res, err := bai.SendCustom("deleteStickerFromSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the thumbnail for the given sticker*/
+func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, file *os.File) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerSetThumbArgs{
+		Name:   name,
+		Thumb:  thumb,
+		UserId: userId,
+	}
+	res, err := bai.SendCustom("setStickerSetThumb", args, true, file)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {

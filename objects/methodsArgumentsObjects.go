@@ -183,6 +183,189 @@ func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	}
 }
 
+type SendStickerArgs struct {
+	DefaultSendMethodsArguments
+	Sticker string `json:"sticker"`
+}
+
+func (args *SendStickerArgs) ToJson() []byte {
+	//The arguments of this method are never passed as json.
+	return nil
+}
+
+func (args *SendStickerArgs) ToMultiPart(wr *mp.Writer) {
+	args.toMultiPart(wr)
+	fw, _ := wr.CreateFormField("sticker")
+	_, _ = io.Copy(fw, strings.NewReader(args.Sticker))
+}
+
+type GetStickerSetArgs struct {
+	Name string `json:"name"`
+}
+
+func (args *GetStickerSetArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *GetStickerSetArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this methods are never passed as multipart.
+}
+
+type UploadStickerFileArgs struct {
+	UserId     int    `json:"user_id"`
+	PngSticker string `json:"png_sticker"`
+}
+
+func (args *UploadStickerFileArgs) ToJson() []byte {
+	//The arguments of this method are neverr passed as json.
+	return nil
+}
+
+func (args *UploadStickerFileArgs) ToMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("user_id")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
+	fw, _ = wr.CreateFormField("png_sticker")
+	_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
+}
+
+type CreateNewStickerSetArgs struct {
+	UserId        int          `json:"user_id"`
+	Name          string       `json:"name"`
+	Title         string       `json:"title"`
+	PngSticker    string       `json:"png_sticker"`
+	TgsSticker    string       `json:"tgs_sticker"`
+	Emojies       string       `json:"emojies"`
+	ContainsMasks bool         `json:"contains_masks"`
+	MaskPosition  MaskPosition `json:"mask_position"`
+}
+
+func (args *CreateNewStickerSetArgs) ToJson() []byte {
+	//The arguments of this methos is never passed as json.
+	return nil
+}
+
+func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("user_id")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
+	fw, _ = wr.CreateFormField("name")
+	_, _ = io.Copy(fw, strings.NewReader(args.Name))
+	fw, _ = wr.CreateFormField("title")
+	_, _ = io.Copy(fw, strings.NewReader(args.Title))
+	fw, _ = wr.CreateFormField("emojies")
+	_, _ = io.Copy(fw, strings.NewReader(args.Emojies))
+	if args.PngSticker != "" {
+		fw, _ = wr.CreateFormField("png_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
+	}
+	if args.TgsSticker != "" {
+		fw, _ = wr.CreateFormField("tgs_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
+	}
+	fw, _ = wr.CreateFormField("contains_masks")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.ContainsMasks)))
+	if args.MaskPosition.Point != "" {
+		fw, _ = wr.CreateFormField("mask_position")
+		bt, _ := json.Marshal(args.MaskPosition)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+}
+
+type AddStickerSetArgs struct {
+	UserId       int          `json:"user_id"`
+	Name         string       `json:"name"`
+	Title        string       `json:"title"`
+	PngSticker   string       `json:"png_sticker"`
+	TgsSticker   string       `json:"tgs_sticker"`
+	Emojies      string       `json:"emojies"`
+	MaskPosition MaskPosition `json:"mask_position"`
+}
+
+func (args *AddStickerSetArgs) ToJson() []byte {
+	//The arguments of this methos is never passed as json.
+	return nil
+}
+
+func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("user_id")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
+	fw, _ = wr.CreateFormField("name")
+	_, _ = io.Copy(fw, strings.NewReader(args.Name))
+	fw, _ = wr.CreateFormField("title")
+	_, _ = io.Copy(fw, strings.NewReader(args.Title))
+	fw, _ = wr.CreateFormField("emojies")
+	_, _ = io.Copy(fw, strings.NewReader(args.Emojies))
+	if args.PngSticker != "" {
+		fw, _ = wr.CreateFormField("png_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
+	}
+	if args.TgsSticker != "" {
+		fw, _ = wr.CreateFormField("tgs_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
+	}
+	if args.MaskPosition.Point != "" {
+		fw, _ = wr.CreateFormField("mask_position")
+		bt, _ := json.Marshal(args.MaskPosition)
+		_, _ = io.Copy(fw, bytes.NewReader(bt))
+	}
+}
+
+type SetStickerPositionInSetArgs struct {
+	Sticker  string `json:"sticker"`
+	Position int    `json:"position"`
+}
+
+func (args *SetStickerPositionInSetArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetStickerPositionInSetArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type DeleteStickerFromSetArgs struct {
+	Sticker string `json:"sticker"`
+}
+
+func (args *DeleteStickerFromSetArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *DeleteStickerFromSetArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type SetStickerSetThumbArgs struct {
+	Name   string `json:"name"`
+	UserId int    `json:"user_id"`
+	Thumb  string `json:"thumb"`
+}
+
+func (args *SetStickerSetThumbArgs) ToJson() []byte {
+	//The arguments of this methos is never passed as json.
+	return nil
+}
+
+func (args *SetStickerSetThumbArgs) ToMultiPart(wr *mp.Writer) {
+	fw, _ := wr.CreateFormField("user_id")
+	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
+	fw, _ = wr.CreateFormField("name")
+	_, _ = io.Copy(fw, strings.NewReader(args.Name))
+	fw, _ = wr.CreateFormField("thumb")
+	_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
+}
+
 type SendAudioArgs struct {
 	DefaultSendMethodsArguments
 	/*Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data.*/
