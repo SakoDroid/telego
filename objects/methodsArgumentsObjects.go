@@ -236,8 +236,8 @@ type CreateNewStickerSetArgs struct {
 	UserId        int          `json:"user_id"`
 	Name          string       `json:"name"`
 	Title         string       `json:"title"`
-	PngSticker    string       `json:"png_sticker"`
-	TgsSticker    string       `json:"tgs_sticker"`
+	PngSticker    string       `json:"png_sticker,omitempty"`
+	TgsSticker    string       `json:"tgs_sticker,omitempty"`
 	Emojies       string       `json:"emojies"`
 	ContainsMasks bool         `json:"contains_masks"`
 	MaskPosition  MaskPosition `json:"mask_position"`
@@ -277,9 +277,8 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 type AddStickerSetArgs struct {
 	UserId       int          `json:"user_id"`
 	Name         string       `json:"name"`
-	Title        string       `json:"title"`
-	PngSticker   string       `json:"png_sticker"`
-	TgsSticker   string       `json:"tgs_sticker"`
+	PngSticker   string       `json:"png_sticker,omitempty"`
+	TgsSticker   string       `json:"tgs_sticker,omitempty"`
 	Emojies      string       `json:"emojies"`
 	MaskPosition MaskPosition `json:"mask_position"`
 }
@@ -294,8 +293,6 @@ func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
 	fw, _ = wr.CreateFormField("name")
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
-	fw, _ = wr.CreateFormField("title")
-	_, _ = io.Copy(fw, strings.NewReader(args.Title))
 	fw, _ = wr.CreateFormField("emojies")
 	_, _ = io.Copy(fw, strings.NewReader(args.Emojies))
 	if args.PngSticker != "" {

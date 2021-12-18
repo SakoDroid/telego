@@ -17,6 +17,7 @@ const (
 	DOCUMENT  MediaType = 5
 	VIDEONOTE MediaType = 6
 	VOICE     MediaType = 7
+	STICKER   MediaType = 8
 )
 
 type MediaSender struct {
@@ -76,6 +77,11 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent bool) (*objs
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
 			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
 		)
+	case STICKER:
+		return ms.bot.apiInterface.SendSticker(
+			ms.chatIdInt, ms.chatidString, fileIdOrUrl, silent, ms.allowSendingWihoutReply,
+			ms.replyTo, ms.replyMarkup, nil,
+		)
 	default:
 		return nil, errors.New("wrong media type")
 	}
@@ -128,6 +134,11 @@ func (ms *MediaSender) SendByFile(file *os.File, silent bool) (*objs.SendMethods
 		return ms.bot.apiInterface.SendVoice(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
 			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+		)
+	case STICKER:
+		return ms.bot.apiInterface.SendSticker(
+			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), silent, ms.allowSendingWihoutReply,
+			ms.replyTo, ms.replyMarkup, file,
 		)
 	default:
 		return nil, errors.New("wrong media type")

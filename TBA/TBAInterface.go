@@ -1703,7 +1703,7 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 }
 
 /*Sends a sticker to the given chat id.*/
-func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply bool, replyTo int, replyMarkup objs.ReplyMarkup, files ...*os.File) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply bool, replyTo int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
 	args := &objs.SendStickerArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
@@ -1720,7 +1720,7 @@ func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker str
 		bt, _ := json.Marshal(chatIdInt)
 		args.ChatId = bt
 	}
-	res, err := bai.SendCustom("sendSticker", args, true, files...)
+	res, err := bai.SendCustom("sendSticker", args, true, file)
 	if err != nil {
 		return nil, err
 	}
@@ -1773,11 +1773,14 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngStic
 		UserId:        userId,
 		Name:          name,
 		Title:         title,
-		PngSticker:    pngSticker,
-		TgsSticker:    tgsSticker,
 		Emojies:       emojies,
 		ContainsMasks: containsMasks,
 		MaskPosition:  maskPosition,
+	}
+	if pngSticker == "" {
+		args.TgsSticker = tgsSticker
+	} else {
+		args.PngSticker = pngSticker
 	}
 	res, err := bai.SendCustom("createNewStickerSet", args, true, file)
 	if err != nil {

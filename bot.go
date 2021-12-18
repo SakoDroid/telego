@@ -414,14 +414,14 @@ func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File
 	return &res.Result, nil
 }
 
-/*Creates and returnes a ChatManager for groups and other chats witch an integer id.
+/*Creates and returns a ChatManager for groups and other chats witch an integer id.
 
 To manage supergroups and channels which have usernames use "GetChatManagerByUsername".*/
 func (bot *Bot) GetChatManagerById(chatId int) *ChatManager {
 	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
 }
 
-/*Creates and returnes a ChatManager for supergroups and channels which have usernames
+/*Creates and returns a ChatManager for supergroups and channels which have usernames
 
 To manage groups and other chats witch an integer id use "GetChatManagerById".*/
 func (bot *Bot) GetChatManagerByUsrename(chatId int) *ChatManager {
@@ -435,21 +435,106 @@ func (bot *Bot) AnswerCallbackQuery(callbackQueryId, text string, showAlert bool
 	return bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, "", showAlert, 0)
 }
 
-/*Returnes a command manager which has several method for manaing bot commands.*/
+/*Returns a command manager which has several method for manaing bot commands.*/
 func (bot *Bot) GetCommandManager() *CommandsManager {
 	return &CommandsManager{bot: bot}
 }
 
-/*Returnes a MessageEditor for a chat with id which has several methods for editing messages.
+/*Returns a MessageEditor for a chat with id which has several methods for editing messages.
 
 To edit messages in a channel or a chat with username, use "GetMsgEditorWithUN"*/
 func (bot *Bot) GetMsgEditor(chatId int) *MessageEditor {
 	return &MessageEditor{bot: bot, chatIdInt: chatId}
 }
 
-/*Returnes a MessageEditor for a chat with username which has several methods for editing messages.*/
+/*Returns a MessageEditor for a chat with username which has several methods for editing messages.*/
 func (bot *Bot) GetMsgEditorWithUN(chatId string) *MessageEditor {
 	return &MessageEditor{bot: bot, chatIdInt: 0, chatIdString: chatId}
+}
+
+/*Returns a MediaSender which has several methods for sending an sticker to all types of chats but channels.
+To send it to a channel use "SendStickerWithUN".
+
+--------------------
+
+Official telegram doc :
+
+
+Use this method to send static .WEBP or animated .TGS stickers. On success, the sent Message is returned*/
+func (bot *Bot) SendSticker(chatId, replyTo int) *MediaSender {
+	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo}
+}
+
+/*Returns a MediaSender which has several methods for sending an sticker to channels.
+
+--------------------
+
+Official telegram doc :
+
+
+Use this method to send static .WEBP or animated .TGS stickers. On success, the sent Message is returned*/
+func (bot *Bot) SendStickerWithUn(chatId string, replyTo int) *MediaSender {
+	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo}
+}
+
+/*Returns an sticker set with the given name*/
+func (bot *Bot) GetStickerSet(name string) (*StickerSet, error) {
+	res, err := bot.apiInterface.GetStickerSet(name)
+	if err != nil {
+		return nil, err
+	}
+	return &StickerSet{bot: bot, stickerSet: res.Result}, nil
+}
+
+/*
+Use this method to upload a .PNG file with a sticker for later use in CreateNewStickerSet and AddStickerToSet methods (can be used multiple times). Returns the uploaded File on success.*/
+func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFileResult, error) {
+	stat, err := stickerFile.Stat()
+	if err != nil {
+		return nil, err
+	}
+	return bot.apiInterface.UploadStickerFile(userId, "attach://"+stat.Name(), stickerFile)
+}
+
+/*
+Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker. Returns the created sticker set on success.
+
+png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
+func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, containsMask bool, maskPosition objs.MaskPosition) (*StickerSet, error) {
+	var res *objs.LogicalResult
+	var err error
+	if tgsSticker == nil {
+		if pngStickerFile == nil {
+			res, err = bot.apiInterface.CreateNewStickerSet(
+				userId, name, title, pngStickerFileIdOrUrl, "", emojies, containsMask, maskPosition, nil,
+			)
+		} else {
+			stat, er := pngStickerFile.Stat()
+			if er != nil {
+				return nil, er
+			}
+			res, err = bot.apiInterface.CreateNewStickerSet(
+				userId, name, title, "attach://"+stat.Name(), "", emojies, containsMask, maskPosition, pngStickerFile,
+			)
+		}
+	} else {
+		stat, er := tgsSticker.Stat()
+		if er != nil {
+			return nil, er
+		}
+		res, err = bot.apiInterface.CreateNewStickerSet(
+			userId, name, title, "", "attach://"+stat.Name(), emojies, containsMask, maskPosition, tgsSticker,
+		)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if !res.Result {
+		return nil, errors.New("false returned from server")
+	}
+	return &StickerSet{bot: bot, stickerSet: objs.StickerSet{
+		Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
+	}}, nil
 }
 
 /*Stops the bot*/
