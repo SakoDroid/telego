@@ -1893,6 +1893,95 @@ func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []ob
 	return msg, nil
 }
 
+/*Sends an invoice*/
+func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, disableNotif bool, replyToMessageId int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+	args := &objs.SendInvoiceArgs{
+		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
+			DisableNotification:      disableNotif,
+			AllowSendingWithoutReply: allowSendingWithoutReply,
+			ReplyToMessageId:         replyToMessageId,
+			ReplyMarkup:              &replyMarkup,
+		},
+		Title:                     title,
+		Description:               description,
+		Payload:                   payload,
+		ProviderToken:             providerToken,
+		Currency:                  currency,
+		Prices:                    prices,
+		MaxTipAmount:              maxTipAmount,
+		SuggestedTipAmounts:       suggestedTipAmounts,
+		StartParameter:            startParameter,
+		ProviderData:              providerData,
+		PhotoURL:                  photoURL,
+		PhotoSize:                 photoSize,
+		PhotoWidth:                photoWidth,
+		PhotoHeight:               photoHeight,
+		NeedName:                  needName,
+		NeedPhoneNumber:           needPhoneNumber,
+		NeedEmail:                 needEmail,
+		NeedShippingAddress:       needSippingAddress,
+		SendPhoneNumberToProvider: sendPhoneNumberToProvider,
+		SendEmailToProvider:       sendEmailToProvider,
+		IsFlexible:                isFlexible,
+	}
+	if chatIdInt == 0 {
+		bt, _ := json.Marshal(chatIdString)
+		args.ChatId = bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		args.ChatId = bt
+	}
+	res, err := bai.SendCustom("sendInvoice", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.SendMethodsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Answers a shipping query*/
+func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.LogicalResult, error) {
+	args := &objs.AnswerShippingQueryArgs{
+		ShippingQueryId: shippingQueryId,
+		OK:              ok,
+		ShippingOptions: shippingOptions,
+		ErrorMessage:    errorMessage,
+	}
+	res, err := bai.SendCustom("answerShippingQuery", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Answers a pre checkout query*/
+func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok bool, errorMessage string) (*objs.LogicalResult, error) {
+	args := &objs.AnswerPreCheckoutQueryArgs{
+		PreCheckoutQueryId: preCheckoutQueryId,
+		Ok:                 ok,
+		ErrorMessage:       errorMessage,
+	}
+	res, err := bai.SendCustom("answerPreCheckoutQuery", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {

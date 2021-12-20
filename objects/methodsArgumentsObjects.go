@@ -1525,3 +1525,77 @@ func (args *AnswerInlineQueryArgs) ToJson() []byte {
 func (args *AnswerInlineQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
+
+type SendInvoiceArgs struct {
+	DefaultSendMethodsArguments
+	Title                     string         `json:"title"`
+	Description               string         `json:"description"`
+	Payload                   string         `json:"payload"`
+	ProviderToken             string         `json:"provider_token"`
+	Currency                  string         `json:"currency"`
+	Prices                    []LabeledPrice `json:"prices"`
+	MaxTipAmount              int            `json:"max_tip_amount,omitempty"`
+	SuggestedTipAmounts       []int          `json:"suggested_tip_amounts,omitempty"`
+	StartParameter            string         `json:"start_parameter,omitempty"`
+	ProviderData              string         `json:"provider_data,omitempty"`
+	PhotoURL                  string         `json:"photo_url,omitempty"`
+	PhotoSize                 int            `json:"photo_size,omitempty"`
+	PhotoWidth                int            `json:"photo_width,omitempty"`
+	PhotoHeight               int            `json:"photo_height,omitempty"`
+	NeedName                  bool           `json:"need_name"`
+	NeedPhoneNumber           bool           `json:"need_phone_number"`
+	NeedEmail                 bool           `json:"need_email"`
+	NeedShippingAddress       bool           `json:"need_shipping_address"`
+	SendPhoneNumberToProvider bool           `json:"send_phone_number_to_provider"`
+	SendEmailToProvider       bool           `json:"send_email_to_provider"`
+	IsFlexible                bool           `json:"is_flexible"`
+}
+
+func (args *SendInvoiceArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendInvoiceArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type AnswerShippingQueryArgs struct {
+	ShippingQueryId string           `json:"shipping_query_id"`
+	OK              bool             `json:"ok"`
+	ShippingOptions []ShippingOption `json:"shipping_options,omitempty"`
+	ErrorMessage    string           `json:"error_message,omitempty"`
+}
+
+func (args *AnswerShippingQueryArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *AnswerShippingQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type AnswerPreCheckoutQueryArgs struct {
+	PreCheckoutQueryId string `json:"pre_checkout_query_id"`
+	Ok                 bool   `json:"ok"`
+	ErrorMessage       string `json:"error_message,omitempty"`
+}
+
+func (args *AnswerPreCheckoutQueryArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *AnswerPreCheckoutQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}

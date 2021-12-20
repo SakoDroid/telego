@@ -550,6 +550,58 @@ func (bot *Bot) AnswerInlineQuery(id string, cacheTime int) *InlineQueryResponde
 	return &InlineQueryResponder{bot: bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0)}
 }
 
+/*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
+
+This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "CreateInvoiceUN" method.
+
+To access more options, use "ACreateInvoice" method in advanced mode.*/
+func (bot *Bot) CreateInvoice(chatId int, title, description, payload, providerToken, currency string) *InvoiceSender {
+	return &InvoiceSender{
+		bot: bot, chatIdInt: chatId, chatIdString: "", title: title, description: description, providerToken: providerToken, payload: payload, currency: currency, prices: make([]objs.LabeledPrice, 0),
+	}
+}
+
+/*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
+
+To access more options, use "ACreateInvoiceUN" method in advanced mode.*/
+func (bot *Bot) CreateInvoiceUN(chatId, title, description, payload, providerToken, currency string) *InvoiceSender {
+	return &InvoiceSender{
+		chatIdInt: 0, chatIdString: chatId, title: title, description: description, providerToken: providerToken, currency: currency, payload: payload, prices: make([]objs.LabeledPrice, 0),
+	}
+}
+
+/*Answers an incoming shipping query.
+
+-----------------------
+
+Official telegram doc :
+
+If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, the Bot API will send an Update with a shipping_query field to the bot. Use this method to reply to shipping queries. On success, True is returned.
+
+"ok" : Specify True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible).
+
+"shippingOptions" : Required if ok is True. A JSON-serialized array of available shipping options.
+
+"errorMessage" : Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.*/
+func (bot *Bot) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.AnswerShippingQuery(shippingQueryId, ok, shippingOptions, errorMessage)
+}
+
+/*Answers a pre checkout query.
+
+-----------------------
+
+Official telegram doc :
+
+Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query. Use this method to respond to such pre-checkout queries. On success, True is returned. Note: The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
+
+"ok" : Specify True if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use False if there are any problems.
+
+"errorMessage" : Required if ok is False. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.*/
+func (bot *Bot) AnswerPreCheckoutQuery(shippingQueryId string, ok bool, errorMessage string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.AnswerPreCheckoutQuery(shippingQueryId, ok, errorMessage)
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
