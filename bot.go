@@ -537,6 +537,19 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	}}, nil
 }
 
+/*Returns an InlineQueryResponder which has several methods for answering an inline query.
+To access more options use "AAsnwerInlineQuery" method in advanced bot.
+
+--------------------------
+
+Official telegram doc :
+
+Use this method to send answers to an inline query. On success, True is returned.
+No more than 50 results per query are allowed.*/
+func (bot *Bot) AnswerInlineQuery(id string, cacheTime int) *InlineQueryResponder {
+	return &InlineQueryResponder{bot: bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0)}
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

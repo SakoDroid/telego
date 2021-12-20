@@ -1503,3 +1503,25 @@ func (args *StopPollArgs) ToJson() []byte {
 func (args *StopPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
+
+type AnswerInlineQueryArgs struct {
+	InlineQueryId     string              `json:"inline_query_id"`
+	Results           []InlineQueryResult `json:"results"`
+	CacheTime         int                 `json:"cache_time,omitempty"`
+	IsPersonal        bool                `json:"is_personal"`
+	NextOffset        string              `json:"next_offset,omitempty"`
+	SwitchPmText      string              `json:"switch_pm_text,omitempty"`
+	SwitchPmParameter string              `json:"switch_pm_parameter,omitempty"`
+}
+
+func (args *AnswerInlineQueryArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *AnswerInlineQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}

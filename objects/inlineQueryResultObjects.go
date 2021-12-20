@@ -342,11 +342,18 @@ type InlineQueryResultContact struct {
 /*Represents a Game.
 Note: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.*/
 type InlineQueryResultGame struct {
-	InlineQueryResultDefault
+	/*Type of the result*/
+	Type string `json:"type"`
+	/*Unique identifier for this result, 1-64 Bytes*/
+	Id string `json:"id"`
 	/*Type of the result, must be game*/
 	GameShortName string `json:"game_short_name"`
 	/*Optional. Inline keyboard attached to the message*/
 	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+func (i *InlineQueryResultGame) GetResultType() string {
+	return i.Type
 }
 
 /*Represents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.*/
@@ -405,13 +412,20 @@ type InlineQueryResultCachedMpeg4Gif struct {
 /*Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.
 This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.*/
 type InlineQueryResultCachedSticker struct {
-	InlineQueryResultDefault
+	/*Type of the result*/
+	Type string `json:"type"`
+	/*Unique identifier for this result, 1-64 Bytes*/
+	Id string `json:"id"`
 	/*A valid file identifier for the sticker*/
 	StickerFileId string `json:"sticker_file_id"`
 	/*Optional. Inline keyboard attached to the message*/
 	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
+}
+
+func (i *InlineQueryResultCachedSticker) GetResultType() string {
+	return i.Type
 }
 
 /*Represents a link to a video file stored on the Telegram servers. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the video.*/

@@ -1870,6 +1870,29 @@ func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, f
 	return msg, nil
 }
 
+/*Answers an inline query with the given parameteres*/
+func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset, switchPmText, switchPmParameter string) (*objs.LogicalResult, error) {
+	args := &objs.AnswerInlineQueryArgs{
+		InlineQueryId:     inlineQueryId,
+		Results:           results,
+		CacheTime:         cacheTime,
+		IsPersonal:        isPersonal,
+		NextOffset:        nextOffset,
+		SwitchPmText:      switchPmText,
+		SwitchPmParameter: switchPmParameter,
+	}
+	res, err := bai.SendCustom("answerInlineQuery", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
