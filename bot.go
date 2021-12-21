@@ -14,7 +14,7 @@ type Bot struct {
 	botCfg             *cfg.BotConfigs
 	apiInterface       *tba.BotAPIInterface
 	updateChannel      *chan *objs.Update
-	pollUpdateChannel  *chan *objs.Poll
+	pollUpdateChannel  *chan *objs.Update
 	pollRoutineChannel *chan bool
 }
 
@@ -689,14 +689,16 @@ loop:
 			break loop
 		default:
 			poll := <-*bot.pollUpdateChannel
-			pl := Polls[poll.Id]
+			id := poll.Poll.Id
+			pl := Polls[id]
 			if pl == nil {
-				logger.Logger.Println("Could not update poll `" + poll.Id + "`. Not found in the Polls map")
+				logger.Logger.Println("Could not update poll `" + id + "`. Not found in the Polls map")
+				*bot.updateChannel <- poll
 				continue
 			}
-			err3 := pl.Update(poll)
+			err3 := pl.Update(&poll.Poll)
 			if err3 != nil {
-				logger.Logger.Println("Could not update poll `" + poll.Id + "`." + err3.Error())
+				logger.Logger.Println("Could not update poll `" + id + "`." + err3.Error())
 			}
 		}
 	}

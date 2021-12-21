@@ -23,7 +23,7 @@ type BotAPIInterface struct {
 	botConfigs           *cfgs.BotConfigs
 	updateRoutineRunning bool
 	updateChannel        *chan *objs.Update
-	pollUpdateChannel    *chan *objs.Poll
+	pollUpdateChannel    *chan *objs.Update
 	updateRoutineChannel chan bool
 	lastOffset           int
 }
@@ -57,7 +57,7 @@ func (bai *BotAPIInterface) GetUpdateChannel() *chan *objs.Update {
 }
 
 /*Returns the poll update channel*/
-func (bai *BotAPIInterface) GetPollUpdateChannel() *chan *objs.Poll {
+func (bai *BotAPIInterface) GetPollUpdateChannel() *chan *objs.Update {
 	return bai.pollUpdateChannel
 }
 
@@ -2194,7 +2194,7 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	}
 	interfaceCreated = true
 	ch := make(chan *objs.Update)
-	ch2 := make(chan *objs.Poll)
+	ch2 := make(chan *objs.Update)
 	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, pollUpdateChannel: &ch2}
 	return temp, nil
 }

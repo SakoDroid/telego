@@ -7,7 +7,7 @@ import (
 	objs "github.com/SakoDroid/telebot/objects"
 )
 
-func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Poll) (int, error) {
+func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Update) (int, error) {
 	def := &objs.DefaultResult{}
 	err2 := json.Unmarshal(body, def)
 	if err2 != nil {
@@ -24,15 +24,14 @@ func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Poll) (int, 
 	return parse(ur, uc, pu)
 }
 
-func parse(ur *objs.UpdateResult, uc *chan *objs.Update, pu *chan *objs.Poll) (int, error) {
+func parse(ur *objs.UpdateResult, uc *chan *objs.Update, pu *chan *objs.Update) (int, error) {
 	lastOffset := 0
 	for _, val := range ur.Result {
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
 		if val.Poll.Id != "" {
-			pl := val.Poll
-			*pu <- &pl
+			*pu <- val
 		} else {
 			*uc <- val
 		}
