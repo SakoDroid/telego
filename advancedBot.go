@@ -9,37 +9,37 @@ import (
 /*An advanced type of bot which will give you alot more customization for the bot.
 Methods which are uniquely for advanced bot start with 'A' .*/
 type AdvancedBot struct {
-	*Bot
+	bot *Bot
 }
 
 /*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
 func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
+	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
 }
 
 /*Send a text message to a channel and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
 func (bot *AdvancedBot) ASendMesssageToChannel(chatId, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
+	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
 }
 
 /*Returns a MessageCopier which has several methods for copying a message*/
 func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MessageCopier {
-	return &MessageCopier{bot: bot.Bot, messageId: messageId, disableNotif: disableNotif, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihtouReply: allowSendingWithoutReply, replyTo: replyTo, replyMarkup: replyMarkup}
+	return &MessageCopier{bot: bot.bot, messageId: messageId, disableNotif: disableNotif, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihtouReply: allowSendingWithoutReply, replyTo: replyTo, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
 func (bot *AdvancedBot) ASendPhoto(chatId, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: PHOTO, bot: bot.Bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
 func (bot *AdvancedBot) ASendPhotoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: PHOTO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoToChannel" method.
@@ -51,7 +51,7 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendVideo(chatId int, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to a channels.
@@ -63,7 +63,7 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendVideoToChannel(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioToChannel" method.
@@ -77,7 +77,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 
 For sending voice messages, use the sendVoice method instead.*/
 func (bot *AdvancedBot) ASendAudio(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: AUDIO, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
@@ -91,7 +91,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 
 For sending voice messages, use the sendVoice method instead.*/
 func (bot *AdvancedBot) ASendAudioToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: AUDIO, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentToChannel" method.
@@ -103,7 +103,7 @@ Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendDocument(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: DOCUMENT, bot: bot.Bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to a channels.
@@ -115,7 +115,7 @@ Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendDocumentToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: DOCUMENT, bot: bot.Bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationToChannel" method.
@@ -127,7 +127,7 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to channels
@@ -139,7 +139,7 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendAnimationToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceToChannel" method.
@@ -151,7 +151,7 @@ Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendVoice(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to channels.
@@ -163,7 +163,7 @@ Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
 func (bot *AdvancedBot) ASendVoiceToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteToChannel" method.
@@ -175,7 +175,7 @@ Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*Returns an MediaSender which has several methods for sending a video note. This method is only used for sending a video note to channels.
@@ -187,12 +187,12 @@ Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendVideoNoteToChannel(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.Bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*To ignore replyTo argument, pass 0.*/
 func (bot *AdvancedBot) ACreateAlbum(replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaGroup {
-	return &MediaGroup{replyTo: replyTo, bot: bot.Bot, media: make([]objs.InputMedia, 0), files: make([]*os.File, 0), allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaGroup{replyTo: replyTo, bot: bot.bot, media: make([]objs.InputMedia, 0), files: make([]*os.File, 0), allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*Sends a venue to all types of chat but channels. To send it to channels use "SendVenueToChannel" method.
@@ -203,7 +203,7 @@ Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendVenue(
+	return bot.bot.apiInterface.SendVenue(
 		chatId, "", latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -216,7 +216,7 @@ Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendVenue(
+	return bot.bot.apiInterface.SendVenue(
 		0, chatId, latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -229,7 +229,7 @@ Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendContact(
+	return bot.bot.apiInterface.SendContact(
 		chatId, "", phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -242,7 +242,7 @@ Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendContactToChannel(chatId string, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendContact(
+	return bot.bot.apiInterface.SendContact(
 		0, chatId, phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -257,7 +257,7 @@ Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
 func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendDice(
+	return bot.bot.apiInterface.SendDice(
 		chatId, "", emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -272,14 +272,14 @@ Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
 func (bot *AdvancedBot) ASendDiceToChannel(chatId string, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendDice(
+	return bot.bot.apiInterface.SendDice(
 		0, chatId, emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
 
 /*Creates a live location which has several methods for managing it.*/
 func (bot *AdvancedBot) ACreateLiveLocation(latitude, longitude, accuracy float32, livePeriod, heading, proximtyAlertRadius, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *LiveLocation {
-	return &LiveLocation{bot: bot.Bot, replyTo: replyTo, allowSendingWihoutReply: allowSendingWihtoutReply, latitude: latitude, longitude: longitude, livePeriod: livePeriod, horizontalAccuracy: accuracy, heading: heading, proximityAlertRadius: proximtyAlertRadius, replyMarkUp: replyMarkup}
+	return &LiveLocation{bot: bot.bot, replyTo: replyTo, allowSendingWihoutReply: allowSendingWihtoutReply, latitude: latitude, longitude: longitude, livePeriod: livePeriod, horizontalAccuracy: accuracy, heading: heading, proximityAlertRadius: proximtyAlertRadius, replyMarkUp: replyMarkup}
 }
 
 /*Sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationToChannel" method.
@@ -292,7 +292,7 @@ Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendLocation(
+	return bot.bot.apiInterface.SendLocation(
 		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -307,7 +307,7 @@ Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
 func (bot *AdvancedBot) ASendLocationToChannel(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendLocation(
+	return bot.bot.apiInterface.SendLocation(
 		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
@@ -316,7 +316,7 @@ func (bot *AdvancedBot) ASendLocationToChannel(chatId string, silent bool, latit
 
 Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @Botfather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.*/
 func (bot *AdvancedBot) AAnswerCallbackQuery(callbackQueryId, text string, showAlert bool, url string, cacheTime int) (*objs.LogicalResult, error) {
-	return bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, url, showAlert, cacheTime)
+	return bot.bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, url, showAlert, cacheTime)
 }
 
 /*Returns an InlineQueryResponder which has several methods for answering an inline query.
@@ -328,7 +328,7 @@ Official telegram doc :
 Use this method to send answers to an inline query. On success, True is returned.
 No more than 50 results per query are allowed.*/
 func (bot *AdvancedBot) AAnswerInlineQuery(id string, cacheTime int, isPersonal bool, nextOffset, switchPmText, switchPmParameter string) *InlineQueryResponder {
-	return &InlineQueryResponder{bot: bot.Bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0), isPersonal: isPersonal, nextOffset: nextOffset, switchPmText: switchPmText, switchPmParameter: switchPmParameter}
+	return &InlineQueryResponder{bot: bot.bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0), isPersonal: isPersonal, nextOffset: nextOffset, switchPmText: switchPmText, switchPmParameter: switchPmParameter}
 }
 
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
@@ -337,7 +337,7 @@ This method is suitable for sending this invoice to a chat that has an id, to se
 func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
 	return &InvoiceSender{
 		chatIdInt: chatId, chatIdString: "", title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
-		bot: bot.Bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
+		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
 	}
@@ -347,7 +347,7 @@ func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, 
 func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
 	return &InvoiceSender{
 		chatIdInt: 0, chatIdString: chatId, title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
-		bot: bot.Bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
+		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
 	}
@@ -360,8 +360,8 @@ func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payl
 Official telegram doc :
 
 Use this method to send a game. On success, the sent Message is returned.*/
-func (bot *Bot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendGame(
+func (bot *AdvancedBot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+	return bot.bot.apiInterface.SendGame(
 		chatId, gameShortName, silent, replyTo, allowSendingWithoutReply, &replyMarkup,
 	)
 }
@@ -382,8 +382,8 @@ Use this method to set the score of the specified user in a game message. On suc
 
 "inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.
 */
-func (bot *Bot) ASetGameScore(userId, score, chatId, messageId int, force, disableEditMessage bool, inlineMessageId string) (*objs.DefaultResult, error) {
-	return bot.apiInterface.SetGameScore(
+func (bot *AdvancedBot) ASetGameScore(userId, score, chatId, messageId int, force, disableEditMessage bool, inlineMessageId string) (*objs.DefaultResult, error) {
+	return bot.bot.apiInterface.SetGameScore(
 		userId, score, force, disableEditMessage, chatId, messageId, inlineMessageId,
 	)
 }
@@ -393,7 +393,7 @@ Informs a user that some of the Telegram Passport elements they provided contain
 
 Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.*/
 func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.LogicalResult, error) {
-	return bot.apiInterface.SetPassportDataErrors(
+	return bot.bot.apiInterface.SetPassportDataErrors(
 		userId, errors,
 	)
 }

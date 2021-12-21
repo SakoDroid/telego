@@ -678,7 +678,7 @@ func (bot *Bot) Stop() {
 
 /*Returns and advanced version which gives more customized functions to iteract with the bot*/
 func (bot *Bot) AdvancedMode() *AdvancedBot {
-	return &AdvancedBot{Bot: bot}
+	return &AdvancedBot{bot: bot}
 }
 
 func (bot *Bot) startPollUpdateRoutine() {
