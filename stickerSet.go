@@ -3,12 +3,23 @@ package telebot
 import (
 	"os"
 
+	logger "github.com/SakoDroid/telebot/logger"
 	objs "github.com/SakoDroid/telebot/objects"
 )
 
 type StickerSet struct {
 	bot        *Bot
 	stickerSet objs.StickerSet
+}
+
+/*Updates this sticker set*/
+func (ss *StickerSet) update() {
+	res, err := ss.bot.apiInterface.GetStickerSet(ss.stickerSet.Name)
+	if err != nil {
+		logger.Logger.Println("Error while updating sticker set.", err.Error())
+	} else {
+		ss.stickerSet = res.Result
+	}
 }
 
 /*Returns the title of this sticker set*/
@@ -23,11 +34,13 @@ func (ss *StickerSet) GetName() string {
 
 /*Returns the sticker in this sticker set.*/
 func (ss *StickerSet) GetStickers() []objs.Sticker {
+	ss.update()
 	return ss.stickerSet.Stickers
 }
 
 /*Returns the thumbnail of this sticker set*/
 func (ss *StickerSet) GetThumb() objs.PhotoSize {
+	ss.update()
 	return ss.stickerSet.Thumb
 }
 
@@ -36,7 +49,7 @@ func (ss *StickerSet) GetThumb() objs.PhotoSize {
 Use this method to add a new sticker to a set created by the bot. You must use exactly one of the fields png_sticker or tgs_sticker. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.
 
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
-func (ss *StickerSet) AddSticker(userId int, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddSticker(userId int, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
 	if tgsSticker == nil {
 		if pngStickerFile == nil {
 			return ss.bot.apiInterface.AddStickerToSet(

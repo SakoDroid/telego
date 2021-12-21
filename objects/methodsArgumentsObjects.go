@@ -233,14 +233,14 @@ func (args *UploadStickerFileArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type CreateNewStickerSetArgs struct {
-	UserId        int          `json:"user_id"`
-	Name          string       `json:"name"`
-	Title         string       `json:"title"`
-	PngSticker    string       `json:"png_sticker,omitempty"`
-	TgsSticker    string       `json:"tgs_sticker,omitempty"`
-	Emojies       string       `json:"emojies"`
-	ContainsMasks bool         `json:"contains_masks"`
-	MaskPosition  MaskPosition `json:"mask_position"`
+	UserId        int           `json:"user_id"`
+	Name          string        `json:"name"`
+	Title         string        `json:"title"`
+	PngSticker    string        `json:"png_sticker,omitempty"`
+	TgsSticker    string        `json:"tgs_sticker,omitempty"`
+	Emojis        string        `json:"emojis"`
+	ContainsMasks bool          `json:"contains_masks"`
+	MaskPosition  *MaskPosition `json:"mask_position"`
 }
 
 func (args *CreateNewStickerSetArgs) ToJson() []byte {
@@ -255,8 +255,8 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
 	fw, _ = wr.CreateFormField("title")
 	_, _ = io.Copy(fw, strings.NewReader(args.Title))
-	fw, _ = wr.CreateFormField("emojies")
-	_, _ = io.Copy(fw, strings.NewReader(args.Emojies))
+	fw, _ = wr.CreateFormField("emojis")
+	_, _ = io.Copy(fw, strings.NewReader(args.Emojis))
 	if args.PngSticker != "" {
 		fw, _ = wr.CreateFormField("png_sticker")
 		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
@@ -267,7 +267,7 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	}
 	fw, _ = wr.CreateFormField("contains_masks")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.ContainsMasks)))
-	if args.MaskPosition.Point != "" {
+	if args.MaskPosition != nil {
 		fw, _ = wr.CreateFormField("mask_position")
 		bt, _ := json.Marshal(args.MaskPosition)
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
@@ -275,12 +275,12 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type AddStickerSetArgs struct {
-	UserId       int          `json:"user_id"`
-	Name         string       `json:"name"`
-	PngSticker   string       `json:"png_sticker,omitempty"`
-	TgsSticker   string       `json:"tgs_sticker,omitempty"`
-	Emojies      string       `json:"emojies"`
-	MaskPosition MaskPosition `json:"mask_position"`
+	UserId       int           `json:"user_id"`
+	Name         string        `json:"name"`
+	PngSticker   string        `json:"png_sticker,omitempty"`
+	TgsSticker   string        `json:"tgs_sticker,omitempty"`
+	Emojis       string        `json:"emojis"`
+	MaskPosition *MaskPosition `json:"mask_position"`
 }
 
 func (args *AddStickerSetArgs) ToJson() []byte {
@@ -293,8 +293,8 @@ func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
 	fw, _ = wr.CreateFormField("name")
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
-	fw, _ = wr.CreateFormField("emojies")
-	_, _ = io.Copy(fw, strings.NewReader(args.Emojies))
+	fw, _ = wr.CreateFormField("emojis")
+	_, _ = io.Copy(fw, strings.NewReader(args.Emojis))
 	if args.PngSticker != "" {
 		fw, _ = wr.CreateFormField("png_sticker")
 		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
@@ -303,7 +303,7 @@ func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 		fw, _ = wr.CreateFormField("tgs_sticker")
 		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
 	}
-	if args.MaskPosition.Point != "" {
+	if args.MaskPosition != nil {
 		fw, _ = wr.CreateFormField("mask_position")
 		bt, _ := json.Marshal(args.MaskPosition)
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
@@ -736,7 +736,7 @@ type EditMessageLiveLocationArgs struct {
 	/*For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.*/
 	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
 	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
 func (args *EditMessageLiveLocationArgs) ToJson() []byte {
@@ -759,7 +759,7 @@ type StopMessageLiveLocationArgs struct {
 	/*Required if chat_id and message_id are not specified. Identifier of the inline message*/
 	InlineMessageId string `json:"inline_message_id,omitempty"`
 	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
 func (args *StopMessageLiveLocationArgs) ToJson() []byte {
@@ -1374,10 +1374,10 @@ func (args *SetMyCommandsArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type EditMessageDefaultArgs struct {
-	ChatId          json.RawMessage      `json:"chat_id,omitempty"`
-	MessageId       int                  `json:"message_id,omitempty"`
-	InlineMessageId string               `json:"inline_message_id,omitempty"`
-	ReplyMarkup     InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ChatId          json.RawMessage       `json:"chat_id,omitempty"`
+	MessageId       int                   `json:"message_id,omitempty"`
+	InlineMessageId string                `json:"inline_message_id,omitempty"`
+	ReplyMarkup     *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
 type EditMessageTextArgs struct {
@@ -1446,7 +1446,7 @@ func (args *EditMessageMediaArgs) ToMultiPart(wr *mp.Writer) {
 	bt, _ := json.Marshal(args.Media)
 	fw, _ := wr.CreateFormField("media")
 	_, _ = io.Copy(fw, bytes.NewReader(bt))
-	if args.ReplyMarkup.InlineKeyboard != nil {
+	if args.ReplyMarkup != nil {
 		bt, _ = json.Marshal(args.ReplyMarkup)
 		fw, _ = wr.CreateFormField("reply_markup")
 		_, _ = io.Copy(fw, bytes.NewReader(bt))
@@ -1487,9 +1487,9 @@ func (args *DeleteMessageArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type StopPollArgs struct {
-	ChatId      json.RawMessage      `json:"chat_id"`
-	MessageId   int                  `json:"message_id"`
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ChatId      json.RawMessage       `json:"chat_id"`
+	MessageId   int                   `json:"message_id"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
 func (args *StopPollArgs) ToJson() []byte {

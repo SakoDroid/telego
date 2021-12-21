@@ -186,7 +186,7 @@ func (p *Poll) SendAdvanced(replyTo int, silent bool, allowSendingWithOutReply b
 /*stops the poll*/
 func (p *Poll) Stop() error {
 	_, err := p.bot.apiInterface.StopPoll(
-		p.chatIdInt, p.chatIdString, p.messageId, objs.InlineKeyboardMarkup{},
+		p.chatIdInt, p.chatIdString, p.messageId, nil,
 	)
 	return err
 }

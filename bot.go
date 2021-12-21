@@ -30,6 +30,17 @@ func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
 	return bot.updateChannel
 }
 
+/*Returnes the received informations about the bot from api server.
+
+---------------------
+
+Official telegarm doc :
+
+A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object.*/
+func (bot *Bot) GetMe() (*objs.UserResult, error) {
+	return bot.apiInterface.GetMe()
+}
+
 /*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
 func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
@@ -499,8 +510,10 @@ func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFi
 /*
 Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker. Returns the created sticker set on success.
 
-png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
-func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, containsMask bool, maskPosition objs.MaskPosition) (*StickerSet, error) {
+png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).
+
+"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”. <bot_username> is case insensitive. 1-64 characters.*/
+func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
 	var res *objs.LogicalResult
 	var err error
 	if tgsSticker == nil {
@@ -532,9 +545,11 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	if !res.Result {
 		return nil, errors.New("false returned from server")
 	}
-	return &StickerSet{bot: bot, stickerSet: objs.StickerSet{
+	out := &StickerSet{bot: bot, stickerSet: objs.StickerSet{
 		Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
-	}}, nil
+	}}
+	out.update()
+	return out, nil
 }
 
 /*Returns an InlineQueryResponder which has several methods for answering an inline query.

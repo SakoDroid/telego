@@ -6,7 +6,7 @@ type ChatMember interface {
 
 /*Represents a chat member that has no additional privileges or restrictions*/
 type ChatMemberMember struct {
-	/*The member's status in the chat, always “member”*/
+	/*The member's status in the chat.*/
 	Status string `json:"status"`
 	/*Information about the user*/
 	User User `json:"user"`

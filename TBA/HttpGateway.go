@@ -22,6 +22,9 @@ type httpSenderClient struct {
 
 /*This method sends an http request (without processing the response) as application/json. Returns the body of the response.*/
 func (hsc *httpSenderClient) sendHttpReqJson(method string, args objs.MethodArguments) ([]byte, error) {
+	if args == nil {
+		return hsc.sendHttpReq(method, "application/json", make([]byte, 0))
+	}
 	bd := args.ToJson()
 	return hsc.sendHttpReq(method, "application/json", bd)
 }

@@ -106,6 +106,20 @@ func (bai *BotAPIInterface) isChatIdOk(chatIdInt int, chatIdString string) bool 
 	}
 }
 
+/*Gets the bot info*/
+func (bai *BotAPIInterface) GetMe() (*objs.UserResult, error) {
+	res, err := bai.SendCustom("getMe", nil, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.UserResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
 "chatId" and "text" arguments are required. other arguments are optional for bot api.*/
 func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply bool, reply_to_message_id int, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
@@ -490,7 +504,7 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 
 /*Edits a live location sent to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -537,7 +551,7 @@ func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString,
 		args := &objs.StopMessageLiveLocationArgs{
 			InlineMessageId: inlineMessageId,
 			MessageId:       messageId,
-			ReplyMarkup:     *replyMarkup,
+			ReplyMarkup:     replyMarkup,
 		}
 		if chatIdInt == 0 {
 			bt, _ := json.Marshal(chatIdString)
@@ -1534,7 +1548,7 @@ func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCo
 }
 
 /*Edits the text of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, messageId int, inlineMessageId, text, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, messageId int, inlineMessageId, text, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	args := &objs.EditMessageTextArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1566,7 +1580,7 @@ func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, 
 }
 
 /*Edits the caption of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString string, messageId int, inlineMessageId, caption, parseMode string, captionEntities []objs.MessageEntity, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString string, messageId int, inlineMessageId, caption, parseMode string, captionEntities []objs.MessageEntity, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	args := &objs.EditMessageCaptionArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1597,7 +1611,7 @@ func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString strin
 }
 
 /*Edits the media of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup objs.InlineKeyboardMarkup, file ...*os.File) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.DefaultResult, error) {
 	args := &objs.EditMessageMediaArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1626,7 +1640,7 @@ func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string,
 }
 
 /*Edits the reply makrup of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, replyMakrup objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	args := &objs.EditMessageReplyMakrupArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1654,7 +1668,7 @@ func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString s
 }
 
 /*Stops the poll.*/
-func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, messageId int, replyMakrup objs.InlineKeyboardMarkup) (*objs.PollResult, error) {
+func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, messageId int, replyMakrup *objs.InlineKeyboardMarkup) (*objs.PollResult, error) {
 	args := &objs.StopPollArgs{
 		MessageId:   messageId,
 		ReplyMarkup: replyMakrup,
@@ -1768,12 +1782,12 @@ func (bai *BotAPIInterface) UploadStickerFile(userId int, pngSticker string, fil
 }
 
 /*Creates a new sticker set with the given arguments*/
-func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, emojies string, containsMasks bool, maskPosition objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, emojies string, containsMasks bool, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.CreateNewStickerSetArgs{
 		UserId:        userId,
 		Name:          name,
 		Title:         title,
-		Emojies:       emojies,
+		Emojis:        emojies,
 		ContainsMasks: containsMasks,
 		MaskPosition:  maskPosition,
 	}
@@ -1795,13 +1809,13 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngStic
 }
 
 /*Adds a new sticker to the given set.*/
-func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, emojies string, maskPosition objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, emojies string, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.AddStickerSetArgs{
 		UserId:       userId,
 		Name:         name,
 		PngSticker:   pngSticker,
 		TgsSticker:   tgsSticker,
-		Emojies:      emojies,
+		Emojis:       emojies,
 		MaskPosition: maskPosition,
 	}
 	res, err := bai.SendCustom("addStickerToSet", args, true, file)
@@ -2131,7 +2145,7 @@ func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArgumen
 	if err2 != nil {
 		return nil, err2
 	}
-	return res, nil
+	return bai.preParseResult(res, methdName)
 }
 
 func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
@@ -2153,6 +2167,23 @@ func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_i
 		def.ReplyMarkup = reply_markup
 	}
 	return def
+}
+
+func (bai *BotAPIInterface) preParseResult(res []byte, method string) ([]byte, error) {
+	def := &objs.DefaultResult{}
+	err := json.Unmarshal(res, def)
+	if err != nil {
+		return nil, err
+	}
+	if !def.Ok {
+		fr := &objs.FailureResult{}
+		err := json.Unmarshal(res, fr)
+		if err != nil {
+			return nil, err
+		}
+		return nil, &errs.MethodNotSentError{Method: method, Reason: "server returned false ok filed", FailureResult: fr}
+	}
+	return res, nil
 }
 
 /*This method returns an iterface to communicate with the bot api.

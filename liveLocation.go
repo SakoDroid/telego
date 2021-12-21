@@ -64,14 +64,14 @@ func (ll *LiveLocation) SendToChannel(chatId string, silent bool) (*objs.SendMet
 Official telegram doc :
 
 Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (ll *LiveLocation) Edit(latitude, langitude, horizontalAccuracy float32, heading, proximtyAlertRadius int, replyMarkUp objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (ll *LiveLocation) Edit(latitude, langitude, horizontalAccuracy float32, heading, proximtyAlertRadius int, replyMarkUp *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	if ll.messageId != 0 {
 		ll.latitude = latitude
 		ll.longitude = langitude
 		ll.horizontalAccuracy = horizontalAccuracy
 		ll.heading = heading
 		ll.proximityAlertRadius = proximtyAlertRadius
-		ll.replyMarkUp = &replyMarkUp
+		ll.replyMarkUp = replyMarkUp
 		return ll.bot.apiInterface.EditMessageLiveLocation(
 			ll.chatIdInt, ll.chatIdString, "", ll.messageId, ll.latitude, ll.longitude,
 			ll.horizontalAccuracy, ll.heading, ll.proximityAlertRadius, replyMarkUp,

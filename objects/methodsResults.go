@@ -90,3 +90,8 @@ type GameHighScoresResult struct {
 	Ok     bool            `json:"ok"`
 	Result []GameHighScore `json:"result"`
 }
+
+type UserResult struct {
+	Ok     bool `json:"ok"`
+	Result User `json:"result"`
+}
