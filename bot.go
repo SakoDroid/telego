@@ -602,6 +602,59 @@ func (bot *Bot) AnswerPreCheckoutQuery(shippingQueryId string, ok bool, errorMes
 	return bot.apiInterface.AnswerPreCheckoutQuery(shippingQueryId, ok, errorMessage)
 }
 
+/*Sends a game to the chat.
+
+**To access more options use "ASendGame" method in advanced mode.
+
+-----------------------
+
+Official telegram doc :
+
+Use this method to send a game. On success, the sent Message is returned.*/
+func (bot *Bot) SendGame(chatId int, gameShortName string, silent bool, replyTo int) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendGame(
+		chatId, gameShortName, silent, replyTo, false, nil,
+	)
+}
+
+/*Sets the score of the given user.
+
+
+**To access more option use "ASetGameScoe" in advanced mode.
+-----------------------
+
+Official telegram doc :
+
+Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the Message is returned, otherwise True is returned. Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
+
+"score" is new score, must be non-negative.
+*/
+func (bot *Bot) SetGameScore(userId, score, chatId, messageId int) (*objs.DefaultResult, error) {
+	return bot.apiInterface.SetGameScore(
+		userId, score, false, false, chatId, messageId, "",
+	)
+}
+
+/*Returnes the high scores of the user.
+
+-------------------------
+
+Official telegram doc :
+
+
+Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an Array of GameHighScore objects.
+
+This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.
+
+"chatId" : Required if inline_message_id is not specified. Unique identifier for the target chat.
+
+"messageId" : Required if inline_message_id is not specified. Identifier of the sent message.
+
+"inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.*/
+func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.GameHighScoresResult, error) {
+	return bot.apiInterface.GetGameHighScores(userId, chatId, messageId, inlineMessageId)
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

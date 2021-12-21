@@ -85,3 +85,8 @@ type StickerSetResult struct {
 	Ok     bool       `json:"ok"`
 	Result StickerSet `json:"result"`
 }
+
+type GameHighScoresResult struct {
+	Ok     bool            `json:"ok"`
+	Result []GameHighScore `json:"result"`
+}

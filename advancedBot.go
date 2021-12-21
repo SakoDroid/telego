@@ -334,21 +334,66 @@ func (bot *AdvancedBot) AAnswerInlineQuery(id string, cacheTime int, isPersonal 
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
 
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "ACreateInvoiceUN" method.*/
-func (bot *Bot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
+func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
 	return &InvoiceSender{
 		chatIdInt: chatId, chatIdString: "", title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
-		bot: bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
+		bot: bot.Bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
 	}
 }
 
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.*/
-func (bot *Bot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
+func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
 	return &InvoiceSender{
 		chatIdInt: 0, chatIdString: chatId, title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
-		bot: bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
+		bot: bot.Bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
 	}
+}
+
+/*Sends a game to the chat.
+
+-----------------------
+
+Official telegram doc :
+
+Use this method to send a game. On success, the sent Message is returned.*/
+func (bot *Bot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendGame(
+		chatId, gameShortName, silent, replyTo, allowSendingWithoutReply, &replyMarkup,
+	)
+}
+
+/*Sets the score of the given user.
+
+-----------------------
+
+Official telegram doc :
+
+Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the Message is returned, otherwise True is returned. Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
+
+"score" is new score, must be non-negative.
+
+"force" : Pass True, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters.
+
+"disableEditMessage" : Pass True, if the game message should not be automatically edited to include the current scoreboard.
+
+"inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.
+*/
+func (bot *Bot) ASetGameScore(userId, score, chatId, messageId int, force, disableEditMessage bool, inlineMessageId string) (*objs.DefaultResult, error) {
+	return bot.apiInterface.SetGameScore(
+		userId, score, force, disableEditMessage, chatId, messageId, inlineMessageId,
+	)
+}
+
+/*
+Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns True on success.
+
+Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.*/
+func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetPassportDataErrors(
+		userId, errors,
+	)
 }

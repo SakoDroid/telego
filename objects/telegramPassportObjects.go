@@ -54,6 +54,10 @@ type EncryptedCredentials struct {
 	Secret string `json:"secret"`
 }
 
+type PassportElementError interface {
+	blah()
+}
+
 /*This object represents an error in the Telegram Passport element which was submitted that should be resolved by the user. It should be one of:
 
 PassportElementErrorDataField
@@ -67,7 +71,7 @@ PassportElementErrorTranslationFiles
 PassportElementErrorUnspecified
 
 This object should not be used at all.*/
-type PassportElementError struct {
+type PassportElementErrordefault struct {
 	/*Error source, must be data*/
 	Source string `json:"source"`
 	/*The section of the user's Telegram Passport which has the error, one of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”*/
@@ -92,25 +96,35 @@ type PassportElementErrorDataField struct {
 	DataHash string `json:"data_hash"`
 }
 
+func (ps *PassportElementErrorDataField) blah() {}
+
 /*Represents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.*/
 type PassportElementErrorFrontSide struct {
-	PassportElementError
+	PassportElementErrordefault
 }
+
+func (ps *PassportElementErrorFrontSide) blah() {}
 
 /*Represents an issue with the reverse side of a document. The error is considered resolved when the file with reverse side of the document changes.*/
 type PassportElementErrorReverseSide struct {
-	PassportElementError
+	PassportElementErrordefault
 }
+
+func (ps *PassportElementErrorReverseSide) blah() {}
 
 /*Represents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.*/
 type PassportElementErrorSelfie struct {
-	PassportElementError
+	PassportElementErrordefault
 }
+
+func (ps *PassportElementErrorSelfie) blah() {}
 
 /*Represents an issue with a document scan. The error is considered resolved when the file with the document scan changes.*/
 type PassportElementErrorFile struct {
-	PassportElementError
+	PassportElementErrordefault
 }
+
+func (ps *PassportElementErrorFile) blah() {}
 
 /*Represents an issue with a list of scans. The error is considered resolved when the list of files containing the scans changes.*/
 type PassportElementErrorFiles struct {
@@ -124,15 +138,21 @@ type PassportElementErrorFiles struct {
 	Message string `json:"message"`
 }
 
+func (ps *PassportElementErrorFiles) blah() {}
+
 /*Represents an issue with one of the files that constitute the translation of a document. The error is considered resolved when the file changes.*/
 type PassportElementErrorTranslationFile struct {
-	PassportElementError
+	PassportElementErrordefault
 }
+
+func (ps *PassportElementErrorTranslationFile) blah() {}
 
 /*Represents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.*/
 type PassportElementErrorTranslationFiles struct {
 	PassportElementErrorFiles
 }
+
+func (ps *PassportElementErrorTranslationFiles) blah() {}
 
 /*Represents an issue in an unspecified place. The error is considered resolved when new data is added.*/
 type PassportElementErrorUnspecified struct {
@@ -145,3 +165,5 @@ type PassportElementErrorUnspecified struct {
 	/*Error message*/
 	Message string `json:"mesaage"`
 }
+
+func (ps *PassportElementErrorUnspecified) blah() {}

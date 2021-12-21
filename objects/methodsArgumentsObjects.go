@@ -42,11 +42,11 @@ type DefaultSendMethodsArguments struct {
 	/*Unique identifier for the target chat or Username of the target channel (in the format @channelusername).*/
 	ChatId json.RawMessage `json:"chat_id"`
 	/*Sends the message silently. Users will receive a notification with no sound.*/
-	DisableNotification bool `json:"disable_notification,omitempty"`
+	DisableNotification bool `json:"disable_notification"`
 	/*If the message is a reply, ID of the original message*/
 	ReplyToMessageId int `json:"reply_to_message_id,omitempty"`
 	/*Pass True, if the message should be sent even if the specified replied-to message is not found*/
-	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
+	AllowSendingWithoutReply bool `json:"allow_sending_without_reply"`
 	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
 	ReplyMarkup ReplyMarkup `json:"reply_markup,omitempty"`
 }
@@ -1597,5 +1597,80 @@ func (args *AnswerPreCheckoutQueryArgs) ToJson() []byte {
 }
 
 func (args *AnswerPreCheckoutQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetPassportDataErrorsArgs struct {
+	UserId int                    `json:"user_id"`
+	Errors []PassportElementError `json:"errors"`
+}
+
+func (args *SetPassportDataErrorsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetPassportDataErrorsArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SendGameArgs struct {
+	DefaultSendMethodsArguments
+	GameShortName string `json:"game_short_name"`
+}
+
+func (args *SendGameArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SendGameArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetGameScoreArgs struct {
+	UserId             int    `json:"user_id"`
+	Score              int    `json:"score"`
+	Force              bool   `json:"force"`
+	DisableEditMessage bool   `json:"disable_edit_message"`
+	ChatId             int    `json:"chat_id,omitempty"`
+	MessageId          int    `json:"message_id,omitempty"`
+	InlineMessageId    string `json:"inline_message_id,omitempty"`
+}
+
+func (args *SetGameScoreArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *SetGameScoreArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type GetGameHighScoresArgs struct {
+	UserId          int    `json:"user_id"`
+	ChatId          int    `json:"chat_id,omitempty"`
+	MessageId       int    `json:"message_id,omitempty"`
+	InlineMessageId string `json:"inline_message_id,omitempty"`
+}
+
+func (args *GetGameHighScoresArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *GetGameHighScoresArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }

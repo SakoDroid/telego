@@ -2033,6 +2033,91 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 	}
 }
 
+/*Sets passport data errors*/
+func (bai *BotAPIInterface) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.LogicalResult, error) {
+	args := &objs.SetPassportDataErrorsArgs{
+		UserId: userId, Errors: errors,
+	}
+	res, err := bai.SendCustom("setPassportDataErrors", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sends a game*/
+func (bai *BotAPIInterface) SendGame(chatId int, gameShortName string, disableNotif bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+	args := &objs.SendGameArgs{
+		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
+			ReplyToMessageId:         replyTo,
+			DisableNotification:      disableNotif,
+			ReplyMarkup:              replyMarkup,
+			AllowSendingWithoutReply: allowSendingWithoutReply,
+		},
+		GameShortName: gameShortName,
+	}
+	bt, _ := json.Marshal(chatId)
+	args.ChatId = bt
+	res, err := bai.SendCustom("sendGame", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.SendMethodsResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets the game high score*/
+func (bai *BotAPIInterface) SetGameScore(userId, score int, force, disableEditMessage bool, chatId, messageId int, inlineMessageId string) (*objs.DefaultResult, error) {
+	args := &objs.SetGameScoreArgs{
+		UserId:             userId,
+		Score:              score,
+		Force:              force,
+		DisableEditMessage: disableEditMessage,
+		ChatId:             chatId,
+		MessageId:          messageId,
+		InlineMessageId:    inlineMessageId,
+	}
+	res, err := bai.SendCustom("setGameScore", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.DefaultResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Gets the high scores of the user*/
+func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.GameHighScoresResult, error) {
+	args := &objs.GetGameHighScoresArgs{
+		UserId:          userId,
+		ChatId:          chatId,
+		MessageId:       messageId,
+		InlineMessageId: inlineMessageId,
+	}
+	res, err := bai.SendCustom("getGameHighScores", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.GameHighScoresResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*Calls the given method on api server wtih the given arguments. "MP" options indicates that the request should be made in multipart/formadata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
