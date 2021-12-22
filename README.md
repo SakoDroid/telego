@@ -1,6 +1,10 @@
 # Telebot
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telebot.svg)](https://pkg.go.dev/github.com/SakoDroid/telebot)
+
 A Go library for creating telegram bots.
+
+![telebot logo inspired by Golang logo](https://github.com/SakoDroid/telebot/blob/master/telebot-logo.jpg?raw=true)
 
 * [Features](#features)
 * [Requirements](#requirements)
@@ -21,7 +25,7 @@ A Go library for creating telegram bots.
 
 ## Features
 * Fast and reliable
-* Full sopport for [telegram bot api](https://core.telegram.org/bots/api)
+* Full support for [telegram bot api](https://core.telegram.org/bots/api)
 * Highly customizable.
 * Automatic poll management
 * Webhook support. (in development, not released yet) 
@@ -48,7 +52,7 @@ A Go library for creating telegram bots.
 
  ### Quick start
 
- The following code creates a bot an starts receving updates. If the update is a text message that contains "hi" the bot will respond "hi to you too!".
+ The following code creates a bot and starts receving updates. If the update is a text message that contains "hi" the bot will respond "hi to you too!".
 
  ```
  import (
@@ -179,7 +183,7 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
  }
 ```
 
-Now that the bot is running bot will receive updates from api server and passes them into UpadteChanell. So you can use this channel to know if an update is received from api server. You can get the channel via **GetUpdateChannel()** method of the bot :
+Now that the bot is running it will receive updates from api server and passes them into UpdateeChannel. So you can use this channel to know if an update is received from api server. You can get the channel via **GetUpdateChannel()** method of the bot :
 
  ```
  import (
@@ -214,8 +218,8 @@ Now that the bot is running bot will receive updates from api server and passes 
 
  To send back text or media (such as photo, video, gif, ...) you can use Send methods. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat identificator end with `UN`.
  
- We will cover all the methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
-  * **Note** : All bot methods are simplified to avoid unnecessary arguments. To access more options for each method you can call **AdvancedMode()** method of the bot that will return an advanced version of bot which will give you full access.
+ We will cover some of the methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
+  * **Note** : All bot methods are simplified to avoid unnecessary arguments. To access more options for each method you can call `AdvancedMode()` method of the bot that will return an advanced version of bot which will give you full access.
 
  #### **Text messages**
 
@@ -249,7 +253,7 @@ Now that the bot is running bot will receive updates from api server and passes 
  
  #### **Media group messages**
 
- To send a group of medias (aka albums) first you need to create a *MediaGroup* by calling **`CreateAlbum(replyto int)`** method of the bot. MediaGroup has several methods for adding photo,video,audio and other media types to the album. Keep in mind that according to [Telegram bot api documentation about media groups](https://core.telegram.org/bots/api#sendmediagroup), documents and audio files can be only grouped in an album with messages of the same type. Also the media group must include 2-10 items. The code below shows how to create a media group, add some photo to it and send it :
+ To send a group of medias (aka albums) first you need to create a *`MediaGroup`* by calling `CreateAlbum(replyto int)` method of the bot. MediaGroup has several methods for adding photo,video,audio and other media types to the album. Keep in mind that according to [Telegram bot api documentation about media groups](https://core.telegram.org/bots/api#sendmediagroup), documents and audio files can be only grouped in an album with messages of the same type. Also the media group must include 2-10 items. The code below shows how to create a media group, add some photo to it and send it :
 
  ```
  mg := bot.CreateAlbum(messageId)
@@ -278,7 +282,7 @@ if err != nil {
 
 #### **Polls**
 
-telebot library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because eveytime an update about a poll is received the bot will process the update and will update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
+telebot library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because everytime an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
 
 * **Note** : If an update is received that contains update about a poll and the poll is not registered with the Polls map, the given update is passed into *UpdateChannel* of the bot. Otherwise as described above, the related poll will be updated.
 
@@ -323,7 +327,7 @@ func pollTest(chatId int) {
 
 #### **Files**
 
-You can get informations of a file that is stored in telegram servers and download it into your computer by calling **`GetFile`** method. If you want to download the file, pass true for *download* argument of the method. The below example downloads a received sticker from the user and saves it into the given file (read full docuemntation of the method for more information) :
+You can get informations of a file that is stored in telegram servers and download it into your computer by calling **`GetFile`** method. If you want to download the file, pass true for *download* argument of the method. The below example downloads a received sticker from the user and saves it into the given file (read full documentation of the method for more information) :
 
 ```
 //Receives upadate
@@ -349,3 +353,7 @@ fl.Close()
 ## License
 
 telebot is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commerical and private apps and can be modified.
+
+---------------------------
+
+![telebot logo inspired by Golang logo](https://github.com/SakoDroid/telebot/blob/master/telebot-logo.jpg?raw=true)
