@@ -16,8 +16,8 @@ type FailureResult struct {
 
 /*This object represents the reponse of the methods which send a message. (sendMessage,sendPhoto,...)*/
 type SendMethodsResult struct {
-	Ok     bool    `json:"ok"`
-	Result Message `json:"result"`
+	Ok     bool     `json:"ok"`
+	Result *Message `json:"result"`
 }
 
 /*This object represents the reponse of "sendMediaGroup" method*/
@@ -42,13 +42,13 @@ type IntResult struct {
 }
 
 type ChatInviteLinkResult struct {
-	Ok     bool           `json:"ok"`
-	Result ChatInviteLink `json:"result"`
+	Ok     bool            `json:"ok"`
+	Result *ChatInviteLink `json:"result"`
 }
 
 type ChatResult struct {
-	Ok     bool `json:"ok"`
-	Result Chat `json:"result"`
+	Ok     bool  `json:"ok"`
+	Result *Chat `json:"result"`
 }
 
 type ChatAdministratorsResult struct {
@@ -62,13 +62,13 @@ type LogicalResult struct {
 }
 
 type ProfilePhototsResult struct {
-	Ok     bool              `json:"ok"`
-	Result UserProfilePhotos `json:"result"`
+	Ok     bool               `json:"ok"`
+	Result *UserProfilePhotos `json:"result"`
 }
 
 type GetFileResult struct {
-	Ok     bool `json:"ok"`
-	Result File `json:"result"`
+	Ok     bool  `json:"ok"`
+	Result *File `json:"result"`
 }
 
 type GetCommandsResult struct {
@@ -77,13 +77,13 @@ type GetCommandsResult struct {
 }
 
 type PollResult struct {
-	Ok     bool `json:"ok"`
-	Result Poll `json:"result"`
+	Ok     bool  `json:"ok"`
+	Result *Poll `json:"result"`
 }
 
 type StickerSetResult struct {
-	Ok     bool       `json:"ok"`
-	Result StickerSet `json:"result"`
+	Ok     bool        `json:"ok"`
+	Result *StickerSet `json:"result"`
 }
 
 type GameHighScoresResult struct {
@@ -92,6 +92,6 @@ type GameHighScoresResult struct {
 }
 
 type UserResult struct {
-	Ok     bool `json:"ok"`
-	Result User `json:"result"`
+	Ok     bool  `json:"ok"`
+	Result *User `json:"result"`
 }

@@ -13,13 +13,13 @@ type Sticker struct {
 	/*True, if the sticker is animated*/
 	IsAnimated bool `json:"is_animated"`
 	/*Optional. Sticker thumbnail in the .WEBP or .JPG format*/
-	Thumb PhotoSize `json:"thumb,omitempty"`
+	Thumb *PhotoSize `json:"thumb,omitempty"`
 	/*Optional. Emoji associated with the sticker*/
 	Emoji string `json:"emoji,omitempty"`
 	/*Optional. Name of the sticker set to which the sticker belongs*/
 	SetName string `json:"set_name,omitempty"`
 	/*Optional. For mask stickers, the position where the mask should be placed*/
-	MaskPosition MaskPosition `json:"mask_position,omitempty"`
+	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
 	/*Optional. File size in bytes*/
 	FileSize int `json:"file_size,omitempty"`
 }
@@ -37,7 +37,7 @@ type StickerSet struct {
 	/*List of all set stickers*/
 	Stickers []Sticker `json:"stickers"`
 	/*Optional. Sticker set thumbnail in the .WEBP or .TGS format*/
-	Thumb PhotoSize `json:"thumb,omitempty"`
+	Thumb *PhotoSize `json:"thumb,omitempty"`
 }
 
 /*This object describes the position on faces where a mask should be placed by default.*/

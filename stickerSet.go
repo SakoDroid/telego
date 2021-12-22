@@ -9,7 +9,7 @@ import (
 
 type StickerSet struct {
 	bot        *Bot
-	stickerSet objs.StickerSet
+	stickerSet *objs.StickerSet
 }
 
 /*Updates this sticker set*/
@@ -39,7 +39,7 @@ func (ss *StickerSet) GetStickers() []objs.Sticker {
 }
 
 /*Returns the thumbnail of this sticker set*/
-func (ss *StickerSet) GetThumb() objs.PhotoSize {
+func (ss *StickerSet) GetThumb() *objs.PhotoSize {
 	ss.update()
 	return ss.stickerSet.Thumb
 }

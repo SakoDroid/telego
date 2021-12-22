@@ -16,7 +16,7 @@ type Chat struct {
 	/*Optional. Last name of the other party in a private chat*/
 	LastName string `json:"last_name,omitempty"`
 	/*Optional. Chat photo. */
-	Photo ChatPhoto `json:"photo,omitempty"`
+	Photo *ChatPhoto `json:"photo,omitempty"`
 	/*Optional. Bio of the other party in a private chat.*/
 	Bio string `json:"bio,omitempty"`
 	/*Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user.*/
@@ -26,9 +26,9 @@ type Chat struct {
 	/*Optional. Primary invite link, for groups, supergroups and channel chats.*/
 	InviteLink string `json:"invite_link,omitempty"`
 	/*Optional. The most recent pinned message (by sending date).*/
-	PinnedMessage Message `json:"pinned_message,omitempty"`
+	PinnedMessage *Message `json:"pinned_message,omitempty"`
 	/*Optional. Default chat member permissions, for groups and supergroups.*/
-	Permissions ChatPermissions `json:"permissions,omitempty"`
+	Permissions *ChatPermissions `json:"permissions,omitempty"`
 	/*Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds.*/
 	SlowModeDelay int `json:"slow_mode_delay,omitempty"`
 	/*Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds.*/
@@ -42,7 +42,7 @@ type Chat struct {
 	/*Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.*/
 	LinkedChatId int `json:"linked_chat_id,omitempty"`
 	/*Optional. For supergroups, the location to which the supergroup is connected. */
-	Location ChatLocation `json:"location,omitempty"`
+	Location *ChatLocation `json:"location,omitempty"`
 }
 
 type ChatPhoto struct {
@@ -60,7 +60,7 @@ type ChatInviteLink struct {
 	/*The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.*/
 	InviteLink string `json:"invite_link"`
 	/*Creator of the link*/
-	Creator User `json:"user"`
+	Creator *User `json:"user"`
 	/*True, if users joining the chat via the link need to be approved by chat administrators*/
 	CreatesJoinRequest bool `json:"creates_join_request"`
 	/*True, if the link is primary*/
@@ -80,9 +80,9 @@ type ChatInviteLink struct {
 /*This object represents changes in the status of a chat member.*/
 type ChatMemberUpdated struct {
 	/*Chat the user belongs to*/
-	Chat Chat `json:"chat"`
+	Chat *Chat `json:"chat"`
 	/*Performer of the action, which resulted in the change*/
-	From User `json:"from"`
+	From *User `json:"from"`
 	/*Date the change was done in Unix time*/
 	Date int `json:"date"`
 	/*Previous information about the chat member*/
@@ -90,21 +90,21 @@ type ChatMemberUpdated struct {
 	/*New information about the chat member*/
 	NewChatMember json.RawMessage `json:"new_chat_member"`
 	/*Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.*/
-	InviteLink ChatInviteLink `json:"invite_link,omitempty"`
+	InviteLink *ChatInviteLink `json:"invite_link,omitempty"`
 }
 
 /*Represents a join request sent to a chat.*/
 type ChatJoinRequest struct {
 	/*Chat to which the request was sent*/
-	Chat Chat `json:"chat"`
+	Chat *Chat `json:"chat"`
 	/*User that sent the join request*/
-	From User `json:"from"`
+	From *User `json:"from"`
 	/*Date the request was sent in Unix time*/
 	Date int `json:"date"`
 	/*Optional. Bio of the user.*/
 	Bio string `json:"bio,omitempty"`
 	/*Optional. Chat invite link that was used by the user to send the join request*/
-	InviteLink ChatInviteLink `json:"invite_link,omitempty"`
+	InviteLink *ChatInviteLink `json:"invite_link,omitempty"`
 }
 
 /*Describes actions that a non-administrator user is allowed to take in a chat.*/
@@ -130,7 +130,7 @@ type ChatPermissions struct {
 /*Represents a location to which a chat is connected.*/
 type ChatLocation struct {
 	/*The location to which the supergroup is connected. Can't be a live location.*/
-	Location Location `json:"location"`
+	Location *Location `json:"location"`
 	/*Location address; 1-64 characters, as defined by the chat owner*/
 	Address string `json:"address"`
 }

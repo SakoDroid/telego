@@ -47,7 +47,7 @@ type OrderInfo struct {
 	/*Optional. User email*/
 	Email string `json:"email,omitempty"`
 	/*Optional. User shipping address*/
-	ShippingAddress ShippingAddress `json:"shipping_address,omitempty"`
+	ShippingAddress *ShippingAddress `json:"shipping_address,omitempty"`
 }
 
 /*This object represents one shipping option.*/
@@ -71,7 +71,7 @@ type SuccessfulPayment struct {
 	/*Optional. Identifier of the shipping option chosen by the user*/
 	ShippingOptionId string `json:"shipping_option_id,omitempty"`
 	/*Optional. Order info provided by the user*/
-	OrderInfo OrderInfo `json:"order_info,omitempty"`
+	OrderInfo *OrderInfo `json:"order_info,omitempty"`
 	/*Telegram payment identifier*/
 	TelegramPaymentChargeId string `json:"telegram_payment_charge_id"`
 	/*Provider payment identifier*/
@@ -83,11 +83,11 @@ type ShippingQuery struct {
 	/*Unique query identifier*/
 	Id string `json:"id"`
 	/*User who sent the query*/
-	From User `json:"from"`
+	From *User `json:"from"`
 	/*Bot specified invoice payload*/
 	InvoicePayload string `json:"invoice_payload"`
 	/*User specified shipping address*/
-	ShippingAddress ShippingAddress `json:"shipping_address"`
+	ShippingAddress *ShippingAddress `json:"shipping_address"`
 }
 
 /*This object contains information about an incoming pre-checkout query.*/
@@ -95,7 +95,7 @@ type PreCheckoutQuery struct {
 	/*Unique query identifier*/
 	Id string `json:"id"`
 	/*User who sent the query*/
-	From User `json:"from"`
+	From *User `json:"from"`
 	/*Three-letter ISO 4217 currency code*/
 	Currency string `json:"currency"`
 	/*Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145.*/
@@ -105,5 +105,5 @@ type PreCheckoutQuery struct {
 	/*Optional. Identifier of the shipping option chosen by the user*/
 	ShippingOptionId string `json:"shipping_option_id,omitempty"`
 	/*Optional. Order info provided by the user*/
-	OrderInfo OrderInfo `json:"order_info,omitempty"`
+	OrderInfo *OrderInfo `json:"order_info,omitempty"`
 }

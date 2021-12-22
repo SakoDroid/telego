@@ -30,7 +30,7 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, pu *chan *objs.Update) 
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		if val.Poll.Id != "" {
+		if val.Poll != nil {
 			*pu <- val
 		} else {
 			*uc <- val

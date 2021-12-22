@@ -33,7 +33,7 @@ type KeyboardButton struct {
 	RequestLocation bool `json:"request_location,omitempty"`
 	/*Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
 	Note: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.*/
-	RequestPoll KeyboardButtonPollType `json:"request_poll,omitempty"`
+	RequestPoll *KeyboardButtonPollType `json:"request_poll,omitempty"`
 }
 
 /*This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.*/
@@ -69,7 +69,7 @@ type InlineKeyboardButton struct {
 	/*Optional. HTTP or tg:// url to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.*/
 	URL string `json:"url,omitempty"`
 	/*Optional. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.*/
-	LoginURL LoginUrl `json:"login_url,omitempty"`
+	LoginURL *LoginUrl `json:"login_url,omitempty"`
 	/*Optional. Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes*/
 	CallbackData string `json:"callback_data,omitempty"`
 	/*Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.
@@ -83,7 +83,7 @@ type InlineKeyboardButton struct {
 	/*Optional. Description of the game that will be launched when the user presses the button.
 
 	NOTE: This type of button must always be the first button in the first row.*/
-	CallbackGame CallbackGame `json:"callbacl_game,omitempty"`
+	CallbackGame *CallbackGame `json:"callbacl_game,omitempty"`
 	/*Optional. Specify True, to send a Pay button.
 
 	NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.*/

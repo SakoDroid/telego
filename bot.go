@@ -419,10 +419,10 @@ func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File
 	if download {
 		err2 := bot.apiInterface.DownloadFile(res.Result, file)
 		if err2 != nil {
-			return &res.Result, err2
+			return res.Result, err2
 		}
 	}
-	return &res.Result, nil
+	return res.Result, nil
 }
 
 /*Creates and returns a ChatManager for groups and other chats witch an integer id.
@@ -545,7 +545,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	if !res.Result {
 		return nil, errors.New("false returned from server")
 	}
-	out := &StickerSet{bot: bot, stickerSet: objs.StickerSet{
+	out := &StickerSet{bot: bot, stickerSet: &objs.StickerSet{
 		Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
 	}}
 	out.update()
@@ -696,7 +696,7 @@ loop:
 				*bot.updateChannel <- poll
 				continue
 			}
-			err3 := pl.Update(&poll.Poll)
+			err3 := pl.Update(poll.Poll)
 			if err3 != nil {
 				logger.Logger.Println("Could not update poll `" + id + "`." + err3.Error())
 			}

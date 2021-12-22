@@ -777,7 +777,7 @@ func (bai *BotAPIInterface) GetFile(fileId string) (*objs.GetFileResult, error) 
 /*Downloads a file from telegram servers and saves it into the given file.
 
 This method closes the given file. If the file is nil, this method will create a file based on the name of the file stored in telegram servers.*/
-func (bai *BotAPIInterface) DownloadFile(fileObject objs.File, file *os.File) error {
+func (bai *BotAPIInterface) DownloadFile(fileObject *objs.File, file *os.File) error {
 	url := "https://api.telegram.org/file/bot" + bai.botConfigs.APIKey + "/" + fileObject.FilePath
 	res, err := http.Get(url)
 	if err != nil {

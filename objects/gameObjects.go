@@ -13,7 +13,7 @@ type Game struct {
 	/*Optional. Special entities that appear in text, such as usernames, URLs, bot commands, etc.*/
 	TextEntities []MessageEntity `json:"text_entities,omitempty"`
 	/*Optional. Animation that will be displayed in the game message in chats. Upload via BotFather*/
-	Animation Animation `json:"animation,omitempty"`
+	Animation *Animation `json:"animation,omitempty"`
 }
 
 /*A placeholder, currently holds no information. Use BotFather to set up your game.*/

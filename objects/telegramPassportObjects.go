@@ -5,7 +5,7 @@ type PassportData struct {
 	/*Array with information about documents and other Telegram Passport elements that was shared with the bot*/
 	Data []EncryptedPassportElement `json:"data"`
 	/*Encrypted credentials required to decrypt the data*/
-	Credentials EncryptedCredentials `json:"credentials"`
+	Credentials *EncryptedCredentials `json:"credentials"`
 }
 
 /*This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.*/
@@ -33,11 +33,11 @@ type EncryptedPassportElement struct {
 	/*Optional. Array of encrypted files with documents provided by the user, available for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials*/
 	Files []PassportFile `json:"files,omitempty"`
 	/*Optional. Encrypted file with the front side of the document, provided by the user. Available for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.*/
-	FrontSide PassportFile `json:"front_side,omitempty"`
+	FrontSide *PassportFile `json:"front_side,omitempty"`
 	/*Optional. Encrypted file with the reverse side of the document, provided by the user. Available for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying EncryptedCredentials.*/
-	ReverseSide PassportFile `json:"reverse_side,omitempty"`
+	ReverseSide *PassportFile `json:"reverse_side,omitempty"`
 	/*Optional. Encrypted file with the selfie of the user holding a document, provided by the user; available for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.*/
-	Selfie PassportFile `json:"selfie,omitempty"`
+	Selfie *PassportFile `json:"selfie,omitempty"`
 	/*Optional. Array of encrypted files with translated versions of documents provided by the user. Available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.*/
 	Translation []PassportFile `json:"translation,omitempty"`
 	/*	Base64-encoded element hash for using in PassportElementErrorUnspecified*/

@@ -5,7 +5,7 @@ type MessageEntity struct {
 	Offset   int    `json:"offset"`
 	Length   int    `json:"Length"`
 	URL      string `json:"url,omitempty"`
-	User     User   `json:"user,omitempty"`
+	User     *User  `json:"user,omitempty"`
 	Language string `json:"language,omitempty"`
 }
 
@@ -18,57 +18,57 @@ type PhotoSize struct {
 }
 
 type Animation struct {
-	FileId       string    `json:"file_id"`
-	FileUniqueId string    `json:"file_unique_id"`
-	Width        int       `json:"width"`
-	Height       int       `json:"height"`
-	Duration     int       `json:"duration"`
-	Thumb        PhotoSize `json:"thumb,omitempty"`
-	FileName     string    `json:"file_name,omitempty"`
-	MIMEType     string    `json:"mime_type,omitempty"`
-	FileSize     int       `json:"file_size,omitempty"`
+	FileId       string     `json:"file_id"`
+	FileUniqueId string     `json:"file_unique_id"`
+	Width        int        `json:"width"`
+	Height       int        `json:"height"`
+	Duration     int        `json:"duration"`
+	Thumb        *PhotoSize `json:"thumb,omitempty"`
+	FileName     string     `json:"file_name,omitempty"`
+	MIMEType     string     `json:"mime_type,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
 }
 
 type Audio struct {
-	FileId       string    `json:"file_id"`
-	FileUniqueId string    `json:"file_unique_id"`
-	Duration     int       `json:"duration"`
-	Performer    string    `json:"performer,omitempty"`
-	Title        string    `json:"title,omitempty"`
-	FileName     string    `json:"file_name,omitempty"`
-	MIMEType     string    `json:"mime_type,omitempty"`
-	FileSize     int       `json:"file_size,omitempty"`
-	Thumb        PhotoSize `json:"thumb,omitempty"`
+	FileId       string     `json:"file_id"`
+	FileUniqueId string     `json:"file_unique_id"`
+	Duration     int        `json:"duration"`
+	Performer    string     `json:"performer,omitempty"`
+	Title        string     `json:"title,omitempty"`
+	FileName     string     `json:"file_name,omitempty"`
+	MIMEType     string     `json:"mime_type,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
+	Thumb        *PhotoSize `json:"thumb,omitempty"`
 }
 
 type Document struct {
-	FileId       string    `json:"file_id"`
-	FileUniqueId string    `json:"file_unique_id"`
-	Thumb        PhotoSize `json:"thumb,omitempty"`
-	FileName     string    `json:"file_name,omitempty"`
-	MIMEType     string    `json:"mime_type,omitempty"`
-	FileSize     int       `json:"file_size,omitempty"`
+	FileId       string     `json:"file_id"`
+	FileUniqueId string     `json:"file_unique_id"`
+	Thumb        *PhotoSize `json:"thumb,omitempty"`
+	FileName     string     `json:"file_name,omitempty"`
+	MIMEType     string     `json:"mime_type,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
 }
 
 type Video struct {
-	FileId       string    `json:"file_id"`
-	FileUniqueId string    `json:"file_unique_id"`
-	Width        int       `json:"width"`
-	Height       int       `json:"height"`
-	Duration     int       `json:"duration"`
-	Thumb        PhotoSize `json:"thumb,omitempty"`
-	FileName     string    `json:"file_name,omitempty"`
-	MIMEType     string    `json:"mime_type,omitempty"`
-	FileSize     int       `json:"file_size,omitempty"`
+	FileId       string     `json:"file_id"`
+	FileUniqueId string     `json:"file_unique_id"`
+	Width        int        `json:"width"`
+	Height       int        `json:"height"`
+	Duration     int        `json:"duration"`
+	Thumb        *PhotoSize `json:"thumb,omitempty"`
+	FileName     string     `json:"file_name,omitempty"`
+	MIMEType     string     `json:"mime_type,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
 }
 
 type VideoNote struct {
-	FileId       string    `json:"file_id"`
-	FileUniqueId string    `json:"file_unique_id"`
-	Length       int       `json:"length"`
-	Duration     int       `json:"duration"`
-	Thumb        PhotoSize `json:"thumb,omitempty"`
-	FileSize     int       `json:"file_size,omitempty"`
+	FileId       string     `json:"file_id"`
+	FileUniqueId string     `json:"file_unique_id"`
+	Length       int        `json:"length"`
+	Duration     int        `json:"duration"`
+	Thumb        *PhotoSize `json:"thumb,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
 }
 
 type Voice struct {
@@ -99,7 +99,7 @@ type PollOption struct {
 
 type PollAnswer struct {
 	PollId    string `json:"poll_id"`
-	User      User   `json:"user"`
+	User      *User  `json:"user"`
 	OptionIds []int  `json:"option_ids"`
 }
 
@@ -129,19 +129,19 @@ type Location struct {
 }
 
 type Venue struct {
-	Location        Location `json:"location"`
-	Title           string   `json:"title"`
-	Address         string   `json:"address"`
-	FoursquareId    string   `json:"foursquare_id,omitempty"`
-	FoursquareType  string   `json:"foursquare_type,omitempty"`
-	GooglePlaceId   string   `json:"google_place_id,omitempty"`
-	GooglePlaceType string   `json:"google_place_type,omitempty"`
+	Location        *Location `json:"location"`
+	Title           string    `json:"title"`
+	Address         string    `json:"address"`
+	FoursquareId    string    `json:"foursquare_id,omitempty"`
+	FoursquareType  string    `json:"foursquare_type,omitempty"`
+	GooglePlaceId   string    `json:"google_place_id,omitempty"`
+	GooglePlaceType string    `json:"google_place_type,omitempty"`
 }
 
 type ProximityAlertTriggered struct {
-	Traveler User `json:"traveer"`
-	Watcher  User `json:"Watcher"`
-	Distance int  `json:"distance"`
+	Traveler *User `json:"traveer"`
+	Watcher  *User `json:"Watcher"`
+	Distance int   `json:"distance"`
 }
 
 type MessageAutoDeleteTimerChanged struct {

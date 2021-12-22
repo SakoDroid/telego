@@ -6,7 +6,7 @@ const DefaultBotAPI = "https://api.telegram.org/bot"
 const DefaultLogFile = "./bot-logs.log"
 
 type BotConfigs struct {
-	/*This is the bot api server. If you dont have a local bot api server, user "configs.DefaultBotAPI" for this field.*/
+	/*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
 	BotAPI string
 	/*The API key for your bot. You can get the api key (token) from botfather*/
 	APIKey string
