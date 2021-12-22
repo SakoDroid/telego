@@ -1,6 +1,7 @@
 # Telebot
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telebot.svg)](https://pkg.go.dev/github.com/SakoDroid/telebot)
+[![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
 
 A Go library for creating telegram bots.
 
