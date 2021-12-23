@@ -215,3 +215,9 @@ type Webhookinfo struct {
 	/*Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member*/
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 }
+
+/*Not related to telegram bot api*/
+type ChatUpdate struct {
+	ChatId string
+	Update *Update
+}

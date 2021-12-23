@@ -2,13 +2,14 @@ package parser
 
 import (
 	"encoding/json"
+	"strconv"
 
 	errs "github.com/SakoDroid/telebot/Errors"
 	objs "github.com/SakoDroid/telebot/objects"
 )
 
 //Parses the recived update and returns the last update offset.
-func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Update, messageChannel *chan *objs.Message, editedMessageChannel *chan *objs.Message, channelPostChannel *chan *objs.Message, editedChannelPostChannel *chan *objs.Message, inlineQueryChannel *chan *objs.InlineQuery, chosenInlineResultChannel *chan *objs.ChosenInlineResult, callbackQueryChannel *chan *objs.CallbackQuery, shippingQueryChannel *chan *objs.ShippingQuery, preCheckoutQueryChannel *chan *objs.PreCheckoutQuery, myChatMemberChannel *chan *objs.ChatMemberUpdated, chatMemberChannel *chan *objs.ChatMemberUpdated, chatJoinRequestChannel *chan *objs.ChatJoinRequest) (int, error) {
+func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) (int, error) {
 	def := &objs.DefaultResult{}
 	err2 := json.Unmarshal(body, def)
 	if err2 != nil {
@@ -22,67 +23,54 @@ func ParseUpdate(body []byte, uc *chan *objs.Update, pu *chan *objs.Update, mess
 	if err != nil {
 		return 0, err
 	}
-	return parse(
-		ur, uc, pu, messageChannel,
-		editedMessageChannel,
-		channelPostChannel,
-		editedChannelPostChannel,
-		inlineQueryChannel,
-		chosenInlineResultChannel,
-		callbackQueryChannel,
-		shippingQueryChannel,
-		preCheckoutQueryChannel,
-		myChatMemberChannel,
-		chatMemberChannel,
-		chatJoinRequestChannel,
-	)
+	return parse(ur, uc, cu)
 }
 
-func parse(ur *objs.UpdateResult, uc *chan *objs.Update, pu *chan *objs.Update, messageChannel *chan *objs.Message, editedMessageChannel *chan *objs.Message, channelPostChannel *chan *objs.Message, editedChannelPostChannel *chan *objs.Message, inlineQueryChannel *chan *objs.InlineQuery, chosenInlineResultChannel *chan *objs.ChosenInlineResult, callbackQueryChannel *chan *objs.CallbackQuery, shippingQueryChannel *chan *objs.ShippingQuery, preCheckoutQueryChannel *chan *objs.PreCheckoutQuery, myChatMemberChannel *chan *objs.ChatMemberUpdated, chatMemberChannel *chan *objs.ChatMemberUpdated, chatJoinRequestChannel *chan *objs.ChatJoinRequest) (int, error) {
+func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) (int, error) {
 	lastOffset := 0
 	for _, val := range ur.Result {
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		processTheUpdate(
-			val, uc, pu, messageChannel, editedMessageChannel, channelPostChannel,
-			editedChannelPostChannel, inlineQueryChannel, chosenInlineResultChannel,
-			callbackQueryChannel, shippingQueryChannel, preCheckoutQueryChannel,
-			myChatMemberChannel, chatMemberChannel, chatJoinRequestChannel,
-		)
+		if !processChat(val, cu) {
+			*uc <- val
+		}
 	}
 	return lastOffset, nil
 }
 
-func processTheUpdate(update *objs.Update, uc *chan *objs.Update, pu *chan *objs.Update, messageChannel *chan *objs.Message, editedMessageChannel *chan *objs.Message, channelPostChannel *chan *objs.Message, editedChannelPostChannel *chan *objs.Message, inlineQueryChannel *chan *objs.InlineQuery, chosenInlineResultChannel *chan *objs.ChosenInlineResult, callbackQueryChannel *chan *objs.CallbackQuery, shippingQueryChannel *chan *objs.ShippingQuery, preCheckoutQueryChannel *chan *objs.PreCheckoutQuery, myChatMemberChannel *chan *objs.ChatMemberUpdated, chatMemberChannel *chan *objs.ChatMemberUpdated, chatJoinRequestChannel *chan *objs.ChatJoinRequest) {
+func processChat(update *objs.Update, chatUpdateChannel *chan *objs.ChatUpdate) bool {
+	var chat *objs.Chat
 	switch {
-	case messageChannel != nil && update.Message != nil:
-		*messageChannel <- update.Message
-	case editedMessageChannel != nil && update.EditedMessage != nil:
-		*editedMessageChannel <- update.EditedMessage
-	case channelPostChannel != nil && update.ChannelPost != nil:
-		*channelPostChannel <- update.ChannelPost
-	case editedChannelPostChannel != nil && update.EditedChannelPost != nil:
-		*editedChannelPostChannel <- update.EditedChannelPost
-	case inlineQueryChannel != nil && update.InlineQuery != nil:
-		*inlineQueryChannel <- update.InlineQuery
-	case chosenInlineResultChannel != nil && update.ChosenInlineResult != nil:
-		*chosenInlineResultChannel <- update.ChosenInlineResult
-	case callbackQueryChannel != nil && update.CallbackQuery != nil:
-		*callbackQueryChannel <- update.CallbackQuery
-	case shippingQueryChannel != nil && update.ShippingQuery != nil:
-		*shippingQueryChannel <- update.ShippingQuery
-	case preCheckoutQueryChannel != nil && update.PreCheckoutQuery != nil:
-		*preCheckoutQueryChannel <- update.PreCheckoutQuery
-	case update.Poll != nil:
-		*pu <- update
-	case myChatMemberChannel != nil && update.MyChatMember != nil:
-		*myChatMemberChannel <- update.MyChatMember
-	case chatMemberChannel != nil && update.ChatMember != nil:
-		*chatMemberChannel <- update.ChatMember
-	case chatJoinRequestChannel != nil && update.ChatJoinRequest != nil:
-		*chatJoinRequestChannel <- update.ChatJoinRequest
-	default:
-		*uc <- update
+	case update.Message != nil:
+		chat = update.Message.Chat
+	case update.EditedMessage != nil:
+		chat = update.EditedMessage.Chat
+	case update.ChannelPost != nil:
+		chat = update.ChannelPost.Chat
+	case update.EditedChannelPost != nil:
+		chat = update.EditedChannelPost.Chat
+	case update.MyChatMember != nil:
+		chat = update.MyChatMember.Chat
+	case update.ChatMember != nil:
+		chat = update.ChatMember.Chat
+	case update.ChatJoinRequest != nil:
+		chat = update.ChatJoinRequest.Chat
 	}
+	if chat == nil {
+		return false
+	} else {
+		*chatUpdateChannel <- createChatUpdate(chat, update)
+	}
+	return true
+}
+
+func createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
+	out := objs.ChatUpdate{Update: update}
+	if chat.Type == "channel" {
+		out.ChatId = chat.Username
+	} else {
+		out.ChatId = strconv.Itoa(chat.Id)
+	}
+	return &out
 }

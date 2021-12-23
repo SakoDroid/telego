@@ -402,130 +402,146 @@ func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.Passport
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterMessageChannel() *chan *objs.Message {
-	if bot.bot.apiInterface.MessageChannel == nil {
+	if bot.bot.messageChannel == nil {
 		ch := make(chan *objs.Message)
-		bot.bot.apiInterface.MessageChannel = &ch
+		bot.bot.messageChannel = &ch
 	}
-	return bot.bot.apiInterface.MessageChannel
+	return bot.bot.messageChannel
 }
 
 /*Register a special channel for edited message updates only. Everytime an update is received that contains edited_message filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterEditedMessageChannel() *chan *objs.Message {
-	if bot.bot.apiInterface.EditedMessageChannel == nil {
+	if bot.bot.editedMessageChannel == nil {
 		ch := make(chan *objs.Message)
-		bot.bot.apiInterface.EditedMessageChannel = &ch
+		bot.bot.editedMessageChannel = &ch
 	}
-	return bot.bot.apiInterface.EditedMessageChannel
+	return bot.bot.editedMessageChannel
 }
 
 /*Register a special channel for channel post updates only. Everytime an update is received that contains channel_post filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterChannellPostChannel() *chan *objs.Message {
-	if bot.bot.apiInterface.ChannelPostChannel == nil {
+	if bot.bot.channelPostChannel == nil {
 		ch := make(chan *objs.Message)
-		bot.bot.apiInterface.ChannelPostChannel = &ch
+		bot.bot.channelPostChannel = &ch
 	}
-	return bot.bot.apiInterface.ChannelPostChannel
+	return bot.bot.channelPostChannel
 }
 
 /*Register a special channel for edited channel post updates only. Everytime an update is received that contains edited_channel_post filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterEditedChannelPostChannel() *chan *objs.Message {
-	if bot.bot.apiInterface.EditedChannelPostChannel == nil {
+	if bot.bot.editedChannelPostChannel == nil {
 		ch := make(chan *objs.Message)
-		bot.bot.apiInterface.EditedChannelPostChannel = &ch
+		bot.bot.editedChannelPostChannel = &ch
 	}
-	return bot.bot.apiInterface.EditedChannelPostChannel
+	return bot.bot.editedChannelPostChannel
 }
 
 /*Register a special channel for inline query updates only. Everytime an update is received that contains inline_query filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterInlineQueryChannel() *chan *objs.InlineQuery {
-	if bot.bot.apiInterface.InlineQueryChannel == nil {
+	if bot.bot.inlineQueryChannel == nil {
 		ch := make(chan *objs.InlineQuery)
-		bot.bot.apiInterface.InlineQueryChannel = &ch
+		bot.bot.inlineQueryChannel = &ch
 	}
-	return bot.bot.apiInterface.InlineQueryChannel
+	return bot.bot.inlineQueryChannel
 }
 
 /*Register a special channel for chosen inline result updates only. Everytime an update is received that contains chosen_inline_result filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterChosenInlineResultChannel() *chan *objs.ChosenInlineResult {
-	if bot.bot.apiInterface.ChosenInlineResultChannel == nil {
+	if bot.bot.chosenInlineResultChannel == nil {
 		ch := make(chan *objs.ChosenInlineResult)
-		bot.bot.apiInterface.ChosenInlineResultChannel = &ch
+		bot.bot.chosenInlineResultChannel = &ch
 	}
-	return bot.bot.apiInterface.ChosenInlineResultChannel
+	return bot.bot.chosenInlineResultChannel
 }
 
 /*Register a special channel for callback query updates only. Everytime an update is received that contains callback_query filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterCallbackQueryChannel() *chan *objs.CallbackQuery {
-	if bot.bot.apiInterface.CallbackQueryChannel == nil {
+	if bot.bot.callbackQueryChannel == nil {
 		ch := make(chan *objs.CallbackQuery)
-		bot.bot.apiInterface.CallbackQueryChannel = &ch
+		bot.bot.callbackQueryChannel = &ch
 	}
-	return bot.bot.apiInterface.CallbackQueryChannel
+	return bot.bot.callbackQueryChannel
 }
 
 /*Register a special channel for shipping query updates only. Everytime an update is received that contains shipping_query filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterShippingQueryChannel() *chan *objs.ShippingQuery {
-	if bot.bot.apiInterface.ShippingQueryChannel == nil {
+	if bot.bot.shippingQueryChannel == nil {
 		ch := make(chan *objs.ShippingQuery)
-		bot.bot.apiInterface.ShippingQueryChannel = &ch
+		bot.bot.shippingQueryChannel = &ch
 	}
-	return bot.bot.apiInterface.ShippingQueryChannel
+	return bot.bot.shippingQueryChannel
 }
 
 /*Register a special channel for pre checkout query updates only. Everytime an update is received that contains pre_checkout_query filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterPreCheckoutQueryChannel() *chan *objs.PreCheckoutQuery {
-	if bot.bot.apiInterface.PreCheckoutQueryChannel == nil {
+	if bot.bot.preCheckoutQueryChannel == nil {
 		ch := make(chan *objs.PreCheckoutQuery)
-		bot.bot.apiInterface.PreCheckoutQueryChannel = &ch
+		bot.bot.preCheckoutQueryChannel = &ch
 	}
-	return bot.bot.apiInterface.PreCheckoutQueryChannel
+	return bot.bot.preCheckoutQueryChannel
 }
 
 /*Register a special channel for my chat member updates only. Everytime an update is received that contains my_chat_member filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterMyChatMemberChannel() *chan *objs.ChatMemberUpdated {
-	if bot.bot.apiInterface.MyChatMemberChannel == nil {
+	if bot.bot.myChatMemberChannel == nil {
 		ch := make(chan *objs.ChatMemberUpdated)
-		bot.bot.apiInterface.MyChatMemberChannel = &ch
+		bot.bot.myChatMemberChannel = &ch
 	}
-	return bot.bot.apiInterface.MyChatMemberChannel
+	return bot.bot.myChatMemberChannel
 }
 
 /*Register a special channel for chat member updates only. Everytime an update is received that contains chat_member filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterChatMemberChannel() *chan *objs.ChatMemberUpdated {
-	if bot.bot.apiInterface.ChatMemberChannel == nil {
+	if bot.bot.chatMemberChannel == nil {
 		ch := make(chan *objs.ChatMemberUpdated)
-		bot.bot.apiInterface.ChatMemberChannel = &ch
+		bot.bot.chatMemberChannel = &ch
 	}
-	return bot.bot.apiInterface.ChatMemberChannel
+	return bot.bot.chatMemberChannel
 }
 
 /*Register a special channel for chat join request updates only. Everytime an update is received that contains chat_join_request filed, the message field is passed into this channel. (The update won't be passed into general update channel anymore)
 
 **Note : If a channe has been already set, this method will return it and won't set a new channe for this update type.*/
 func (bot *AdvancedBot) RegisterChatJoinRequestChannel() *chan *objs.ChatJoinRequest {
-	if bot.bot.apiInterface.ChatJoinRequestChannel == nil {
+	if bot.bot.chatJoinRequestChannel == nil {
 		ch := make(chan *objs.ChatJoinRequest)
-		bot.bot.apiInterface.ChatJoinRequestChannel = &ch
+		bot.bot.chatJoinRequestChannel = &ch
 	}
-	return bot.bot.apiInterface.ChatJoinRequestChannel
+	return bot.bot.chatJoinRequestChannel
+}
+
+/*Registers a channel for the given chatId. Any update received for this chat will be passed into the returned channel.
+
+All chat ids should be passed to this method as string. If a chat id is ineteger, convert it into string.
+
+If a channel has been registered before for the given chat id, that channel will be returned not a new one.
+
+**Note : Updates for this chat will be only passed into thw returned channel and they won't be passed into general update channel anymore*/
+func (bot *AdvancedBot) RegisterChatChannel(chatId string) *chan *objs.Update {
+	if bot.bot.chatsMap[chatId] != nil {
+		return bot.bot.chatsMap[chatId]
+	}
+	ch := make(chan *objs.Update)
+	bot.bot.chatsMap[chatId] = &ch
+	return &ch
 }

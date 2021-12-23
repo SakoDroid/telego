@@ -20,24 +20,12 @@ import (
 var interfaceCreated = false
 
 type BotAPIInterface struct {
-	botConfigs                *cfgs.BotConfigs
-	updateRoutineRunning      bool
-	updateChannel             *chan *objs.Update
-	pollUpdateChannel         *chan *objs.Update
-	MessageChannel            *chan *objs.Message
-	EditedMessageChannel      *chan *objs.Message
-	ChannelPostChannel        *chan *objs.Message
-	EditedChannelPostChannel  *chan *objs.Message
-	InlineQueryChannel        *chan *objs.InlineQuery
-	ChosenInlineResultChannel *chan *objs.ChosenInlineResult
-	CallbackQueryChannel      *chan *objs.CallbackQuery
-	ShippingQueryChannel      *chan *objs.ShippingQuery
-	PreCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
-	MyChatMemberChannel       *chan *objs.ChatMemberUpdated
-	ChatMemberChannel         *chan *objs.ChatMemberUpdated
-	ChatJoinRequestChannel    *chan *objs.ChatJoinRequest
-	updateRoutineChannel      chan bool
-	lastOffset                int
+	botConfigs           *cfgs.BotConfigs
+	updateRoutineRunning bool
+	updateChannel        *chan *objs.Update
+	chatUpadateChannel   *chan *objs.ChatUpdate
+	updateRoutineChannel chan bool
+	lastOffset           int
 }
 
 /*Starts the update routine to receive updates from api sever*/
@@ -68,9 +56,9 @@ func (bai *BotAPIInterface) GetUpdateChannel() *chan *objs.Update {
 	return bai.updateChannel
 }
 
-/*Returns the poll update channel*/
-func (bai *BotAPIInterface) GetPollUpdateChannel() *chan *objs.Update {
-	return bai.pollUpdateChannel
+/*Returnes the chat update channel*/
+func (bai *BotAPIInterface) GetChatUpdateChannel() *chan *objs.ChatUpdate {
+	return bai.chatUpadateChannel
 }
 
 func (bai *BotAPIInterface) startReceiving() {
@@ -101,11 +89,7 @@ loop:
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
 	of, err := up.ParseUpdate(
-		body, bai.updateChannel, bai.pollUpdateChannel, bai.MessageChannel,
-		bai.EditedMessageChannel, bai.ChannelPostChannel, bai.EditedChannelPostChannel,
-		bai.InlineQueryChannel, bai.ChosenInlineResultChannel, bai.CallbackQueryChannel,
-		bai.ShippingQueryChannel, bai.PreCheckoutQueryChannel, bai.MyChatMemberChannel,
-		bai.ChatMemberChannel, bai.ChatJoinRequestChannel,
+		body, bai.updateChannel, bai.chatUpadateChannel,
 	)
 	if err != nil {
 		return err
@@ -2212,7 +2196,7 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	}
 	interfaceCreated = true
 	ch := make(chan *objs.Update)
-	ch2 := make(chan *objs.Update)
-	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, pollUpdateChannel: &ch2}
+	ch3 := make(chan *objs.ChatUpdate)
+	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, chatUpadateChannel: &ch3}
 	return temp, nil
 }

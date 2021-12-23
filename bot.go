@@ -11,17 +11,32 @@ import (
 )
 
 type Bot struct {
-	botCfg             *cfg.BotConfigs
-	apiInterface       *tba.BotAPIInterface
-	updateChannel      *chan *objs.Update
-	pollUpdateChannel  *chan *objs.Update
-	pollRoutineChannel *chan bool
+	botCfg                    *cfg.BotConfigs
+	apiInterface              *tba.BotAPIInterface
+	interfaceUpdateChannel    *chan *objs.Update
+	updateChannel             *chan *objs.Update
+	chatUpdateChannel         *chan *objs.ChatUpdate
+	prcRoutineChannel         *chan bool
+	messageChannel            *chan *objs.Message
+	editedMessageChannel      *chan *objs.Message
+	channelPostChannel        *chan *objs.Message
+	editedChannelPostChannel  *chan *objs.Message
+	inlineQueryChannel        *chan *objs.InlineQuery
+	chosenInlineResultChannel *chan *objs.ChosenInlineResult
+	callbackQueryChannel      *chan *objs.CallbackQuery
+	shippingQueryChannel      *chan *objs.ShippingQuery
+	preCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
+	myChatMemberChannel       *chan *objs.ChatMemberUpdated
+	chatMemberChannel         *chan *objs.ChatMemberUpdated
+	chatJoinRequestChannel    *chan *objs.ChatJoinRequest
+	chatsMap                  map[string]*chan *objs.Update
 }
 
 /*Starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run() error {
 	logger.InitTheLogger(bot.botCfg)
-	go bot.startPollUpdateRoutine()
+	go bot.startChatUpdateRoutine()
+	go bot.startUpdateProcessing()
 	return bot.apiInterface.StartUpdateRoutine()
 }
 
@@ -673,7 +688,7 @@ func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
-	*bot.pollRoutineChannel <- true
+	*bot.prcRoutineChannel <- true
 }
 
 /*Returns and advanced version which gives more customized functions to iteract with the bot*/
@@ -681,24 +696,78 @@ func (bot *Bot) AdvancedMode() *AdvancedBot {
 	return &AdvancedBot{bot: bot}
 }
 
-func (bot *Bot) startPollUpdateRoutine() {
+func (bot *Bot) processUpdate(update *objs.Update) {
+	switch {
+	case bot.messageChannel != nil && update.Message != nil:
+		*bot.messageChannel <- update.Message
+	case bot.editedMessageChannel != nil && update.EditedMessage != nil:
+		*bot.editedMessageChannel <- update.EditedMessage
+	case bot.channelPostChannel != nil && update.ChannelPost != nil:
+		*bot.channelPostChannel <- update.ChannelPost
+	case bot.editedChannelPostChannel != nil && update.EditedChannelPost != nil:
+		*bot.editedChannelPostChannel <- update.EditedChannelPost
+	case bot.inlineQueryChannel != nil && update.InlineQuery != nil:
+		*bot.inlineQueryChannel <- update.InlineQuery
+	case bot.chosenInlineResultChannel != nil && update.ChosenInlineResult != nil:
+		*bot.chosenInlineResultChannel <- update.ChosenInlineResult
+	case bot.callbackQueryChannel != nil && update.CallbackQuery != nil:
+		*bot.callbackQueryChannel <- update.CallbackQuery
+	case bot.shippingQueryChannel != nil && update.ShippingQuery != nil:
+		*bot.shippingQueryChannel <- update.ShippingQuery
+	case bot.preCheckoutQueryChannel != nil && update.PreCheckoutQuery != nil:
+		*bot.preCheckoutQueryChannel <- update.PreCheckoutQuery
+	case update.Poll != nil:
+		bot.processPoll(update)
+	case bot.myChatMemberChannel != nil && update.MyChatMember != nil:
+		*bot.myChatMemberChannel <- update.MyChatMember
+	case bot.chatMemberChannel != nil && update.ChatMember != nil:
+		*bot.chatMemberChannel <- update.ChatMember
+	case bot.chatJoinRequestChannel != nil && update.ChatJoinRequest != nil:
+		*bot.chatJoinRequestChannel <- update.ChatJoinRequest
+	default:
+		*bot.updateChannel <- update
+	}
+}
+
+func (bot *Bot) startUpdateProcessing() {
 loop:
 	for {
 		select {
-		case <-*bot.pollRoutineChannel:
+		case <-*bot.prcRoutineChannel:
 			break loop
-		default:
-			poll := <-*bot.pollUpdateChannel
-			id := poll.Poll.Id
-			pl := Polls[id]
-			if pl == nil {
-				logger.Logger.Println("Could not update poll `" + id + "`. Not found in the Polls map")
-				*bot.updateChannel <- poll
-				continue
-			}
-			err3 := pl.Update(poll.Poll)
-			if err3 != nil {
-				logger.Logger.Println("Could not update poll `" + id + "`." + err3.Error())
+		case up := <-*bot.interfaceUpdateChannel:
+			bot.processUpdate(up)
+		}
+	}
+}
+
+func (bot *Bot) processPoll(update *objs.Update) {
+	id := update.Poll.Id
+	pl := Polls[id]
+	if pl == nil {
+		logger.Logger.Println("Could not update poll `" + id + "`. Not found in the Polls map")
+		*bot.updateChannel <- update
+	} else {
+		err3 := pl.Update(update.Poll)
+		if err3 != nil {
+			logger.Logger.Println("Could not update poll `" + id + "`." + err3.Error())
+		}
+	}
+}
+
+func (bot *Bot) startChatUpdateRoutine() {
+loop:
+	for {
+		select {
+		case <-*bot.prcRoutineChannel:
+			break loop
+		case up := <-*bot.chatUpdateChannel:
+			chatCh := bot.chatsMap[up.ChatId]
+			if chatCh != nil {
+				*chatCh <- up.Update
+				logger.Logger.Println("update received and passed into channel for chat", up.ChatId)
+			} else {
+				*bot.interfaceUpdateChannel <- up.Update
 			}
 		}
 	}
@@ -711,5 +780,6 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 		return nil, err
 	}
 	ch := make(chan bool)
-	return &Bot{botCfg: cfg, apiInterface: api, updateChannel: api.GetUpdateChannel(), pollUpdateChannel: api.GetPollUpdateChannel(), pollRoutineChannel: &ch}, nil
+	uc := make(chan *objs.Update)
+	return &Bot{botCfg: cfg, apiInterface: api, updateChannel: &uc, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch, chatsMap: make(map[string]*chan *objs.Update)}, nil
 }
