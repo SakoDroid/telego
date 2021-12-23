@@ -20,6 +20,7 @@ A Go library for creating telegram bots.
             * [Media group messages](#media-group-messages)
             * [Polls](#polls)
             * [Files](#files)
+        * [Special channels](#special-channels)
 * [License](#license)
 
 ---------------------------------
@@ -347,6 +348,42 @@ if err != nil {
 }
 fl.Close()
 
+```
+#### **Special channels**
+
+In telebot you can register special channels for a specified type of update.Updates received from api server can have `message` field, `edited_message` field, `inline_query`field and some other fields ( you can see them [here](#https://core.telegram.org/bots/api#update) ). As described in [telegram bot api](https://core.telegram.org/bots/api) updates received from api server will have only one of these fields. To have easier processing and erase the part where you have to check all of the field to see what kind of update is received, we have created special channels. Special channels can be used to get notified whenever a specified kind of update is received.  This feature let's you have easier processing for each type of update. This feature is included in the advanced mode so for activating it follow these steps : 
+1. Call the `AdvancedMode()` to have AdvancedBot. 
+2. Then call the `Register[field name]Channel()` ( like `RegisterMessageChannel()` or `RegisterInlineQueryChannel()` ) method of the AdvancedBot. This methods will register a channel for that update type and return the channel.
+
+**Notes :**
+1. When you register a channel for a specified update type, all the received updates that contain that field will be passed into this channel and none of them will be passed into general update channel anymore.
+2. When a register method is called, returned channel is permenant. Meaning that further calls of the same method will return the *same channel* not a new one.
+
+**An example :**
+
+For example you want to get notified whenever an update is received that contains message field. To do this we follow the above steps and write the below code :
+
+```
+//General update channel.
+ch := *bot.GetUpdateChannel()
+
+//Register message channel.
+mch := *bot.AdvancedMode().RegisterMessageChannel()
+
+for {
+    select {
+
+    //This will be triggered when an update is passed into general update channel.
+    case update := <-ch:
+        fmt.Println("this is update channel")
+        //Processing the update ...
+    
+    //This will be triggered when an update containing message field is received and the message field is passed into the channel.
+    case message := <-mch:
+        fmt.Println("this is message channel")
+        fmt.Println(message.Text)
+    }
+}
 ```
 
 ---------------------------
