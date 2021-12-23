@@ -20,12 +20,24 @@ import (
 var interfaceCreated = false
 
 type BotAPIInterface struct {
-	botConfigs           *cfgs.BotConfigs
-	updateRoutineRunning bool
-	updateChannel        *chan *objs.Update
-	pollUpdateChannel    *chan *objs.Update
-	updateRoutineChannel chan bool
-	lastOffset           int
+	botConfigs                *cfgs.BotConfigs
+	updateRoutineRunning      bool
+	updateChannel             *chan *objs.Update
+	pollUpdateChannel         *chan *objs.Update
+	MessageChannel            *chan *objs.Message
+	EditedMessageChannel      *chan *objs.Message
+	ChannelPostChannel        *chan *objs.Message
+	EditedChannelPostChannel  *chan *objs.Message
+	InlineQueryChannel        *chan *objs.InlineQuery
+	ChosenInlineResultChannel *chan *objs.ChosenInlineResult
+	CallbackQueryChannel      *chan *objs.CallbackQuery
+	ShippingQueryChannel      *chan *objs.ShippingQuery
+	PreCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
+	MyChatMemberChannel       *chan *objs.ChatMemberUpdated
+	ChatMemberChannel         *chan *objs.ChatMemberUpdated
+	ChatJoinRequestChannel    *chan *objs.ChatJoinRequest
+	updateRoutineChannel      chan bool
+	lastOffset                int
 }
 
 /*Starts the update routine to receive updates from api sever*/
@@ -88,7 +100,13 @@ loop:
 }
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
-	of, err := up.ParseUpdate(body, bai.updateChannel, bai.pollUpdateChannel)
+	of, err := up.ParseUpdate(
+		body, bai.updateChannel, bai.pollUpdateChannel, bai.MessageChannel,
+		bai.EditedMessageChannel, bai.ChannelPostChannel, bai.EditedChannelPostChannel,
+		bai.InlineQueryChannel, bai.ChosenInlineResultChannel, bai.CallbackQueryChannel,
+		bai.ShippingQueryChannel, bai.PreCheckoutQueryChannel, bai.MyChatMemberChannel,
+		bai.ChatMemberChannel, bai.ChatJoinRequestChannel,
+	)
 	if err != nil {
 		return err
 	}

@@ -11,23 +11,11 @@ import (
 )
 
 type Bot struct {
-	botCfg                    *cfg.BotConfigs
-	apiInterface              *tba.BotAPIInterface
-	updateChannel             *chan *objs.Update
-	pollUpdateChannel         *chan *objs.Update
-	messageChannel            *chan *objs.Message
-	editedMessageChannel      *chan *objs.Message
-	channelPostChannel        *chan *objs.Message
-	editedChannelPostChannel  *chan *objs.Message
-	inlineQueryChannel        *chan *objs.InlineQuery
-	chosenInlineResultChannel *chan *objs.ChosenInlineResult
-	callbackQueryChannel      *chan *objs.CallbackQuery
-	shippingQueryChannel      *chan *objs.ShippingQuery
-	preCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
-	myChatMemberChannel       *chan *objs.ChatMemberUpdated
-	chatMemberChannel         *chan *objs.ChatMemberUpdated
-	chatJoinRequestChannel    *chan *objs.ChatJoinRequest
-	pollRoutineChannel        *chan bool
+	botCfg             *cfg.BotConfigs
+	apiInterface       *tba.BotAPIInterface
+	updateChannel      *chan *objs.Update
+	pollUpdateChannel  *chan *objs.Update
+	pollRoutineChannel *chan bool
 }
 
 /*Starts the bot. If the bot has already been started it returns an error.*/
