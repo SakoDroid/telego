@@ -26,6 +26,7 @@ type Bot struct {
 	callbackQueryChannel      *chan *objs.CallbackQuery
 	shippingQueryChannel      *chan *objs.ShippingQuery
 	preCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
+	pollAnswerChannel         *chan *objs.PollAnswer
 	myChatMemberChannel       *chan *objs.ChatMemberUpdated
 	chatMemberChannel         *chan *objs.ChatMemberUpdated
 	chatJoinRequestChannel    *chan *objs.ChatJoinRequest
@@ -718,6 +719,8 @@ func (bot *Bot) processUpdate(update *objs.Update) {
 		*bot.preCheckoutQueryChannel <- update.PreCheckoutQuery
 	case update.Poll != nil:
 		bot.processPoll(update)
+	case update.PollAnswer != nil && bot.pollAnswerChannel != nil:
+		*bot.pollAnswerChannel <- update.PollAnswer
 	case bot.myChatMemberChannel != nil && update.MyChatMember != nil:
 		*bot.myChatMemberChannel <- update.MyChatMember
 	case bot.chatMemberChannel != nil && update.ChatMember != nil:
