@@ -121,7 +121,7 @@ type Poll struct {
 
 type Location struct {
 	Longitude            float32 `json:"longitude"`
-	Lattitude            float32 `json:"Latitude"`
+	Latitude             float32 `json:"Latitude"`
 	HorizontalAccuracy   float32 `json:"horizontal_accuracy,omitempty"`
 	LivePeriod           int     `json:"live_period,omitempty"`
 	Heading              int     `json:"heading,omitempty"`
