@@ -30,8 +30,8 @@ A Go library for creating telegram bots.
 * Full support for [telegram bot api](https://core.telegram.org/bots/api)
 * Highly customizable.
 * Automatic poll management
-* Webhook support. (in development, not released yet) 
-* Special update channels for each type of update (polls,inline queries,messages, ...). (in development, not released yet) 
+* Special update channels for each type of update (polls,inline queries,messages, ...).
+* Webhook support. (in development, not released yet)
 * Manage each chat seperately and track the progress in each chat by **`ChatManagerTool`**. (in development, not released yet) 
 
 ---------------------------------
