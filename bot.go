@@ -57,7 +57,7 @@ func (bot *Bot) GetMe() (*objs.UserResult, error) {
 	return bot.apiInterface.GetMe()
 }
 
-/*Send a text message to a chat (not channel, use SendMessageToChannel method for sending messages to channles) and returns the sent message on success
+/*Send a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
 func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
@@ -65,7 +65,7 @@ func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, sil
 
 /*Send a text message to a channel and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *Bot) SendMesssageToChannel(chatId, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendMesssageUN(chatId, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, replyTo, nil)
 }
 
@@ -79,7 +79,7 @@ func (bot *Bot) CopyMessage(messageId int, disableNotif bool) *MessageCopier {
 	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif}
 }
 
-/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoToChannel" method.
+/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
 func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
@@ -88,11 +88,11 @@ func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string) *Media
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *Bot) SendPhotoToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendPhotoUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoToChannel" method.
+/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -112,11 +112,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *Bot) SendVideoToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendVideoUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioToChannel" method.
+/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -140,11 +140,11 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
 For sending voice messages, use the sendVoice method instead.*/
-func (bot *Bot) SendAudioToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendAudioUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentToChannel" method.
+/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -164,11 +164,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *Bot) SendDocumentToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendDocumentUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationToChannel" method.
+/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -188,11 +188,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *Bot) SendAnimationToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendAnimationUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceToChannel" method.
+/*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -212,11 +212,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *Bot) SendVoiceToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendVoiceUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteToChannel" method.
+/*Returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -236,7 +236,7 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
-func (bot *Bot) SendVideoNoteToChannel(chatId string, replyTo int, caption, parseMode string) *MediaSender {
+func (bot *Bot) SendVideoNoteUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
@@ -245,7 +245,7 @@ func (bot *Bot) CreateAlbum(replyTo int) *MediaGroup {
 	return &MediaGroup{replyTo: replyTo, bot: bot, media: make([]objs.InputMedia, 0), files: make([]*os.File, 0)}
 }
 
-/*Sends a venue to all types of chat but channels. To send it to channels use "SendVenueToChannel" method.
+/*Sends a venue to all types of chat but channels. To send it to channels use "SendVenueUN" method.
 
 ---------------------------------
 
@@ -265,13 +265,13 @@ func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, titl
 Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *Bot) SendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address string, silent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendVenue(
 		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, nil,
 	)
 }
 
-/*Sends a contact to all types of chat but channels. To send it to channels use "SendContactToChannel" method.
+/*Sends a contact to all types of chat but channels. To send it to channels use "SendContactUN" method.
 
 ---------------------------------
 
@@ -291,7 +291,7 @@ func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastNam
 Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *Bot) SendContactToChannel(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendContact(
 		0, chatId, phoneNumber, firstName, lastName, "", replyTo, silent, false, nil,
 	)
@@ -317,7 +317,7 @@ func (bot *Bot) CreatePollForChannel(chatId, question, pollType string) (*Poll, 
 	return &Poll{bot: bot, pollType: pollType, chatIdString: chatId, question: question, options: make([]string, 0)}, nil
 }
 
-/*Sends a dice message to all types of chat but channels. To send it to channels use "SendDiceToChannel" method.
+/*Sends a dice message to all types of chat but channels. To send it to channels use "SendDiceUN" method.
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
 
@@ -341,13 +341,13 @@ Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, o
 Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *Bot) SendDiceToChannel(chatId string, replyTo int, emoji string, silent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendDice(
 		0, chatId, emoji, replyTo, silent, false, nil,
 	)
 }
 
-/*Sends a chat action message to all types of chat but channels. To send it to channels use "SendChatActionToChannel" method.
+/*Sends a chat action message to all types of chat but channels. To send it to channels use "SendChatActionUN" method.
 
 ---------------------------------
 
@@ -377,11 +377,11 @@ Example: The ImageBot needs some time to process a request and upload the image.
 We only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.
 
 action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
-func (bot *Bot) SendChatActionToChannel(chatId, action string) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendChatActionUN(chatId, action string) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendChatAction(0, chatId, action)
 }
 
-/*Sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationToChannel" method.
+/*Sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationUN" method.
 
 You can not use this methods to send a live location. To send a live location use AdvancedBot.
 
@@ -405,7 +405,7 @@ You can not use this methods to send a live location. To send a live location us
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *Bot) SendLocationToChannel(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendLocationUN(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendLocation(
 		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
 	)

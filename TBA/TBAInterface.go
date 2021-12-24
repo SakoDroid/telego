@@ -2135,19 +2135,36 @@ func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inl
 }
 
 /*Calls the given method on api server wtih the given arguments. "MP" options indicates that the request should be made in multipart/formadata form. If this method sends a file to the api server the "MP" option should be true*/
-func (bai *BotAPIInterface) SendCustom(methdName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
+func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 	var res []byte
 	var err2 error
+	go bai.logTheReq(methodName, MP, files...)
 	if MP {
-		res, err2 = cl.sendHttpReqMultiPart(methdName, args, files...)
+		res, err2 = cl.sendHttpReqMultiPart(methodName, args, files...)
 	} else {
-		res, err2 = cl.sendHttpReqJson(methdName, args)
+		res, err2 = cl.sendHttpReqJson(methodName, args)
 	}
 	if err2 != nil {
 		return nil, err2
 	}
-	return bai.preParseResult(res, methdName)
+	return bai.preParseResult(res, methodName)
+}
+
+func (bai *BotAPIInterface) logTheReq(methodName string, MP bool, files ...*os.File) {
+	logeText := "calling `" + methodName + "` method, arguments passed as "
+	if MP {
+		filesCount := 0
+		for _, v := range files {
+			if v != nil {
+				filesCount++
+			}
+		}
+		logeText += "multipart/formdata, sending " + strconv.Itoa(filesCount) + " files."
+	} else {
+		logeText += "json"
+	}
+	logger.Logger.Println(logeText)
 }
 
 func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
