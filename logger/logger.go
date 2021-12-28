@@ -1,4 +1,4 @@
-package telebot
+package logger
 
 import (
 	"log"
