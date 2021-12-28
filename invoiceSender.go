@@ -1,6 +1,6 @@
-package telebot
+package telego
 
-import objs "github.com/SakoDroid/telebot/objects"
+import objs "github.com/SakoDroid/telego/objects"
 
 type InvoiceSender struct {
 	bot                                                                                                                                             *Bot

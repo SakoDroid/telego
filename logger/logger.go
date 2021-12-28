@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	cfg "github.com/SakoDroid/telebot/configs"
+	cfg "github.com/SakoDroid/telego/configs"
 )
 
 var Logger *log.Logger

@@ -1,9 +1,9 @@
-package telebot
+package telego
 
 import (
 	"errors"
 
-	objs "github.com/SakoDroid/telebot/objects"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 var Polls = make(map[string]*Poll)

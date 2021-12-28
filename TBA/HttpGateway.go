@@ -11,8 +11,8 @@ import (
 
 	mp "mime/multipart"
 
-	errs "github.com/SakoDroid/telebot/Errors"
-	objs "github.com/SakoDroid/telebot/objects"
+	errs "github.com/SakoDroid/telego/Errors"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 /*Client used for sending http requests to bot api*/

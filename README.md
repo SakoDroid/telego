@@ -1,11 +1,11 @@
-# Telebot
+# Telego
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telebot.svg)](https://pkg.go.dev/github.com/SakoDroid/telebot)
+[![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
 [![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
 
 A Go library for creating telegram bots.
 
-![telebot logo inspired by Golang logo](https://github.com/SakoDroid/telebot/blob/master/telebot-logo.jpg?raw=true)
+![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)
 
 * [Features](#features)
 * [Requirements](#requirements)
@@ -46,7 +46,7 @@ A Go library for creating telegram bots.
 ## Installation
  Install the package into your [$GOPATH](https://github.com/golang/go/wiki/GOPATH "GOPATH") with the [go command](https://golang.org/cmd/go/ "go command") from terminal :
  ```
- $ go get -u github.com/SakoDroid/telebot
+ $ go get -u github.com/SakoDroid/telego
  ```
  Git needs to be installed on your computer.
 
@@ -62,9 +62,9 @@ A Go library for creating telegram bots.
  import (
     "fmt"
     
-	bt "github.com/SakoDroid/telebot"
-	cfg "github.com/SakoDroid/telebot/configs"
-	objs "github.com/SakoDroid/telebot/objects"
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
  )
 
  func main(){
@@ -109,9 +109,9 @@ A Go library for creating telegram bots.
 
  ```
  import (
-    bt "github.com/SakoDroid/telebot"
-    cfg "github.com/SakoDroid/telebot/configs"
-    objs "github.com/SakoDroid/telebot/objects"
+    bt "github.com/SakoDroid/telego"
+    cfg "github.com/SakoDroid/telego/configs"
+    objs "github.com/SakoDroid/telego/objects"
  )
  ```
 
@@ -140,7 +140,7 @@ A Go library for creating telegram bots.
  LogFileAddress string
 ```
 
- * **Note** : telebot library currently does not support webhooks so Webhook field should always be *false*.
+ * **Note** : telego library currently does not support webhooks so Webhook field should always be *false*.
 
 To create bot configs you need an UpdateConfigs to populate related field in BotConfigs. **UpdateConfigs** struct contains following fields :
 
@@ -164,12 +164,12 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
  ```
  You can use **`configs.DefaultUpdateConfigs()`** to create default update configs. Otherwise you can create your own custom update configs.
 
- After you have created BotConfigs you can create the bot by passing the `BotConfigs` struct you've created to **NewBot** method located in **telebot** package. After bot is created call **Run()** method and your bot will start working and will receive updates from the api server: 
+ After you have created BotConfigs you can create the bot by passing the `BotConfigs` struct you've created to **NewBot** method located in **telego** package. After bot is created call **Run()** method and your bot will start working and will receive updates from the api server: 
  ```
  import (
-	bt "github.com/SakoDroid/telebot"
-	cfg "github.com/SakoDroid/telebot/configs"
-	objs "github.com/SakoDroid/telebot/objects"
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
  )
 
  func main(){
@@ -191,9 +191,9 @@ Now that the bot is running it will receive updates from api server and passes t
 
  ```
  import (
-	bt "github.com/SakoDroid/telebot"
-	cfg "github.com/SakoDroid/telebot/configs"
-	objs "github.com/SakoDroid/telebot/objects"
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
  )
 
  func main(){
@@ -286,7 +286,7 @@ if err != nil {
 
 #### **Polls**
 
-telebot library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because everytime an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
+telego library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because everytime an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
 
 * **Note** : If an update is received that contains update about a poll and the poll is not registered with the Polls map, the given update is passed into *UpdateChannel* of the bot. Otherwise as described above, the related poll will be updated.
 
@@ -307,7 +307,7 @@ func pollTest(chatId int) {
 	poll.AddOption("bad")
 
     //Adds an explanation for the poll.
-	poll.SetExplanation("This is just a test for telebot framework", "", nil)
+	poll.SetExplanation("This is just a test for telego framework", "", nil)
 
     //Sends the poll
 	err := poll.Send(false, 0)
@@ -353,12 +353,12 @@ fl.Close()
 ```
 #### **Special channels**
 
-In telebot you can register special channels. Special channels are channels for a specified update. Currently there are two types of special channels :
+In telego you can register special channels. Special channels are channels for a specified update. Currently there are two types of special channels :
 1. Update type channels : These are channels for a specified update type received from api server. ( read fully in [update type channels](#update-type-channels) )
 2. Chat channels : These channels can be used to get only updates for a specified chat. ( read fully in [chat channels](#chat-channels))
 
 #### **Update type channels**
-In telebot you can register special channels for a specified type of update.Updates received from api server can have `message` field, `edited_message` field, `inline_query` field and some other fields ( you can see them [here](https://core.telegram.org/bots/api#update) ). As described in [telegram bot api](https://core.telegram.org/bots/api) updates received from api server will have only one of these fields. To have easier processing and erase the part where you have to check all of the field to see what kind of update is received, we have created special channels. Special channels can be used to get notified whenever a specified kind of update is received.  This feature let's you have easier processing for each type of update. This feature is included in the advanced mode so for activating it follow these steps : 
+In telego you can register special channels for a specified type of update.Updates received from api server can have `message` field, `edited_message` field, `inline_query` field and some other fields ( you can see them [here](https://core.telegram.org/bots/api#update) ). As described in [telegram bot api](https://core.telegram.org/bots/api) updates received from api server will have only one of these fields. To have easier processing and erase the part where you have to check all of the field to see what kind of update is received, we have created special channels. Special channels can be used to get notified whenever a specified kind of update is received.  This feature let's you have easier processing for each type of update. This feature is included in the advanced mode so for activating it follow these steps : 
 1. Call the `AdvancedMode()` to have AdvancedBot. 
 2. Then call the `Register[field name]Channel()` ( like `RegisterMessageChannel()` or `RegisterInlineQueryChannel()` ) method of the AdvancedBot. This methods will register a channel for that update type and return the channel.
 
@@ -412,9 +412,9 @@ In the below code first an update is received from the general update channel. I
 
 ```
 import (
-	bt "github.com/SakoDroid/telebot"
-	cfg "github.com/SakoDroid/telebot/configs"
-    objs "github.com/SakoDroid/telebot/objects"
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+    objs "github.com/SakoDroid/telego/objects"
 )
 
 func main(){
@@ -527,8 +527,8 @@ if chat channel check fails  |
 
 ## License
 
-telebot is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commerical and private apps and can be modified.
+telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commerical and private apps and can be modified.
 
 ---------------------------
 
-![telebot logo inspired by Golang logo](https://github.com/SakoDroid/telebot/blob/master/telebot-logo.jpg?raw=true)
+![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)

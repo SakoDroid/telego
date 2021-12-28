@@ -3,7 +3,7 @@ package Errors
 import (
 	"strconv"
 
-	objs "github.com/SakoDroid/telebot/objects"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type MethodNotSentError struct {

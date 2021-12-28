@@ -1,10 +1,10 @@
-package telebot
+package telego
 
 import (
 	"os"
 
-	logger "github.com/SakoDroid/telebot/logger"
-	objs "github.com/SakoDroid/telebot/objects"
+	logger "github.com/SakoDroid/telego/logger"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type StickerSet struct {

@@ -1,13 +1,13 @@
-package telebot
+package telego
 
 import (
 	"errors"
 	"os"
 
-	tba "github.com/SakoDroid/telebot/TBA"
-	cfg "github.com/SakoDroid/telebot/configs"
-	logger "github.com/SakoDroid/telebot/logger"
-	objs "github.com/SakoDroid/telebot/objects"
+	tba "github.com/SakoDroid/telego/TBA"
+	cfg "github.com/SakoDroid/telego/configs"
+	logger "github.com/SakoDroid/telego/logger"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type Bot struct {

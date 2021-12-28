@@ -1,9 +1,9 @@
-package telebot
+package telego
 
 import (
 	"os"
 
-	objs "github.com/SakoDroid/telebot/objects"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 /*An advanced type of bot which will give you alot more customization for the bot.

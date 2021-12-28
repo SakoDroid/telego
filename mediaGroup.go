@@ -1,11 +1,11 @@
-package telebot
+package telego
 
 import (
 	"errors"
 	"os"
 
-	errs "github.com/SakoDroid/telebot/Errors"
-	objs "github.com/SakoDroid/telebot/objects"
+	errs "github.com/SakoDroid/telego/Errors"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type MediaGroup struct {

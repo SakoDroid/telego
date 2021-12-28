@@ -1,7 +1,7 @@
-package telebot
+package telego
 
 import (
-	objs "github.com/SakoDroid/telebot/objects"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type MessageForwarder struct {

@@ -1,10 +1,10 @@
-package telebot
+package telego
 
 import (
 	"errors"
 	"os"
 
-	objs "github.com/SakoDroid/telebot/objects"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 type MediaType int

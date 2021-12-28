@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	errs "github.com/SakoDroid/telebot/Errors"
-	up "github.com/SakoDroid/telebot/Parser"
-	cfgs "github.com/SakoDroid/telebot/configs"
-	logger "github.com/SakoDroid/telebot/logger"
-	objs "github.com/SakoDroid/telebot/objects"
+	errs "github.com/SakoDroid/telego/Errors"
+	up "github.com/SakoDroid/telego/Parser"
+	cfgs "github.com/SakoDroid/telego/configs"
+	logger "github.com/SakoDroid/telego/logger"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 var interfaceCreated = false

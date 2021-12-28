@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"strconv"
 
-	errs "github.com/SakoDroid/telebot/Errors"
-	objs "github.com/SakoDroid/telebot/objects"
+	errs "github.com/SakoDroid/telego/Errors"
+	objs "github.com/SakoDroid/telego/objects"
 )
 
 //Parses the recived update and returns the last update offset.

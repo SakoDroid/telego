@@ -1,4 +1,4 @@
-module github.com/SakoDroid/telebot
+module github.com/SakoDroid/telego
 
 go 1.17
 
