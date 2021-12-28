@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	upp "github.com/SakoDroid/telego/Parser"
 	tba "github.com/SakoDroid/telego/TBA"
 	cfg "github.com/SakoDroid/telego/configs"
 	logger "github.com/SakoDroid/telego/logger"
@@ -30,6 +31,18 @@ func (bot *Bot) Run() error {
 /*Returns the channel which new updates received from api server are pushed into.*/
 func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
 	return bot.channelsMap["global"]["all"]
+}
+
+/*Adds a handler for a text message that matches the given regex pattern and chatType.
+
+"pattern" is a regex pattern.
+
+"chatType" must be "private","group","supergroup","channel" or "all". Any other value will cause the function to return an error.*/
+func (bot *Bot) AddHandler(pattern, chatType string, handler func(*objs.Update)) error {
+	if chatType == "private" || chatType == "group" || chatType == "supergroup" || chatType == "channel" || chatType == "all" {
+		return upp.AddHandler(pattern, chatType, handler)
+	}
+	return errors.New("unknown chat type : " + chatType)
 }
 
 /*Returnes the received informations about the bot from api server.

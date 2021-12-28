@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
 [![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
+![Version](https://img.shields.io/badge/%20Version%20-1.2.0-success)
 
 A Go library for creating telegram bots.
 
@@ -14,16 +15,16 @@ A Go library for creating telegram bots.
     * [Quick start](#quick-start)
     * [Step by step](#step-by-step)
         * [Creating the bot](#creating-the-bot)
+        * [Receiving updates](#receiving-updates)
+            * [Handlers](#handlers)
+            * [Special channels](#special-channels)
+            * [Update receving priority](#update-receiving-priority)
         * [Methods](#methods)
             * [Text messages](#text-messages)
             * [Media messages](#media-messages)
             * [Media group messages](#media-group-messages)
             * [Polls](#polls)
             * [Files](#files)
-        * [Special channels](#special-channels)
-            * [Update type channels](#update-type-channels)
-            * [Chat channels](#chat-channels)
-            * [Channels priority](#channels-priority)
 * [License](#license)
 
 ---------------------------------
@@ -31,10 +32,10 @@ A Go library for creating telegram bots.
 ## Features
 * Fast and reliable
 * Full support for [telegram bot api](https://core.telegram.org/bots/api)
+* [Handlers](#handlers) for text messages. 
 * Highly customizable.
 * Automatic poll management
-* [Special channels](#special-channels) : [Update type channels](#update-type-channels) for each type of update (polls,inline queries,messages, ...) and [Chat channels](#chat-channels) to manage each chat seperately and track the progress in each chat.
-* Webhook support. (in development, not released yet) 
+* [Special channels](#special-channels)
 
 ---------------------------------
 
@@ -353,172 +354,61 @@ fl.Close()
 ```
 #### **Special channels**
 
-In telego you can register special channels. Special channels are channels for a specified update. Currently there are two types of special channels :
-1. Update type channels : These are channels for a specified update type received from api server. ( read fully in [update type channels](#update-type-channels) )
-2. Chat channels : These channels can be used to get only updates for a specified chat. ( read fully in [chat channels](#chat-channels))
+In telego you can register special channels. Special channels are channels for a specified update. Meaning this channels will be uptaded when the the specified update is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
+1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identificator of a chat or username of a channel or supergroup.
+2. mediaType : This argument specifies an update type which the channel will be dedicated to. For example if you pass "message", the returned channel will only be updated when an update containing message field [for a specified chat] is received.
 
-#### **Update type channels**
-In telego you can register special channels for a specified type of update.Updates received from api server can have `message` field, `edited_message` field, `inline_query` field and some other fields ( you can see them [here](https://core.telegram.org/bots/api#update) ). As described in [telegram bot api](https://core.telegram.org/bots/api) updates received from api server will have only one of these fields. To have easier processing and erase the part where you have to check all of the field to see what kind of update is received, we have created special channels. Special channels can be used to get notified whenever a specified kind of update is received.  This feature let's you have easier processing for each type of update. This feature is included in the advanced mode so for activating it follow these steps : 
-1. Call the `AdvancedMode()` to have AdvancedBot. 
-2. Then call the `Register[field name]Channel()` ( like `RegisterMessageChannel()` or `RegisterInlineQueryChannel()` ) method of the AdvancedBot. This methods will register a channel for that update type and return the channel.
+**Note :** Both arguments can be used together to create channels that will be updated only when a certain field (mediaType) is present in the received update for a specified chat (chatId).
 
-**Notes :**
-1. When you register a channel for a specified update type, all the received updates that contain that field will be passed into this channel and none of them will be passed into general update channel anymore.
-2. When a register method is called, returned channel is permenant. Meaning that further calls of the same method will return the *same channel* not a new one.
-3. Read about [channels priority](#channels-priority).
+Examples :
 
-**An example :**
+This method can be used in four ways :
+1. RegisterChannel("123456","message") : The returned channel will be updated when a message (text,photo,video ...) is received from a chat with "123456" as it's chat id.
 
-For example you want to get notified whenever an update is received that contains message field. To do this we follow the above steps and write the below code :
+2. RegiterChannel("","message") : The returned channel will be updated everytime a message is received from any chat.
 
-```
-//General update channel.
-ch := *bot.GetUpdateChannel()
+3. RegisterChannel("123456","") : The returned channel will be updated everytime an update of anykind is received for the specified chat.
 
-//Register message channel.
-mch := *bot.AdvancedMode().RegisterMessageChannel()
+4. RegisterChannel("","") : The returned is the global update channel which will be updated everytime an update is received. You can get this channel by calling `getUpdateChannel()` method too.
 
-for {
-    select {
+**Note :** When a channel is registered it is not editable. Meaning that calling the `RegisterChannel` method with the same arugments won't create a new channel and the previously created channel will be returned.
 
-    //This will be triggered when an update is passed into general update channel.
-    case update := <-ch:
-        fmt.Println("this is update channel")
-        //Processing the update ...
-    
-    //This will be triggered when an update containing message field is received and the message field is passed into the channel.
-    case message := <-mch:
-        fmt.Println("this is message channel")
-        fmt.Println(message.Text)
-    }
-}
-```
+Once a channel is created it cannot be edited, But it can be deleted. To delete a channel (unregister it) call `UnRegisterChannel(chatId string,mediaType string)` method of the **AdvancedBot**. **If** a channel has been registered for the given arguments it will be cleared.
 
-#### **Chat channels**
+#### **Update receving priority :**
 
-Chat channels can be used to get the updates for a specified chat. When an update is received from api server, if it belongs to a chat (some updates don't contain chat info) and that chat has a registered channel the update will be passed into the chat channel. This feature belongs to advanced mode so for using it first you need to activate the advanced mode. To use this feature follow the following steps :
-1. Call the `AdvancedMode()` to have AdvancedBot. 
-2. Then call the `RegisterChatChannel(chatId string)` method of the AdvancedBot. This methods will register a channel for the specified chat and return the channel.
-3. Use the channel to receive updates for the chat.
+Since different types of channels and handlers may get involved it's important to know the priority of them. Meaning when an update is received which methods have higher priority to be executed and in case of channels which channels will be first considered to have the update passed into them. Basically this is how handlers and channels are prioritized :
 
-**Notes :**
-1. When you register a channel for a specified chat, all the received updates that belong to that chat be passed into this channel and none of them will be passed into general update channel or update type channels anymore.
-2. When a register method is called, returned channel is permenant. Meaning that further calls of the same method will return the *same channel* not a new one.
-3. Read about [channels priority](#channels-priority).
+1. Hanlders
+2. Chat channels :
+    1. Update types
+    2. General
+2. Global channels :
+    1. Updates types
+    2. General channel
 
-**An example :**
+When an update is received, first it is compared against all the handlers. If a handler's regex matching is successfull the handler will be executed. If not handler is successfull then channels are checked. 
 
-In the below code first an update is received from the general update channel. If the update is for a private chat then a method (startPrivateChat) is called to do further processing. The *startPrivateChat* method will ask for a location from the user and prints the received location and if location is not received warns the user to send a location :
-
-```
-import (
-	bt "github.com/SakoDroid/telego"
-	cfg "github.com/SakoDroid/telego/configs"
-    objs "github.com/SakoDroid/telego/objects"
-)
-
-func main(){
-    //Start the bot, described above.
-    up := cfg.DefaultUpdateConfigs()
-
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
-
-    bot, err := bt.NewBot(&cf)
-    if err == nil{
-        err == bot.Run()
-        if err == nil{
-            go start(bot)
-        }
-    }
-}
-
-func start(bot *bt.Bot){
-    //Get the update channel
-    updateChannel := bot.GetUpdateChannel()
-
-    for {
-        //Receives an update from general update channel.
-        update := <- updateChannel
-        
-        //Checks if the update is a message
-        if update.Message != nil {
-
-            //Checks if the message is a text message.
-            if update.Message.Text == "" {
-                continue
-            }
-
-            //Checks if the chat is a private chat
-            if update.Message.Chat.Type == "private" {
-                go startPrivateChat(update)
-            }
-        } else {
-            fmt.Println("not message received")
-        }
-
-    }
-}
-
-func specialUser(update *objs.Update) {
-    //Informations of the message and chat
-	chatId := update.Message.Chat.Id
-	messageId := update.Message.MessageId
-
-    //Registers a channel for the chat.
-	ch := bot.AdvancedMode().RegisterChatChannel(strconv.Itoa(chatId))
-
-    //Sends a message to the user and asks for a location
-	_, err := bot.SendMessage(chatId, "send a location", "", messageId, false)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for up := <-*ch;; {
-
-        //Gets the location
-		loc := up.Message.Location
-
-        //Checks if the message is a location.
-		if loc != nil{
-
-            //Prints the latitude and longitude
-            fmt.Println("latitude :",loc.Latitude,", longitude :",loc.Longitude)
-			break
-
-		}else{
-			_, err := bot.SendMessage(chatId, "Please send a location", "", up.Message.MessageId, false)
-			if err != nil {
-				fmt.Println(err)
-			}
-		}
-
-	}
-}
-
-```
-
-#### **Channels priority :**
-
-Since different types of channels may get involved it's important to know the priority of channels.Meaning when an update is received which channels have higher priority to have the update passed into them. Basically this is how channels are prioritized :
-
-1. Chat channels
-2. Update type channels
-3. General channels
-
-When an update is received, first it is checked to see if it has chat information and if it does it will be passed into the related channel if it is registered. If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterMessageChannel()` method, the message field will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
+After none of the handlers are executed then the update is checked to see if it has chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you haved called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
 
 To summarize :
 
 ```
-Update is received -> Chat channels
-                             |
+Update is received -> Handlers
+                          |
+                          |
+If no hanlder is executed |
+                          |
+                          |                                                / Specified update type channel
+                     Chat channels (if update is relevant to a chat) ----- 
+                             |                                             \ General chat channel
                              |
 if chat channel check fails  |
                              |
-                             |----------> Update type channels
+                             |----------> General update type channels
                                                    |
                                                    |
-                    if update channel check fails  |
+                              if this check fails  |
                                                    |
                                                    |----------> General update channel
                               

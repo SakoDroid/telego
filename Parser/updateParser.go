@@ -1,4 +1,4 @@
-package parser
+package Parser
 
 import (
 	"encoding/json"
@@ -32,7 +32,7 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpda
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		if !processChat(val, cu) {
+		if !checkHandlers(val) && !processChat(val, cu) {
 			*uc <- val
 		}
 	}

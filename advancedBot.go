@@ -458,7 +458,20 @@ func (bot *AdvancedBot) RegisterChannel(chatId, mediaType string) (*chan *objs.U
 	return bot.getChannel(chatId, mediaType), nil
 }
 
+/*Use this method to unregister a channel for the specified arguments*/
+func (bot *AdvancedBot) UnRegisterChannel(chatId, mediaType string) {
+	if bot.bot.channelsMap[chatId] != nil {
+		bot.bot.channelsMap[chatId][mediaType] = nil
+		if len(bot.bot.channelsMap[chatId]) == 0 {
+			delete(bot.bot.channelsMap, chatId)
+		}
+	}
+}
+
 func (bot *AdvancedBot) getChannel(chatId, media string) *chan *objs.Update {
+	if bot.bot.channelsMap[chatId] == nil {
+		bot.bot.channelsMap[chatId] = make(map[string]*chan *objs.Update)
+	}
 	out := bot.bot.channelsMap[chatId][media]
 	if out == nil {
 		tmp := make(chan *objs.Update)
