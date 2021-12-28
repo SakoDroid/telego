@@ -11,26 +11,12 @@ import (
 )
 
 type Bot struct {
-	botCfg                    *cfg.BotConfigs
-	apiInterface              *tba.BotAPIInterface
-	interfaceUpdateChannel    *chan *objs.Update
-	updateChannel             *chan *objs.Update
-	chatUpdateChannel         *chan *objs.ChatUpdate
-	prcRoutineChannel         *chan bool
-	messageChannel            *chan *objs.Message
-	editedMessageChannel      *chan *objs.Message
-	channelPostChannel        *chan *objs.Message
-	editedChannelPostChannel  *chan *objs.Message
-	inlineQueryChannel        *chan *objs.InlineQuery
-	chosenInlineResultChannel *chan *objs.ChosenInlineResult
-	callbackQueryChannel      *chan *objs.CallbackQuery
-	shippingQueryChannel      *chan *objs.ShippingQuery
-	preCheckoutQueryChannel   *chan *objs.PreCheckoutQuery
-	pollAnswerChannel         *chan *objs.PollAnswer
-	myChatMemberChannel       *chan *objs.ChatMemberUpdated
-	chatMemberChannel         *chan *objs.ChatMemberUpdated
-	chatJoinRequestChannel    *chan *objs.ChatJoinRequest
-	chatsMap                  map[string]*chan *objs.Update
+	botCfg                 *cfg.BotConfigs
+	apiInterface           *tba.BotAPIInterface
+	channelsMap            map[string]map[string]*chan *objs.Update
+	interfaceUpdateChannel *chan *objs.Update
+	chatUpdateChannel      *chan *objs.ChatUpdate
+	prcRoutineChannel      *chan bool
 }
 
 /*Starts the bot. If the bot has already been started it returns an error.*/
@@ -43,7 +29,7 @@ func (bot *Bot) Run() error {
 
 /*Returns the channel which new updates received from api server are pushed into.*/
 func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
-	return bot.updateChannel
+	return bot.channelsMap["global"]["all"]
 }
 
 /*Returnes the received informations about the bot from api server.
@@ -697,39 +683,42 @@ func (bot *Bot) AdvancedMode() *AdvancedBot {
 	return &AdvancedBot{bot: bot}
 }
 
-func (bot *Bot) processUpdate(update *objs.Update) {
+func (bot *Bot) processUpdate(update *objs.Update, mapKey string) bool {
+	out := true
 	switch {
-	case bot.messageChannel != nil && update.Message != nil:
-		*bot.messageChannel <- update.Message
-	case bot.editedMessageChannel != nil && update.EditedMessage != nil:
-		*bot.editedMessageChannel <- update.EditedMessage
-	case bot.channelPostChannel != nil && update.ChannelPost != nil:
-		*bot.channelPostChannel <- update.ChannelPost
-	case bot.editedChannelPostChannel != nil && update.EditedChannelPost != nil:
-		*bot.editedChannelPostChannel <- update.EditedChannelPost
-	case bot.inlineQueryChannel != nil && update.InlineQuery != nil:
-		*bot.inlineQueryChannel <- update.InlineQuery
-	case bot.chosenInlineResultChannel != nil && update.ChosenInlineResult != nil:
-		*bot.chosenInlineResultChannel <- update.ChosenInlineResult
-	case bot.callbackQueryChannel != nil && update.CallbackQuery != nil:
-		*bot.callbackQueryChannel <- update.CallbackQuery
-	case bot.shippingQueryChannel != nil && update.ShippingQuery != nil:
-		*bot.shippingQueryChannel <- update.ShippingQuery
-	case bot.preCheckoutQueryChannel != nil && update.PreCheckoutQuery != nil:
-		*bot.preCheckoutQueryChannel <- update.PreCheckoutQuery
+	case bot.channelsMap[mapKey]["message"] != nil && update.Message != nil:
+		*bot.channelsMap[mapKey]["message"] <- update
+	case bot.channelsMap[mapKey]["edited_message"] != nil && update.EditedMessage != nil:
+		*bot.channelsMap[mapKey]["edited_message"] <- update
+	case bot.channelsMap[mapKey]["channel_post"] != nil && update.ChannelPost != nil:
+		*bot.channelsMap[mapKey]["channel_post"] <- update
+	case bot.channelsMap[mapKey]["edited_channel_post"] != nil && update.EditedChannelPost != nil:
+		*bot.channelsMap[mapKey]["edited_channel_post"] <- update
+	case bot.channelsMap[mapKey]["inline_query"] != nil && update.InlineQuery != nil:
+		*bot.channelsMap[mapKey]["inline_query"] <- update
+	case bot.channelsMap[mapKey]["chosen_inline_result"] != nil && update.ChosenInlineResult != nil:
+		*bot.channelsMap[mapKey]["chosen_inline_result"] <- update
+	case bot.channelsMap[mapKey]["callback_query"] != nil && update.CallbackQuery != nil:
+		*bot.channelsMap[mapKey]["callback_query"] <- update
+	case bot.channelsMap[mapKey]["shipping_query"] != nil && update.ShippingQuery != nil:
+		*bot.channelsMap[mapKey]["shipping_query"] <- update
+	case bot.channelsMap[mapKey]["pre_checkout_query"] != nil && update.PreCheckoutQuery != nil:
+		*bot.channelsMap[mapKey]["pre_checkout_query"] <- update
 	case update.Poll != nil:
 		bot.processPoll(update)
-	case update.PollAnswer != nil && bot.pollAnswerChannel != nil:
-		*bot.pollAnswerChannel <- update.PollAnswer
-	case bot.myChatMemberChannel != nil && update.MyChatMember != nil:
-		*bot.myChatMemberChannel <- update.MyChatMember
-	case bot.chatMemberChannel != nil && update.ChatMember != nil:
-		*bot.chatMemberChannel <- update.ChatMember
-	case bot.chatJoinRequestChannel != nil && update.ChatJoinRequest != nil:
-		*bot.chatJoinRequestChannel <- update.ChatJoinRequest
+	case update.PollAnswer != nil && bot.channelsMap[mapKey]["poll_answer"] != nil:
+		*bot.channelsMap[mapKey]["poll_answer"] <- update
+	case bot.channelsMap[mapKey]["my_chat_member"] != nil && update.MyChatMember != nil:
+		*bot.channelsMap[mapKey]["my_chat_member"] <- update
+	case bot.channelsMap[mapKey]["chat_member"] != nil && update.ChatMember != nil:
+		*bot.channelsMap[mapKey]["chat_member"] <- update
+	case bot.channelsMap[mapKey]["chat_join_request"] != nil && update.ChatJoinRequest != nil:
+		*bot.channelsMap[mapKey]["chat_join_request"] <- update
 	default:
-		*bot.updateChannel <- update
+		//*bot.channelsMap["global"]["all"] <- update
+		out = false
 	}
+	return out
 }
 
 func (bot *Bot) startUpdateProcessing() {
@@ -739,7 +728,11 @@ loop:
 		case <-*bot.prcRoutineChannel:
 			break loop
 		case up := <-*bot.interfaceUpdateChannel:
-			bot.processUpdate(up)
+			if !bot.processUpdate(up, "global") {
+				*bot.channelsMap["global"]["all"] <- up
+			} else {
+				logger.Logger.Println("Update received and passed into a global special channel.")
+			}
 		}
 	}
 }
@@ -749,7 +742,7 @@ func (bot *Bot) processPoll(update *objs.Update) {
 	pl := Polls[id]
 	if pl == nil {
 		logger.Logger.Println("Could not update poll `" + id + "`. Not found in the Polls map")
-		*bot.updateChannel <- update
+		*bot.channelsMap["global"]["all"] <- update
 	} else {
 		err3 := pl.Update(update.Poll)
 		if err3 != nil {
@@ -765,12 +758,15 @@ loop:
 		case <-*bot.prcRoutineChannel:
 			break loop
 		case up := <-*bot.chatUpdateChannel:
-			chatCh := bot.chatsMap[up.ChatId]
-			if chatCh != nil {
-				*chatCh <- up.Update
-				logger.Logger.Println("update received and passed into channel for chat", up.ChatId)
+			if !bot.processUpdate(up.Update, up.ChatId) {
+				chatChannel := bot.channelsMap[up.ChatId]["all"]
+				if chatChannel != nil {
+					*chatChannel <- up.Update
+				} else {
+					*bot.interfaceUpdateChannel <- up.Update
+				}
 			} else {
-				*bot.interfaceUpdateChannel <- up.Update
+				logger.Logger.Println("Update received and passed into a special channel of chat", up.ChatId, ".")
 			}
 		}
 	}
@@ -784,5 +780,7 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	}
 	ch := make(chan bool)
 	uc := make(chan *objs.Update)
-	return &Bot{botCfg: cfg, apiInterface: api, updateChannel: &uc, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch, chatsMap: make(map[string]*chan *objs.Update)}, nil
+	bt := &Bot{botCfg: cfg, apiInterface: api, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch}
+	bt.channelsMap["global"]["all"] = &uc
+	return bt, nil
 }
