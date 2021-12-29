@@ -38,11 +38,14 @@ func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
 "pattern" is a regex pattern.
 
 "chatType" must be "private","group","supergroup","channel" or "all". Any other value will cause the function to return an error.*/
-func (bot *Bot) AddHandler(pattern, chatType string, handler func(*objs.Update)) error {
-	if chatType == "private" || chatType == "group" || chatType == "supergroup" || chatType == "channel" || chatType == "all" {
-		return upp.AddHandler(pattern, chatType, handler)
+func (bot *Bot) AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string) error {
+	for _, val := range chatTypes {
+		if val != "private" && val != "group" && val != "supergroup" && val != "channel" && val != "all" {
+			return errors.New("unknown chat type : " + val)
+		}
 	}
-	return errors.New("unknown chat type : " + chatType)
+	return upp.AddHandler(pattern, handler, chatTypes...)
+
 }
 
 /*Returnes the received informations about the bot from api server.
@@ -698,38 +701,16 @@ func (bot *Bot) AdvancedMode() *AdvancedBot {
 
 func (bot *Bot) processUpdate(update *objs.Update, mapKey string) bool {
 	out := true
-	switch {
-	case bot.channelsMap[mapKey]["message"] != nil && update.Message != nil:
-		*bot.channelsMap[mapKey]["message"] <- update
-	case bot.channelsMap[mapKey]["edited_message"] != nil && update.EditedMessage != nil:
-		*bot.channelsMap[mapKey]["edited_message"] <- update
-	case bot.channelsMap[mapKey]["channel_post"] != nil && update.ChannelPost != nil:
-		*bot.channelsMap[mapKey]["channel_post"] <- update
-	case bot.channelsMap[mapKey]["edited_channel_post"] != nil && update.EditedChannelPost != nil:
-		*bot.channelsMap[mapKey]["edited_channel_post"] <- update
-	case bot.channelsMap[mapKey]["inline_query"] != nil && update.InlineQuery != nil:
-		*bot.channelsMap[mapKey]["inline_query"] <- update
-	case bot.channelsMap[mapKey]["chosen_inline_result"] != nil && update.ChosenInlineResult != nil:
-		*bot.channelsMap[mapKey]["chosen_inline_result"] <- update
-	case bot.channelsMap[mapKey]["callback_query"] != nil && update.CallbackQuery != nil:
-		*bot.channelsMap[mapKey]["callback_query"] <- update
-	case bot.channelsMap[mapKey]["shipping_query"] != nil && update.ShippingQuery != nil:
-		*bot.channelsMap[mapKey]["shipping_query"] <- update
-	case bot.channelsMap[mapKey]["pre_checkout_query"] != nil && update.PreCheckoutQuery != nil:
-		*bot.channelsMap[mapKey]["pre_checkout_query"] <- update
-	case update.Poll != nil:
+	upType := update.GetType()
+	if upType == "poll" {
 		bot.processPoll(update)
-	case update.PollAnswer != nil && bot.channelsMap[mapKey]["poll_answer"] != nil:
-		*bot.channelsMap[mapKey]["poll_answer"] <- update
-	case bot.channelsMap[mapKey]["my_chat_member"] != nil && update.MyChatMember != nil:
-		*bot.channelsMap[mapKey]["my_chat_member"] <- update
-	case bot.channelsMap[mapKey]["chat_member"] != nil && update.ChatMember != nil:
-		*bot.channelsMap[mapKey]["chat_member"] <- update
-	case bot.channelsMap[mapKey]["chat_join_request"] != nil && update.ChatJoinRequest != nil:
-		*bot.channelsMap[mapKey]["chat_join_request"] <- update
-	default:
-		//*bot.channelsMap["global"]["all"] <- update
-		out = false
+	} else {
+		ch := bot.channelsMap[mapKey][upType]
+		if ch != nil {
+			*ch <- update
+		} else {
+			out = false
+		}
 	}
 	return out
 }
@@ -793,7 +774,8 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	}
 	ch := make(chan bool)
 	uc := make(chan *objs.Update)
-	bt := &Bot{botCfg: cfg, apiInterface: api, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch}
+	bt := &Bot{botCfg: cfg, apiInterface: api, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch, channelsMap: make(map[string]map[string]*chan *objs.Update)}
+	bt.channelsMap["global"] = make(map[string]*chan *objs.Update)
 	bt.channelsMap["global"]["all"] = &uc
 	return bt, nil
 }

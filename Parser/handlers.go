@@ -10,11 +10,11 @@ var handlers = make([]*handler, 0)
 
 type handler struct {
 	regex    *regexp.Regexp      //The compiled regex.
-	chatType string              //The ChatType this handler will act on
+	chatType []string            //The ChatType this handler will act on
 	function *func(*objs.Update) //The function to be executed
 }
 
-func AddHandler(patern, chatType string, handlerFunc func(*objs.Update)) error {
+func AddHandler(patern string, handlerFunc func(*objs.Update), chatType ...string) error {
 	hl := handler{chatType: chatType, function: &handlerFunc}
 	rgxp, err := regexp.Compile(patern)
 	if err != nil {
@@ -39,7 +39,12 @@ func checkHandlers(up *objs.Update) bool {
 
 func checkHandler(msg *objs.Message, hndl *handler) bool {
 	if hndl.regex.Match([]byte(msg.Text)) {
-		return hndl.chatType == "all" || hndl.chatType == msg.Chat.Type
+		for _, val := range hndl.chatType {
+			if val == "all" || val == msg.Chat.Type {
+				return true
+			}
+		}
+		return false
 	}
 	return false
 }

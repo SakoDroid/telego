@@ -446,7 +446,7 @@ Examples :
 4. RegisterChannel("","") : The returned is the global update channel which will be updated everytime an update is received. You can get this channel by calling `getUpdateChannel()` method too.
 */
 func (bot *AdvancedBot) RegisterChannel(chatId, mediaType string) (*chan *objs.Update, error) {
-	if chatId == "all" {
+	if chatId == "" {
 		chatId = "global"
 	}
 	if mediaType == "" {

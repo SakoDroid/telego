@@ -35,6 +35,53 @@ type Update struct {
 	ChatJoinRequest *ChatJoinRequest `json:"chat_join_request,omitempty"`
 }
 
+/*Returnes the populated field of this update*/
+func (u *Update) GetType() string {
+	if u.Message != nil {
+		return "message"
+	}
+	if u.EditedMessage != nil {
+		return "edited_message"
+	}
+	if u.ChannelPost != nil {
+		return "channel_post"
+	}
+	if u.EditedChannelPost != nil {
+		return "edited_channel_post"
+	}
+	if u.InlineQuery != nil {
+		return "inline_query"
+	}
+	if u.ChosenInlineResult != nil {
+		return "chosen_inline_result"
+	}
+	if u.CallbackQuery != nil {
+		return "callback_query"
+	}
+	if u.ShippingQuery != nil {
+		return "shipping_query"
+	}
+	if u.PreCheckoutQuery != nil {
+		return "pre_checkout_query"
+	}
+	if u.Poll != nil {
+		return "poll"
+	}
+	if u.PollAnswer != nil {
+		return "poll_answer"
+	}
+	if u.MyChatMember != nil {
+		return "my_chat_member"
+	}
+	if u.ChatMember != nil {
+		return "chat_member"
+	}
+	if u.ChatJoinRequest != nil {
+		return "chat_join_request"
+	}
+	return ""
+}
+
 /*This object represents a message.*/
 type Message struct {
 	/*Unique message identifier inside this chat*/
