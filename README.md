@@ -26,6 +26,9 @@ A Go library for creating telegram bots.
             * [Media group messages](#media-group-messages)
             * [Polls](#polls)
             * [Files](#files)
+        * [Keyboards](#keyboards)
+            * [Custom keyboards](#custom-keyboards)
+            * [Inline keyboards](#inline-keyboards)
 * [License](#license)
 
 ---------------------------------
@@ -35,10 +38,11 @@ A Go library for creating telegram bots.
 * Highly customizable
 * Full support for [telegram bot api](https://core.telegram.org/bots/api)
 * Offers two different ways for managing the bot updates :
-    1. [Handlers](#handlers) ( for text messages only ).
+    1. [Handlers](#handlers).
     2. [Special channels](#special-channels)
 * Automatic poll management : You don't need to worry about poll updates. Telego takes care of that for you. Just create a poll, send it and sit back 
 and monitor the poll update via a go channel.
+* You can create keyboards and inline keyboards easily.
 
 ---------------------------------
 
@@ -500,6 +504,156 @@ if err != nil {
 fl.Close()
 
 ```
+
+### **Keyboards**
+
+In Telego you can create custom keyboards and inline keyboards easily with an amazing tool. Telegram has two types of keyboards :
+1. Custom keyboard : this type of keyboard will replace letter keyboard.
+2. Inline keyboard : this type of keyboard will be displayed below the message. (aka transparent keyboards)
+
+#### **Custom keyboards**
+
+You can create this type of keyboard by calling `CreateKeyboard` method of the bot. It has some arguments that are fully documented in the source code. Calling this method will return a keyboard which has several methods for adding buttons to it. After you have added the buttons you can pass the keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. Example :
+
+```
+ import (
+    "fmt"
+    
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
+ )
+
+ func main(){
+    up := cfg.DefaultUpdateConfigs()
+    
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+
+    bot, err := bt.NewBot(&cf)
+
+    if err == nil{
+
+        err == bot.Run()
+
+        if err == nil{
+            go start(bot)
+        }
+    }
+ }
+
+ func start(bot *bt.Bot){
+
+     //The general update channel.
+     updateChannel := bot.GetUpdateChannel()
+
+    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
+    bot.AddHandler("hi",func(u *objs.Update) {
+        
+        //Create the custom keyboard.
+        kb := bot.CreateKeyboard(false,false,false,"type ...")
+
+        //Add buttons to it. First argument is the button's text and the second one is the row number that the button will be added to it.
+        kb.AddButton("button1",1)
+        kb.AddButton("button2",1)
+        kb.AddButton("button3",2)
+
+        //Sends the message along with the keyboard.
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false, nil, false, false, kb)
+		if err != nil {
+			fmt.Println(err)
+		}
+	},"private")
+
+    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+     for {
+         update := <- updateChannel
+
+        //Some processing on the update
+     }
+ }
+```
+
+The result of the above code will be like this : 
+
+![custom keyboards](https://i.ibb.co/PxtQctk/photo-2021-12-29-19-46-13.jpg)
+
+#### **Inline keyboards**
+
+Inline keyboards appear below the message they have been sent with. To create inline keyboards call `CreateInlineKeyboard()` method of the bot. Calling this method will return an inline keyboard which has several methods for adding buttons to it. After buttons have been added you can pass the inline keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. A special button is callback button. When this button is pressed a callback query is sent to the bot that contains a data (callback data). The callback data is set when you add a callback button. Also you can define a handler for the button which will be executed everytime this button is pressed. You can answer callback queries with `AAsnwerCallbackQuery` method of the advanced bot.
+
+ Example :
+
+```
+ import (
+    "fmt"
+    
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
+ )
+
+ func main(){
+    up := cfg.DefaultUpdateConfigs()
+    
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+
+    bot, err := bt.NewBot(&cf)
+
+    if err == nil{
+
+        err == bot.Run()
+
+        if err == nil{
+            go start(bot)
+        }
+    }
+ }
+
+ func start(bot *bt.Bot){
+
+     //The general update channel.
+     updateChannel := bot.GetUpdateChannel()
+
+    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
+    bot.AddHandler("hi",func(u *objs.Update) {
+        
+        //Creates the inline keyboard
+        kb := bot.CreateInlineKeyboard()
+
+        //Adds a button that will open a url when pressed.
+		kb.AddURLButton("url", "https://google.com", 1)
+
+        //Adds a callback button with no handler
+		kb.AddCallbackButton("call back without handler", "callback data 1", 2)
+
+        //Adds a callback button with handler.
+		kb.AddCallbackButtonHandler("callabck with handler", "callback data 2", 3, func(u *objs.Update) {
+			_, err3 := bot.AdvancedMode().AAnswerCallbackQuery(u.CallbackQuery.Id, "callback received", true, "", 0)
+			if err3 != nil {
+				fmt.Println(err3)
+			}
+		})
+
+        //Sends the message along with the keyboard.
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false, nil, false, false, kb)
+		if err != nil {
+			fmt.Println(err)
+		}
+	},"private")
+
+    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+     for {
+         update := <- updateChannel
+
+        //Some processing on the update
+     }
+ }
+```
+
+The result of the above code will be like this : 
+
+![inline key boards](https://i.ibb.co/qM0wQMB/photo-2021-12-29-19-40-54.jpg)
+
 ---------------------------
 
 ## License
