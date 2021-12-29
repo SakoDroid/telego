@@ -668,7 +668,7 @@ func (bot *Bot) SetGameScore(userId, score, chatId, messageId int) (*objs.Defaul
 	)
 }
 
-/*Returnes the high scores of the user.
+/*Returns the high scores of the user.
 
 -------------------------
 
@@ -686,6 +686,40 @@ This method will currently return scores for the target user, plus two of their 
 "inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.*/
 func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.GameHighScoresResult, error) {
 	return bot.apiInterface.GetGameHighScores(userId, chatId, messageId, inlineMessageId)
+}
+
+/*This method create a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
+
+You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of the method. The methods that supoort keybaord are mostly located in the advanced mode.
+
+Arguments (as described in telegram bot api):
+
+1. resizeKeyboard : Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
+
+2. oneTimeKeyboard : Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to false
+
+3. inputFieldPlaceholder : The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.
+
+4. selective : Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
+
+Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
+
+*/
+func (bot *Bot) CreateKeyboard(resizeKeyboard, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *keyboard {
+	return &keyboard{
+		keys:                  make([][]*objs.KeyboardButton, 0),
+		resizeKeyBoard:        resizeKeyboard,
+		oneTimeKeyboard:       oneTimeKeyboard,
+		selective:             selective,
+		inputFieldPlaceHolder: inputFieldPlaceholder,
+	}
+}
+
+/*This method create a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
+
+You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of a method. The methods that supoort keybaord are mostly located in the advanced mode.*/
+func (bot *Bot) CreateInlineKeyboard() *inlineKeyboard {
+	return &inlineKeyboard{}
 }
 
 /*Stops the bot*/

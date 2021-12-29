@@ -15,31 +15,51 @@ type AdvancedBot struct {
 
 /*Send a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
 }
 
 /*Send a text message to a channel and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
 }
 
 /*Returns a MessageCopier which has several methods for copying a message*/
-func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MessageCopier {
+func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, keyboard MarkUps) *MessageCopier {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MessageCopier{bot: bot.bot, messageId: messageId, disableNotif: disableNotif, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihtouReply: allowSendingWithoutReply, replyTo: replyTo, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
-func (bot *AdvancedBot) ASendPhoto(chatId, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendPhoto(chatId, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *AdvancedBot) ASendPhotoUN(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendPhotoUN(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -51,7 +71,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVideo(chatId int, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVideo(chatId int, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -63,7 +87,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVideoUN(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVideoUN(chatId string, replyTo int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -77,7 +105,11 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
 For sending voice messages, use the sendVoice method instead.*/
-func (bot *AdvancedBot) ASendAudio(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendAudio(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -91,7 +123,11 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
 For sending voice messages, use the sendVoice method instead.*/
-func (bot *AdvancedBot) ASendAudioUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendAudioUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, performer, title string, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -103,7 +139,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendDocument(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendDocument(chatId, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -115,7 +155,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendDocumentUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendDocumentUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, disableContentTypeDetection, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
@@ -127,7 +171,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
@@ -139,7 +187,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendAnimationUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendAnimationUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
@@ -151,7 +203,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVoice(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVoice(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
@@ -163,7 +219,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.*/
-func (bot *AdvancedBot) ASendVoiceUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVoiceUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
@@ -175,7 +235,11 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
@@ -187,12 +251,20 @@ To ignore int arguments pass 0 and to ignore string arguments pass empty string 
 Official telegram doc :
 
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVideoNoteUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaSender {
+func (bot *AdvancedBot) ASendVideoNoteUN(chatId string, replyTo int, caption, parseMode string, captionEntities []objs.MessageEntity, length, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*To ignore replyTo argument, pass 0.*/
-func (bot *AdvancedBot) ACreateAlbum(replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *MediaGroup {
+func (bot *AdvancedBot) ACreateAlbum(replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaGroup {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &MediaGroup{replyTo: replyTo, bot: bot.bot, media: make([]objs.InputMedia, 0), files: make([]*os.File, 0), allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
@@ -203,7 +275,11 @@ func (bot *AdvancedBot) ACreateAlbum(replyTo int, allowSendingWihtoutReply bool,
 Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendVenue(
 		chatId, "", latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -216,7 +292,11 @@ func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude floa
 Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendVenue(
 		0, chatId, latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -229,7 +309,11 @@ func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude
 Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendContact(
 		chatId, "", phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -242,7 +326,11 @@ func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName
 Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendContact(
 		0, chatId, phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -257,7 +345,11 @@ Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, o
 Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendDice(
 		chatId, "", emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -272,14 +364,22 @@ Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, o
 Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendDice(
 		0, chatId, emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
 }
 
 /*Creates a live location which has several methods for managing it.*/
-func (bot *AdvancedBot) ACreateLiveLocation(latitude, longitude, accuracy float32, livePeriod, heading, proximtyAlertRadius, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) *LiveLocation {
+func (bot *AdvancedBot) ACreateLiveLocation(latitude, longitude, accuracy float32, livePeriod, heading, proximtyAlertRadius, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) *LiveLocation {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return &LiveLocation{bot: bot.bot, replyTo: replyTo, allowSendingWihoutReply: allowSendingWihtoutReply, latitude: latitude, longitude: longitude, livePeriod: livePeriod, horizontalAccuracy: accuracy, heading: heading, proximityAlertRadius: proximtyAlertRadius, replyMarkUp: replyMarkup}
 }
 
@@ -292,7 +392,11 @@ You can not use this methods to send a live location. To send a live location us
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendLocation(
 		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -307,7 +411,11 @@ You can not use this methods to send a live location. To send a live location us
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendLocationUN(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocationUN(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendLocation(
 		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
 	)
@@ -335,7 +443,11 @@ func (bot *AdvancedBot) AAnswerInlineQuery(id string, cacheTime int, isPersonal 
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
 
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "ACreateInvoiceUN" method.*/
-func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
+func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) *InvoiceSender {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
 	return &InvoiceSender{
 		chatIdInt: chatId, chatIdString: "", title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
 		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
@@ -345,7 +457,11 @@ func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, 
 }
 
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.*/
-func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) *InvoiceSender {
+func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) *InvoiceSender {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
 	return &InvoiceSender{
 		chatIdInt: 0, chatIdString: chatId, title: title, description: description, providerToken: providerToken, currency: currency, prices: make([]objs.LabeledPrice, 0),
 		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
@@ -361,9 +477,13 @@ func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payl
 Official telegram doc :
 
 Use this method to send a game. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
 	return bot.bot.apiInterface.SendGame(
-		chatId, gameShortName, silent, replyTo, allowSendingWithoutReply, &replyMarkup,
+		chatId, gameShortName, silent, replyTo, allowSendingWithoutReply, replyMarkup,
 	)
 }
 

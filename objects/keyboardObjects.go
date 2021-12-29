@@ -7,17 +7,17 @@ type ReplyMarkup interface {
 /*This object represents a custom keyboard with reply options*/
 type ReplyKeyboardMarkup struct {
 	/*Array of button rows, each represented by an Array of KeyboardButton objects*/
-	Keyboard [][]KeyboardButton `json:"keyboard"`
+	Keyboard [][]*KeyboardButton `json:"keyboard"`
 	/*Optional. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.*/
-	ResizeKeyboard bool `json:"resize_keyboard,omitempty"`
+	ResizeKeyboard bool `json:"resize_keyboard"`
 	/*Optional. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to false*/
-	OneTimeKeyboard bool `json:"one_tijme_keyboard,omitempty"`
+	OneTimeKeyboard bool `json:"one_tijme_keyboard"`
 	/*Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters*/
 	InputFieldPlaceholder string `json:"input_field_placeholder,omitempty"`
 	/*Optional. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
 
 	Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.*/
-	Selective bool `json:"selective,omitempty"`
+	Selective bool `json:"selective"`
 }
 
 func (rm *ReplyKeyboardMarkup) blah() {}
@@ -28,9 +28,9 @@ type KeyboardButton struct {
 	Text string `json:"text"`
 	/*Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only
 	Note: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.*/
-	RequestContact bool `json:"request_contact,omitempty"`
+	RequestContact bool `json:"request_contact"`
 	/*Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only*/
-	RequestLocation bool `json:"request_location,omitempty"`
+	RequestLocation bool `json:"request_location"`
 	/*Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
 	Note: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.*/
 	RequestPoll *KeyboardButtonPollType `json:"request_poll,omitempty"`
@@ -49,7 +49,7 @@ type ReplyKeyboardRemove struct {
 	/*Optional. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
 
 	Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.*/
-	Selective bool `json:"selective,omitempty"`
+	Selective bool `json:"selective"`
 }
 
 func (rm *ReplyKeyboardRemove) blah() {}
@@ -57,7 +57,7 @@ func (rm *ReplyKeyboardRemove) blah() {}
 /*This object represents an inline keyboard that appears right next to the message it belongs to.*/
 type InlineKeyboardMarkup struct {
 	/*Array of button rows, each represented by an Array of InlineKeyboardButton objects*/
-	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
+	InlineKeyboard [][]*InlineKeyboardButton `json:"inline_keyboard"`
 }
 
 func (rm *InlineKeyboardMarkup) blah() {}
@@ -83,7 +83,7 @@ type InlineKeyboardButton struct {
 	/*Optional. Description of the game that will be launched when the user presses the button.
 
 	NOTE: This type of button must always be the first button in the first row.*/
-	CallbackGame *CallbackGame `json:"callbacl_game,omitempty"`
+	CallbackGame *CallbackGame `json:"callback_game,omitempty"`
 	/*Optional. Specify True, to send a Pay button.
 
 	NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.*/
@@ -101,7 +101,7 @@ type LoginUrl struct {
 	/*Optional. Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.*/
 	BotUsername string `json:"bot_username,omitempty"`
 	/*Optional. Pass True to request the permission for your bot to send messages to the user.*/
-	RequestWriteAccess bool `json:"request_write_access,omitempty"`
+	RequestWriteAccess bool `json:"request_write_access"`
 }
 
 /*This object represents an incoming callback query from a callback button in an inline keyboard. If the button that originated the query was attached to a message sent by the bot, the field message will be present. If the button was attached to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.*/

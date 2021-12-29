@@ -285,51 +285,83 @@ func (di *DocumentEditor) EditThumbnailFile(file *os.File) error {
 
 /*
 Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
 	return me.bot.apiInterface.EditMessageText(
 		me.chatIdInt, me.chatIdString, messageId, inlineMessageId, text,
-		parseMode, entities, disableWebPagePreview, replyMakrup,
+		parseMode, entities, disableWebPagePreview, &replyMarkup,
 	)
 }
 
 /*
 Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
 	return me.bot.apiInterface.EditMessageCaption(
 		me.chatIdInt, me.chatIdString, messageId, inlineMessageId, caption,
-		parseMode, captionEntities, replyMakrup,
+		parseMode, captionEntities, &replyMarkup,
 	)
 }
 
 /*Returns a PhotoEditor to edit a photo*/
-func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string, captionEntitie []objs.MessageEntity, replyMarkup *objs.InlineKeyboardMarkup) *PhotoEditor {
-	return &PhotoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, replyMarkup: replyMarkup}
+func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *PhotoEditor {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
+	return &PhotoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, replyMarkup: &replyMarkup}
 }
 
 /*Returns a VideoEditor to edit a video*/
-func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity, replyMarkup *objs.InlineKeyboardMarkup) *VideoEditor {
-	return &VideoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming, replyMarkup: replyMarkup}
+func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *VideoEditor {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
+	return &VideoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming, replyMarkup: &replyMarkup}
 }
 
 /*Returns an AnimationEditor to edit an animation*/
-func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity, replyMarkup *objs.InlineKeyboardMarkup) *AnimationEditor {
-	return &AnimationEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, replyMarkup: replyMarkup}
+func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AnimationEditor {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
+	return &AnimationEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, replyMarkup: &replyMarkup}
 }
 
 /*Returns an AudioEditor to edit an audio*/
-func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity, replyMarkup *objs.InlineKeyboardMarkup) *AudioEditor {
-	return &AudioEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, performer: performer, title: title, duration: duration, replyMarkup: replyMarkup}
+func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AudioEditor {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
+	return &AudioEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, performer: performer, title: title, duration: duration, replyMarkup: &replyMarkup}
 }
 
 /*Returns a DocumentEditor to edit a document*/
-func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity, replyMarkup *objs.InlineKeyboardMarkup) *DocumentEditor {
-	return &DocumentEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, disableContentTypeDetection: disableContentTypeDetection, replyMarkup: replyMarkup}
+func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *DocumentEditor {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
+	return &DocumentEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, disableContentTypeDetection: disableContentTypeDetection, replyMarkup: &replyMarkup}
 }
 
 /*Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, replyMarkup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+	var replyMarkup objs.InlineKeyboardMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toInlineKeyboardMarkup()
+	}
 	return me.bot.apiInterface.EditMessagereplyMarkup(
-		me.chatIdInt, me.chatIdString, messageId, inlineMessageId, replyMarkup,
+		me.chatIdInt, me.chatIdString, messageId, inlineMessageId, &replyMarkup,
 	)
 }
 
