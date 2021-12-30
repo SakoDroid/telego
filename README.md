@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
 [![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
-![Version](https://img.shields.io/badge/%20%20Version%20%20-1.2.3-success)
+![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.3.4%20%20-success)
 ![Development status](https://img.shields.io/badge/%20%20Development%20%20-%20%20Active%20%20-blueviolet)
 
 A Go library for creating telegram bots.
