@@ -88,7 +88,7 @@ func (*InputContactMessageContent) GetType() string {
 	return "InputContactMessageContent"
 }
 
-type InputVoiceMessageContent struct {
+type InputInvoiceMessageContent struct {
 	/*Product name, 1-32 characters*/
 	Title string `json:"title"`
 	/*Product description, 1-255 characters*/
@@ -131,7 +131,7 @@ type InputVoiceMessageContent struct {
 	IsFlexible bool `json:"is_flexible,omitempty"`
 }
 
-func (*InputVoiceMessageContent) GetType() string {
+func (*InputInvoiceMessageContent) GetType() string {
 	return "InputVoiceMessageContent"
 }
 

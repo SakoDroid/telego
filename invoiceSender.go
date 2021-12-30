@@ -2,7 +2,7 @@ package telego
 
 import objs "github.com/SakoDroid/telego/objects"
 
-type InvoiceSender struct {
+type Invoice struct {
 	bot                                                                                                                                             *Bot
 	chatIdInt                                                                                                                                       int
 	chatIdString                                                                                                                                    string
@@ -17,7 +17,7 @@ type InvoiceSender struct {
 /*Adds a new price label to this invoice.
 
 "amount" is the price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145.*/
-func (is *InvoiceSender) AddPrice(label string, amount int) {
+func (is *Invoice) AddPrice(label string, amount int) {
 	is.prices = append(is.prices, objs.LabeledPrice{Label: label, Amount: amount})
 }
 
@@ -28,7 +28,7 @@ func (is *InvoiceSender) AddPrice(label string, amount int) {
 Official telegram doc :
 
 Use this method to send invoices. On success, the sent Message is returned.*/
-func (is *InvoiceSender) Send(replyTo int, silent bool) (*objs.SendMethodsResult, error) {
+func (is *Invoice) Send(replyTo int, silent bool) (*objs.SendMethodsResult, error) {
 	return is.bot.apiInterface.SendInvoice(
 		is.chatIdInt, is.chatIdString, is.title, is.description, is.payload, is.providerToken,
 		is.currency, is.prices, is.maxTipAmount, is.suggestedTipAmounts, is.startParameter, is.providerData,

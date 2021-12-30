@@ -9,7 +9,7 @@ type InlineQuery struct {
 	/*Unique identifier for this query*/
 	Id string `json:"id"`
 	/*Sender*/
-	From User `json:"from"`
+	From *User `json:"from"`
 	/*Text of the query (up to 256 characters)*/
 	Query string `json:"query"`
 	/*Offset of the results to be returned, can be controlled by the bot*/
@@ -17,7 +17,7 @@ type InlineQuery struct {
 	/*Optional. Type of the chat, from which the inline query was sent.Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat*/
 	ChatType string `json:"chat_type,omitempty"`
 	/*Optional. Sender location, only for bots that request user location*/
-	Location Location `json:"location,omitempty"`
+	Location *Location `json:"location,omitempty"`
 }
 
 /*This object should not be used at all.*/
@@ -61,7 +61,7 @@ type InlineQueryResultArticle struct {
 	/*Content of the message to be sent*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. URL of the result*/
 	URL string `json:"url,omitempty"`
 	/*Optional. Pass True, if you don't want the URL to be shown in the message*/
@@ -96,7 +96,7 @@ type InlineQueryResultPhoto struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the photo*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -123,7 +123,7 @@ type InlineQueryResultGif struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the GIF animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -150,7 +150,7 @@ type InlineQueryResultMpeg4Gif struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -181,7 +181,7 @@ type InlineQueryResultVideo struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the video. This field is required if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -204,7 +204,7 @@ type InlineQueryResultAudio struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the audio*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -224,7 +224,7 @@ type InlineQueryResultVocie struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the voice recording*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -246,7 +246,7 @@ type InlineQueryResultDocument struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the file*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
@@ -274,7 +274,7 @@ type InlineQueryResultLocation struct {
 	/*Optional. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.*/
 	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the location*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
@@ -304,7 +304,7 @@ type InlineQueryResultVenu struct {
 	/*Optional. Google Places type of the venue.*/
 	GoogleplaceType string `json:"google_place_type,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the venue*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
@@ -328,7 +328,7 @@ type InlineQueryResultContact struct {
 	/*Optional. Additional data about the contact in the form of a vCard, 0-2048 bytes*/
 	Vcard string `json:"vcard,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the contact*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
@@ -349,7 +349,7 @@ type InlineQueryResultGame struct {
 	/*Type of the result, must be game*/
 	GameShortName string `json:"game_short_name"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
 func (i *InlineQueryResultGame) GetResultType() string {
@@ -370,7 +370,7 @@ type InlineQueryResultCachedPhoto struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the photo*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -387,7 +387,7 @@ type InlineQueryResultCachedGif struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the GIF animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -404,7 +404,7 @@ type InlineQueryResultCachedMpeg4Gif struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -419,7 +419,7 @@ type InlineQueryResultCachedSticker struct {
 	/*A valid file identifier for the sticker*/
 	StickerFileId string `json:"sticker_file_id"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the animation*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -442,7 +442,7 @@ type InlineQueryResultCachedVideo struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the video. This field is required if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -460,7 +460,7 @@ type InlineQueryResultCachedAudio struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the audio*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -478,7 +478,7 @@ type InlineQueryResultCachedVocie struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the voice recording*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
@@ -498,7 +498,7 @@ type InlineQueryResultCachedDocument struct {
 	/*Optional. List of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 	/*Optional. Inline keyboard attached to the message*/
-	ReplyMarkup InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 	/*Optional. Content of the message to be sent instead of the file*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }

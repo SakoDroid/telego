@@ -588,8 +588,8 @@ func (bot *Bot) AnswerInlineQuery(id string, cacheTime int) *InlineQueryResponde
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "CreateInvoiceUN" method.
 
 To access more options, use "ACreateInvoice" method in advanced mode.*/
-func (bot *Bot) CreateInvoice(chatId int, title, description, payload, providerToken, currency string) *InvoiceSender {
-	return &InvoiceSender{
+func (bot *Bot) CreateInvoice(chatId int, title, description, payload, providerToken, currency string) *Invoice {
+	return &Invoice{
 		bot: bot, chatIdInt: chatId, chatIdString: "", title: title, description: description, providerToken: providerToken, payload: payload, currency: currency, prices: make([]objs.LabeledPrice, 0),
 	}
 }
@@ -597,8 +597,8 @@ func (bot *Bot) CreateInvoice(chatId int, title, description, payload, providerT
 /*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
 
 To access more options, use "ACreateInvoiceUN" method in advanced mode.*/
-func (bot *Bot) CreateInvoiceUN(chatId, title, description, payload, providerToken, currency string) *InvoiceSender {
-	return &InvoiceSender{
+func (bot *Bot) CreateInvoiceUN(chatId, title, description, payload, providerToken, currency string) *Invoice {
+	return &Invoice{
 		chatIdInt: 0, chatIdString: chatId, title: title, description: description, providerToken: providerToken, currency: currency, payload: payload, prices: make([]objs.LabeledPrice, 0),
 	}
 }
