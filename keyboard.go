@@ -31,6 +31,14 @@ func (kb *keyboard) AddButton(text string, row int) {
 	kb.addButton(text, row, false, false, nil)
 }
 
+/*Adds a new button holding the given text to the specified row. This method also adds a handler for that button so everytime this button is pressed the handler will be called. You can read the documentation of "AddHandler" for better understanding on handlers.
+
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+func (kb *keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
+	kb.addButton(text, row, false, false, nil)
+	upp.AddHandler(text, handler, chatTypes...)
+}
+
 /*Adds a new contact button. According to telegram bot api when this button is pressed,the user's phone number will be sent as a contact. Available in private chats only.
 
 Note: ContactButtons and LocationButtons will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.
