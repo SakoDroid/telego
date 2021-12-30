@@ -14,23 +14,33 @@ type AdvancedBot struct {
 }
 
 /*Send a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
-If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
+	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview,
+		silent, allowSendingWithoutReply, protectContent, replyTo, replyMarkup)
 }
 
 /*Send a text message to a channel and returns the sent message on success
-If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo int, silent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview, silent, allowSendingWithoutReply, replyTo, replyMarkup)
+	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview,
+		silent, allowSendingWithoutReply, protectContent, replyTo, replyMarkup)
 }
 
 /*Returns a MessageCopier which has several methods for copying a message*/
@@ -270,69 +280,87 @@ func (bot *AdvancedBot) ACreateAlbum(replyTo int, allowSendingWihtoutReply bool,
 
 /*Sends a venue to all types of chat but channels. To send it to channels use "SendVenueUN" method.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenue(chatId, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply, protectContent bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendVenue(
-		chatId, "", latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		chatId, "", latitude, longitude, title, address, foursquareId, foursquareType,
+		googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
 /*Sends a venue to a channel.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenueTOChannel(chatId string, replyTo int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendVenue(
-		0, chatId, latitude, longitude, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		0, chatId, latitude, longitude, title, address, foursquareId, foursquareType,
+		googlePlaceId, googlePlaceType, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
 /*Sends a contact to all types of chat but channels. To send it to channels use "SendContactUN" method.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContact(chatId, replyTo int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendContact(
-		chatId, "", phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		chatId, "", phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
 /*Sends a contact to a channel.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName, vCard string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendContact(
-		0, chatId, phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		0, chatId, phoneNumber, firstName, lastName, vCard, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
@@ -340,18 +368,22 @@ func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo int, phoneNumber, 
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendDice(
-		chatId, "", emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		chatId, "", emoji, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
@@ -359,18 +391,22 @@ func (bot *AdvancedBot) ASendDice(chatId, replyTo int, emoji string, silent bool
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo int, emoji string, silent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendDice(
-		0, chatId, emoji, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		0, chatId, emoji, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
@@ -387,18 +423,22 @@ func (bot *AdvancedBot) ACreateLiveLocation(latitude, longitude, accuracy float3
 
 You can not use this methods to send a live location. To send a live location use "ACreateLiveLocation" method.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendLocation(
-		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 
@@ -406,18 +446,22 @@ func (bot *AdvancedBot) ASendLocation(chatId int, silent bool, latitude, longitu
 
 You can not use this methods to send a live location. To send a live location use "ACreateLiveLocation" method.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ---------------------------------
 
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *AdvancedBot) ASendLocationUN(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
 	return bot.bot.apiInterface.SendLocation(
-		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, replyMarkup,
+		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, allowSendingWihtoutReply, protectContent, replyMarkup,
 	)
 }
 

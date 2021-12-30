@@ -145,12 +145,16 @@ func (p *Poll) GetTotalVoters() int {
 	return p.totalVoterCount
 }
 
-/*Sends the poll. If you want more options foe sending the bot, use "SendAdvanced" method.*/
-func (p *Poll) Send(silent bool, replyTo int) error {
+/*Sends the poll. If you want more options foe sending the bot, use "SendAdvanced" method.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (p *Poll) Send(silent, protectContent bool, replyTo int) error {
 	res, err := p.bot.apiInterface.SendPoll(
 		p.chatIdInt, p.chatIdString, p.question, p.options, p.isClosed, p.isAnonymouse,
 		p.pollType, p.allowMultipleAnswers, p.correctOptionId, p.explanation, p.explanationParseMode,
-		p.explanationEntities, p.openPeriod, p.closeDate, replyTo, silent, false, nil,
+		p.explanationEntities, p.openPeriod, p.closeDate, replyTo, silent, false, protectContent, nil,
 	)
 	if err != nil {
 		return err
@@ -164,12 +168,16 @@ func (p *Poll) Send(silent bool, replyTo int) error {
 	return nil
 }
 
-/*Sends the poll. This method has more options than "Send" method*/
-func (p *Poll) SendAdvanced(replyTo int, silent bool, allowSendingWithOutReply bool, replyMarkup objs.ReplyMarkup) error {
+/*Sends the poll. This method has more options than "Send" method.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (p *Poll) SendAdvanced(replyTo int, silent, allowSendingWithOutReply, protectContent bool, replyMarkup objs.ReplyMarkup) error {
 	res, err := p.bot.apiInterface.SendPoll(
 		p.chatIdInt, p.chatIdString, p.question, p.options, p.isClosed, p.isAnonymouse,
 		p.pollType, p.allowMultipleAnswers, p.correctOptionId, p.explanation, p.explanationParseMode,
-		p.explanationEntities, p.openPeriod, p.closeDate, replyTo, silent, allowSendingWithOutReply, replyMarkup,
+		p.explanationEntities, p.openPeriod, p.closeDate, replyTo, silent, allowSendingWithOutReply, protectContent, replyMarkup,
 	)
 	if err != nil {
 		return err

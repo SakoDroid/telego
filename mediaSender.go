@@ -35,51 +35,51 @@ type MediaSender struct {
 }
 
 /*Sends a file that already exists on telegram servers (file id) or a url on the web.*/
-func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent bool) (*objs.SendMethodsResult, error) {
+func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	switch ms.mediaType {
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, silent, ms.allowSendingWihoutReply, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl,
-			nil, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply,
+			nil, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
 		return ms.bot.apiInterface.SendAudio(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply,
+			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.performer, ms.title, ms.replyMarkup,
 		)
 	case ANIMATION:
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
 			ms.width, ms.height, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile,
-			silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, ms.captionEntities,
+			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
 			ms.disableContentTypeDetection, ms.replyMarkup,
 		)
 	case VIDEONOTE:
 		return ms.bot.apiInterface.SendVideoNote(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
 			ms.length, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile, silent,
-			ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case VOICE:
 		return ms.bot.apiInterface.SendVoice(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case STICKER:
 		return ms.bot.apiInterface.SendSticker(
-			ms.chatIdInt, ms.chatidString, fileIdOrUrl, silent, ms.allowSendingWihoutReply,
+			ms.chatIdInt, ms.chatidString, fileIdOrUrl, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.replyTo, ms.replyMarkup, nil,
 		)
 	default:
@@ -89,7 +89,7 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent bool) (*objs
 }
 
 /*Sends a file that is located in this device.*/
-func (ms *MediaSender) SendByFile(file *os.File, silent bool) (*objs.SendMethodsResult, error) {
+func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -98,46 +98,46 @@ func (ms *MediaSender) SendByFile(file *os.File, silent bool) (*objs.SendMethods
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, silent, ms.allowSendingWihoutReply, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(),
-			file, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply,
+			file, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
 		return ms.bot.apiInterface.SendAudio(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply,
+			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.performer, ms.title, ms.replyMarkup,
 		)
 	case ANIMATION:
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
 			ms.width, ms.height, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile,
-			silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, ms.captionEntities,
+			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
 			ms.disableContentTypeDetection, ms.replyMarkup,
 		)
 	case VIDEONOTE:
 		return ms.bot.apiInterface.SendVideoNote(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
 			ms.length, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile, silent,
-			ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case VOICE:
 		return ms.bot.apiInterface.SendVoice(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, ms.captionEntities, ms.replyMarkup,
+			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case STICKER:
 		return ms.bot.apiInterface.SendSticker(
-			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), silent, ms.allowSendingWihoutReply,
+			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), silent, ms.allowSendingWihoutReply, protectContent,
 			ms.replyTo, ms.replyMarkup, file,
 		)
 	default:

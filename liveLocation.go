@@ -19,16 +19,20 @@ type LiveLocation struct {
 
 /*Sends this live location to all types of chats but channels. To send it to a channel use "SendToChannelMethod".
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ------------------------
 
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (ll *LiveLocation) Send(chatId int, silent bool) (*objs.SendMethodsResult, error) {
+func (ll *LiveLocation) Send(chatId int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	ll.chatIdInt = chatId
 	res, err := ll.bot.apiInterface.SendLocation(
 		chatId, "", ll.latitude, ll.longitude, ll.horizontalAccuracy, ll.livePeriod,
-		ll.heading, ll.proximityAlertRadius, ll.replyTo, silent, ll.allowSendingWihoutReply,
+		ll.heading, ll.proximityAlertRadius, ll.replyTo, silent, ll.allowSendingWihoutReply, protectContent,
 		ll.replyMarkUp,
 	)
 	if err == nil {
@@ -39,16 +43,20 @@ func (ll *LiveLocation) Send(chatId int, silent bool) (*objs.SendMethodsResult, 
 
 /*Sends this live location to a channel. Chat id should be the username of the channel.
 
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
+
 ------------------------
 
 Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.*/
-func (ll *LiveLocation) SendToChannel(chatId string, silent bool) (*objs.SendMethodsResult, error) {
+func (ll *LiveLocation) SendToChannel(chatId string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	ll.chatIdString = chatId
 	res, err := ll.bot.apiInterface.SendLocation(
 		0, chatId, ll.latitude, ll.longitude, ll.horizontalAccuracy, ll.livePeriod,
-		ll.heading, ll.proximityAlertRadius, ll.replyTo, silent, ll.allowSendingWihoutReply,
+		ll.heading, ll.proximityAlertRadius, ll.replyTo, silent, ll.allowSendingWihoutReply, protectContent,
 		ll.replyMarkUp,
 	)
 	if err == nil {

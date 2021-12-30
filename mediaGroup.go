@@ -320,13 +320,17 @@ func (di *DocumentInserter) SetThumbnailFile(file *os.File) error {
 Official telegram doc :
 
 Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Messages that were sent is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (mg *MediaGroup) Send(chatId int, silent bool) (*objs.SendMediaGroupMethodResult, error) {
+func (mg *MediaGroup) Send(chatId int, silent, protectContent bool) (*objs.SendMediaGroupMethodResult, error) {
 	if len(mg.media) < 2 {
 		return nil, errors.New("the number os medias should be greater than 1")
 	}
 	return mg.bot.apiInterface.SendMediaGroup(
-		chatId, "", mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply,
+		chatId, "", mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
 		mg.replyMarkup, mg.files...,
 	)
 }
@@ -339,13 +343,17 @@ func (mg *MediaGroup) Send(chatId int, silent bool) (*objs.SendMediaGroupMethodR
 Official telegram doc :
 
 Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Messages that were sent is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (mg *MediaGroup) SendToChannel(chatId string, silent bool) (*objs.SendMediaGroupMethodResult, error) {
+func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) (*objs.SendMediaGroupMethodResult, error) {
 	if len(mg.media) < 2 {
 		return nil, errors.New("the number os medias should be greater than 1")
 	}
 	return mg.bot.apiInterface.SendMediaGroup(
-		0, chatId, mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply,
+		0, chatId, mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
 		mg.replyMarkup, mg.files...,
 	)
 }

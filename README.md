@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
 [![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
-![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.3.4%20%20-success)
+![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.3.5%20%20-success)
 ![Development status](https://img.shields.io/badge/%20%20Development%20%20-%20%20Active%20%20-blueviolet)
 
 A Go library for creating telegram bots.
@@ -346,7 +346,7 @@ import (
 		cc, _ := bot.AdvancedMode().RegisterChannel(strconv.Itoa(u.Message.Chat.Id), "message")
 
         //Sends back a message
-		_, err := bot.SendMessage(u.Message.Chat.Id, "hi to you too, send me a location", "", u.Message.MessageId, false)
+		_, err := bot.SendMessage(u.Message.Chat.Id, "hi to you too, send me a location", "", u.Message.MessageId, false,false)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -355,7 +355,7 @@ import (
 		up := <-*cc
 
         //Sends back the received location
-		_, err = bot.SendLocation(up.Message.Chat.Id, false, up.Message.Location.Latitude, up.Message.Location.Longitude, up.Message.Location.HorizontalAccuracy, up.Message.MessageId)
+		_, err = bot.SendLocation(up.Message.Chat.Id, false,false, up.Message.Location.Latitude, up.Message.Location.Longitude, up.Message.Location.HorizontalAccuracy, up.Message.MessageId)
 
 
 		if err != nil {
@@ -400,7 +400,7 @@ import (
 
     ms := bot.SendPhoto(chatId, messageId, "custom caption", "")
 
-    _,err = ms.SendByFile(photoFile,false)
+    _,err = ms.SendByFile(photoFile,false,false)
 
     if err != nil{
         fmt.Println(err)
@@ -432,7 +432,8 @@ fl,_ := os.Open("file.jpg")
  }
 
 //Send the media group
-_, err = mg.Send(chatId, false)
+_, err = mg.Send(chatId, false,false)
+
 if err != nil {
     fmt.Println(err)
 }
@@ -464,7 +465,7 @@ func pollTest(chatId int) {
 	poll.SetExplanation("This is just a test for telego framework", "", nil)
 
     //Sends the poll
-	err := poll.Send(false, 0)
+	err := poll.Send(false,false, 0)
 
 	if err != nil {
 		fmt.Println(err)
@@ -559,7 +560,7 @@ You can create this type of keyboard by calling `CreateKeyboard` method of the b
         kb.AddButton("button3",2)
 
         //Sends the message along with the keyboard.
-		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false, nil, false, false, kb)
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false,false, nil, false, false, kb)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -636,7 +637,7 @@ Inline keyboards appear below the message they have been sent with. To create in
 		})
 
         //Sends the message along with the keyboard.
-		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false, nil, false, false, kb)
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false,false, nil, false, false, kb)
 		if err != nil {
 			fmt.Println(err)
 		}

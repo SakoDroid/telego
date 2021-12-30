@@ -60,25 +60,37 @@ func (bot *Bot) GetMe() (*objs.UserResult, error) {
 }
 
 /*Send a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
-If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, replyTo, nil)
+If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
 }
 
 /*Send a text message to a channel and returns the sent message on success
-If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.*/
-func (bot *Bot) SendMesssageUN(chatId, text, parseMode string, replyTo int, silent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, replyTo, nil)
+If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendMesssageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
 }
 
-/*Returns a MessageForwarder which has several methods for forwarding a message*/
-func (bot *Bot) ForwardMessage(messageId int, disableNotif bool) *MessageForwarder {
-	return &MessageForwarder{bot: bot, messageId: messageId, disableNotif: disableNotif}
+/*Returns a MessageForwarder which has several methods for forwarding a message
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) ForwardMessage(messageId int, disableNotif, protectContent bool) *MessageForwarder {
+	return &MessageForwarder{bot: bot, messageId: messageId, disableNotif: disableNotif, protectContent: protectContent}
 }
 
-/*Returns a MessageCopier which has several methods for copying a message*/
-func (bot *Bot) CopyMessage(messageId int, disableNotif bool) *MessageCopier {
-	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif}
+/*Returns a MessageCopier which has several methods for copying a message
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) CopyMessage(messageId int, disableNotif, protectContent bool) *MessageCopier {
+	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif, protectContent: protectContent}
 }
 
 /*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
@@ -253,10 +265,14 @@ func (bot *Bot) CreateAlbum(replyTo int) *MediaGroup {
 
 Official telegram doc :
 
-Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, title, address string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send information about a venue. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendVenue(
-		chatId, "", latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, nil,
+		chatId, "", latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -266,10 +282,14 @@ func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, titl
 
 Official telegram doc :
 
-Use this method to send information about a venue. On success, the sent Message is returned.*/
-func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send information about a venue. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendVenue(
-		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, nil,
+		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -279,10 +299,14 @@ func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude floa
 
 Official telegram doc :
 
-Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastName string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send phone contacts. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendContact(
-		chatId, "", phoneNumber, firstName, lastName, "", replyTo, silent, false, nil,
+		chatId, "", phoneNumber, firstName, lastName, "", replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -292,10 +316,14 @@ func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastNam
 
 Official telegram doc :
 
-Use this method to send phone contacts. On success, the sent Message is returned.*/
-func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send phone contacts. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendContact(
-		0, chatId, phoneNumber, firstName, lastName, "", replyTo, silent, false, nil,
+		0, chatId, phoneNumber, firstName, lastName, "", replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -327,10 +355,14 @@ Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, o
 
 Official telegram doc :
 
-Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendDice(
-		chatId, "", emoji, replyTo, silent, false, nil,
+		chatId, "", emoji, replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -342,10 +374,14 @@ Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, o
 
 Official telegram doc :
 
-Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned*/
-func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent bool) (*objs.SendMethodsResult, error) {
+Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendDice(
-		0, chatId, emoji, replyTo, silent, false, nil,
+		0, chatId, emoji, replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -391,10 +427,14 @@ You can not use this methods to send a live location. To send a live location us
 
 Official telegram doc :
 
-Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *Bot) SendLocation(chatId int, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+Use this method to send point on the map. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendLocation(
-		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
+		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, protectContent, nil,
 	)
 }
 
@@ -406,10 +446,14 @@ You can not use this methods to send a live location. To send a live location us
 
 Official telegram doc :
 
-Use this method to send point on the map. On success, the sent Message is returned.*/
-func (bot *Bot) SendLocationUN(chatId string, silent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+Use this method to send point on the map. On success, the sent Message is returned.
+
+If "silent" argument is true, the message will be sent without notification.
+
+If "protectContent" argument is true, the message can't be forwarded or saved.*/
+func (bot *Bot) SendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendLocation(
-		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, nil,
+		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, protectContent, nil,
 	)
 }
 

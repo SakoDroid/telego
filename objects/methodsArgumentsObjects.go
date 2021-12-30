@@ -47,6 +47,8 @@ type DefaultSendMethodsArguments struct {
 	ReplyToMessageId int `json:"reply_to_message_id,omitempty"`
 	/*Pass True, if the message should be sent even if the specified replied-to message is not found*/
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply"`
+	/*Protects the contents of sent messages from forwarding and saving*/
+	ProtectContent bool `json:"protect_content"`
 	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
 	ReplyMarkup ReplyMarkup `json:"reply_markup,omitempty"`
 }
@@ -100,6 +102,8 @@ type ForwardMessageArgs struct {
 	FromChatId json.RawMessage `json:"from_chat_id"`
 	/*Sends the message silently. Users will receive a notification with no sound.*/
 	DisableNotification bool `json:"disable_notification,omitempty"`
+	/*Protects the contents of sent messages from forwarding and saving*/
+	ProtectContent bool `json:"protect_content"`
 	/*Message identifier in the chat specified in from_chat_id*/
 	MessageId int `json:"message_id"`
 }
