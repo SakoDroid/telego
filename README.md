@@ -29,6 +29,7 @@ A Go library for creating telegram bots.
         * [Keyboards](#keyboards)
             * [Custom keyboards](#custom-keyboards)
             * [Inline keyboards](#inline-keyboards)
+        * [Inline queries](#inline-queries)
 * [License](#license)
 
 ---------------------------------
@@ -653,6 +654,96 @@ Inline keyboards appear below the message they have been sent with. To create in
 The result of the above code will be like this : 
 
 ![inline key boards](https://i.ibb.co/qM0wQMB/photo-2021-12-29-19-40-54.jpg)
+
+
+### **Inline queries**
+First of all if you don't know what inline queries are, check [here](https://core.telegram.org/bots/inline). For your bot to receive inline queries you should enable this feature via BotFather. To enable this option, send the `/setinline` command to [BotFather](https://telegram.me/botfather) and provide the placeholder text that the user will see in the input field after typing your bot’s name.
+
+After you have enabled this option, you can register a channel for inline queries by calling `RegisterChannel("","inline_query")` method of the advanced bot. Any received inline query will be passed into this channel.
+
+To respond to an inline query you need to use `AAnswerInlineQuery` method of the advanced bot. Calling this method will return an **InlineQueryResponder** which you can use to add up to 50 results and then send it. There are 20 different types of inline query results so there is 20 methods for adding a result. All this methods (except **AddGame**) have an argument called `message` which is the message that will be sent when user clicks the result you are adding. There are a few mthods in **InlineQueryResponder** that create this message and they all start with *Cerate* (like *CreateTextMessage*). This methods will return an **InputMessageContent** that can be passed as `message` argument of the *Add* methods.
+
+Let's see an example code. The code below registers a channel for inline queries and regardless of their query, adds an article result. If this result is pressed, a text message is sent which will say *telego is a go library for creating telegram bots*.
+
+```
+import (
+    "fmt"
+    
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
+)
+
+func main(){
+    up := cfg.DefaultUpdateConfigs()
+    
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+
+    bot, err := bt.NewBot(&cf)
+
+    if err == nil{
+
+        err == bot.Run()
+
+        if err == nil{
+            go start(bot)
+        }
+    }
+}
+
+func start(bot *bt.Bot){
+
+    //The general update channel.
+    updateChannel := bot.GetUpdateChannel()
+
+    //The inline query channel
+    inlineQueryChannel, _ := bot.AdvancedMode().RegisterChannel("","inline_query")
+
+    for {
+        select {
+
+        case up := <-*updateChannel:
+            //Processing received updates other than inline queries.
+
+        case in := <-*inlineQueryChannel:
+
+            //Prints the query
+            fmt.Println("inline query :", in.InlineQuery.Query)
+
+            //Create an inline query responder
+            iqs := bot.AdvancedMode().AAnswerInlineQuery(in.InlineQuery.Id, 0, false, "", "", "")
+
+            //Create a text message
+            message := iqs.CreateTextMessage(
+                "telego is a go library for creating telegram bots",
+                "",
+                nil,
+                false,
+            )
+
+            //Add an article
+            iqs.AddArticle("12345", "telego library", "https://github.com/SakoDroid/telego", "", "", 0, 0, false, message, nil)
+
+            //Send the results
+            _, err := iqs.Send()
+
+            if err != nil {
+                fmt.Println(err)
+            }
+        }
+    }
+}
+
+```
+
+This is how this code looks like in telegram ( "type test" that is seen in the input field can be set using BotFather ) :
+
+![inline query results](https://i.ibb.co/dt7tQBh/photo-2021-12-30-22-06-24.jpg)
+
+And when this result is clicked, the message in the photo below is sent :
+
+![Sent message](https://i.ibb.co/Zf3fNDb/photo-2021-12-30-22-06-26.jpg)
+
 
 ---------------------------
 

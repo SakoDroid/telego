@@ -3,7 +3,6 @@ package TBA
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/textproto"
@@ -70,7 +69,6 @@ func (hsc *httpSenderClient) addFileToMultiPartForm(file *os.File, wr *mp.Writer
 
 func (hsc *httpSenderClient) sendHttpReq(method, contetType string, body []byte) ([]byte, error) {
 	cl := http.Client{}
-	fmt.Println(string(body))
 	req, err := http.NewRequest("POST", hsc.botApi+hsc.apiKey+"/"+method, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
