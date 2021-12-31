@@ -1,7 +1,7 @@
 # Telego
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
-[![telegram bot api](https://img.shields.io/badge/telegram-telegram%20bot%20api-blue)](https://core.telegram.org/bots/api)
+![example workflow](https://github.com/SakoDroid/telego/actions/workflows/go.yml/badge.svg)
 ![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.3.5%20%20-success)
 ![Development status](https://img.shields.io/badge/%20%20Development%20%20-%20%20Active%20%20-blueviolet)
 
