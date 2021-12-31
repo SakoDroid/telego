@@ -766,6 +766,11 @@ func (bot *Bot) CreateInlineKeyboard() *inlineKeyboard {
 	return &inlineKeyboard{}
 }
 
+/*This method returns a MessageFormatter that can be used for formatting a text message. You can add bold,italic,underline,spoiler,mention,url,link and some other texts with this tool.*/
+func (bot *Bot) GetTextFormatter() *TextFormatter {
+	return &TextFormatter{entites: make([]objs.MessageEntity, 0)}
+}
+
 /*Stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()

@@ -87,7 +87,7 @@ type Message struct {
 	/*Unique message identifier inside this chat*/
 	MessageId int `json:"message_id"`
 	/*Optional. Sender, empty for messages sent to channels*/
-	From User `json:"from,omitempty"`
+	From *User `json:"from,omitempty"`
 	/*Optional. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group*/
 	SenderChat *Chat `json:"sender_chat,omitempty"`
 	/*Date the message was sent in Unix time*/
