@@ -100,7 +100,7 @@ and monitor the poll update via a go channel.
 
     //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
     bot.AddHandler("hi",func(u *objs.Update) {
-		_,err := bot.SendMessage(u.Message.Chat.Id,"hi to you too","",u.Message.MessageId,false)
+		_,err := bot.SendMessage(u.Message.Chat.Id,"hi to you too","",u.Message.MessageId,false,false)
 		if err != nil{
 			fmt.Println(err)
 		}
@@ -234,18 +234,18 @@ Now that the bot is running it will receive updates from api server and passes t
 ### Receiving updates
 #### **Handlers**
 
-You can use handlers for routing text messages. You specify a function and everytime a text message is recevied which the handlers regex matches with the text the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
+You can use handlers for routing text messages. You specify a function and everytime a text message is recevied which the handlers regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
 1. "Pattern" is the regex pattern which will be matched against the received text message.
-2. "chatType" : is the a string array containing chat types which the handler will act on. It can be "private","group","supergroup","channel" and "all".
+2. "chatType" : is a string array containing chat types which the handler will act on. It can be "private","group","supergroup","channel" and "all".
 3. "handler" : is the function that will be called.
 
-Handlers are super easy to use and you can see an example in [Quick start](#quick-start) section.
+Handlers are super easy to use; You can see an example in [Quick start](#quick-start) section.
 
 #### **Special channels**
 
-In telego you can register special channels. Special channels are channels for a specified update. Meaning this channels will be uptaded when the the specified update is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
-1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identificator of a chat or username of a channel or supergroup.
-2. mediaType : This argument specifies an update type which the channel will be dedicated to. For example if you pass "message", the returned channel will only be updated when an update containing message field [for a specified chat] is received.
+In telego you can register special channels. Special channels are channels for a specific update type. Meaning this channels will be uptaded when the the specified update type is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
+1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identificator of a chat or username of a channel or supergroup. You can pass an empty string for this argument.
+2. mediaType : This argument specifies an update type which the channel will be dedicated to. For example if you pass "message", the returned channel will only be updated when an update containing message field [for a specified chat] is received. You can pass an empty string for this argument.
 
 **Note :** Both arguments can be used together to create channels that will be updated only when a certain field (mediaType) is present in the received update for a specified chat (chatId).
 
@@ -276,9 +276,9 @@ Since different types of channels and handlers may get involved it's important t
     1. Updates types
     2. General channel
 
-When an update is received, first it is compared against all the handlers. If a handler's regex matching is successfull the handler will be executed. If not handler is successfull then channels are checked. 
+When an update is received, first it is compared against all the handlers. If a handler's regex matching is successfull the handler will be executed. If not handler is successfull then channels are checked. (Hanlders don't have priority and every successful regex match is executed.)
 
-After none of the handlers are executed then the update is checked to see if it has chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you haved called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
+After none of the handlers are executed, the update is checked to see if it contains chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you haved called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
 
 To summarize :
 
@@ -374,7 +374,7 @@ import (
 
 ### **Methods**
 
- To send back text or media (such as photo, video, gif, ...) you can use Send methods. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat identificator end with `UN`.
+ To send back text or media (such as photo, video, gif, ...) you can use *Send methods*. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat identificator end with `UN`.
  
  We will cover some of the methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
   * **Note** : All bot methods are simplified to avoid unnecessary arguments. To access more options for each method you can call `AdvancedMode()` method of the bot that will return an advanced version of bot which will give you full access.
@@ -382,6 +382,29 @@ import (
  #### **Text messages**
 
  To send back text you can use **SendMessage** (chat id) or **SendMessageUN** (username). 
+
+**Formatting text messages**
+
+Telegram offers three ways for formatting a text. Formatting means adding style to the text, like bolding a text, adding a url, a link, mentioning a user and etc. These three ways are :
+1. **HTML style formatting** : You can write the text (can be a message or a caption) you want to send in HTML format and pass "HTML" as the `parseMode` or `captionParseMode` argument of the send method. See [telegram documentation for HTML style formatting](https://core.telegram.org/bots/api#html-style).
+
+2. **Markdown style formatting** : You can use markdown also to format your text or media caption. Write the text in markdown format and pass "MarkdownV2" or "Markdown" (according to the markdown syntax you've used) as the `parseMode` or `captionParseMode` arguements. See [telegram documentation for Markdown style formatting](https://core.telegram.org/bots/api#markdownv2-style).
+
+3. **Message entities** : Message entities can be used to format a text. Telego offers a tool for creating formatted texts called TextFormatter. Call `GetTextFormatter()` method. This method returns a TextFormatter that has a few methods for adding a styled text to the original text. TextFormatter assembles the text and returns it via `GetText()` method. You need to pass this text as the "text" or "caption" arguments and pass the returned value of `GetEntities()` method as the "entities" or "captionEntities" arguments of the `ASend` methods (located in advanced bot). The example below adds anormal text, a bold text, an italic text, a link, a mention and a spoiler to the text and sends it : 
+
+```
+tf := bot.GetTextFormatter()
+tf.AddNormal("normal text")
+tf.AddMention("@someone_username")
+tf.AddBold("bold text")
+tf.AddItalic("italic text")
+tf.AddSpoiler("spoiler text")
+tf.AddTextLink("google", "https://google.com")
+_, err := bot.AdvancedMode().ASendMessage(
+        msg.Message.Chat.Id, tf.GetText(), "", msg.Message.MessageId, false, false, tf.GetEntities(),
+        false, false, nil,
+	)
+```
 
  #### **Media messages**
 
