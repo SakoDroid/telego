@@ -2,16 +2,17 @@ package Parser
 
 import (
 	"regexp"
+	"strings"
 
 	objs "github.com/SakoDroid/telego/objects"
 )
 
-var handlers = make([]*handler, 0)
-var callbackHandlers = make([]*callbackHandler, 0)
+var handlers = HandlerTree{}
+var callbackHandlers = make(map[string]*callbackHandler)
 
 type handler struct {
 	regex    *regexp.Regexp      //The compiled regex.
-	chatType []string            //The ChatType this handler will act on
+	chatType string              //The ChatType this handler will act on
 	function *func(*objs.Update) //The function to be executed
 }
 
@@ -21,19 +22,19 @@ type callbackHandler struct {
 }
 
 func AddHandler(patern string, handlerFunc func(*objs.Update), chatType ...string) error {
-	hl := handler{chatType: chatType, function: &handlerFunc}
+	hl := handler{chatType: strings.Join(chatType, ","), function: &handlerFunc}
 	rgxp, err := regexp.Compile(patern)
 	if err != nil {
 		return err
 	}
 	hl.regex = rgxp
-	handlers = append(handlers, &hl)
+	handlers.AddHandler(&hl)
 	return nil
 }
 
 func AddCallbackHandler(data string, handlerFun func(*objs.Update)) {
 	hl := callbackHandler{callbackData: data, function: &handlerFun}
-	callbackHandlers = append(callbackHandlers, &hl)
+	callbackHandlers[data] = &hl
 }
 
 func checkHandlers(up *objs.Update) bool {
@@ -45,35 +46,21 @@ func checkHandlers(up *objs.Update) bool {
 }
 
 func checkCallbackHanlders(up *objs.Update) bool {
-	for _, val := range callbackHandlers {
-		if val.callbackData == up.CallbackQuery.Data {
-			go (*val.function)(up)
-			return true
-		}
+	hdl := callbackHandlers[up.CallbackQuery.Data]
+	if hdl != nil {
+		go (*hdl.function)(up)
+		return true
 	}
 	return false
 }
 
 func checkTextMsgHandlers(up *objs.Update) bool {
 	if up.Message != nil && up.Message.Text != "" {
-		for _, hndl := range handlers {
-			if checkHandler(up.Message, hndl) {
-				go (*hndl.function)(up)
-				return true
-			}
+		hndl := handlers.GetHandler(up.Message)
+		if hndl != nil {
+			go (*hndl.function)(up)
+			return true
 		}
-	}
-	return false
-}
-
-func checkHandler(msg *objs.Message, hndl *handler) bool {
-	if hndl.regex.Match([]byte(msg.Text)) {
-		for _, val := range hndl.chatType {
-			if val == "all" || val == msg.Chat.Type {
-				return true
-			}
-		}
-		return false
 	}
 	return false
 }
