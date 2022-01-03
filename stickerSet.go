@@ -1,6 +1,7 @@
 package telego
 
 import (
+	"errors"
 	"os"
 
 	logger "github.com/SakoDroid/telego/logger"
@@ -10,6 +11,7 @@ import (
 type StickerSet struct {
 	bot        *Bot
 	stickerSet *objs.StickerSet
+	userId     int
 }
 
 /*Updates this sticker set*/
@@ -49,11 +51,14 @@ func (ss *StickerSet) GetThumb() *objs.PhotoSize {
 Use this method to add a new sticker to a set created by the bot. You must use exactly one of the fields png_sticker or tgs_sticker. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.
 
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
-func (ss *StickerSet) AddSticker(userId int, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
 	if tgsSticker == nil {
 		if pngStickerFile == nil {
+			if pngStickerFileIdOrUrl == "" {
+				return nil, errors.New("wrong file id or url")
+			}
 			return ss.bot.apiInterface.AddStickerToSet(
-				userId, ss.stickerSet.Name, pngStickerFileIdOrUrl, "", emojies, maskPosition, nil,
+				ss.userId, ss.stickerSet.Name, pngStickerFileIdOrUrl, "", emojies, maskPosition, nil,
 			)
 		} else {
 			stat, er := pngStickerFile.Stat()
@@ -61,7 +66,7 @@ func (ss *StickerSet) AddSticker(userId int, pngStickerFileIdOrUrl string, pngSt
 				return nil, er
 			}
 			return ss.bot.apiInterface.AddStickerToSet(
-				userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", emojies, maskPosition, pngStickerFile,
+				ss.userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", emojies, maskPosition, pngStickerFile,
 			)
 		}
 	} else {
@@ -70,7 +75,7 @@ func (ss *StickerSet) AddSticker(userId int, pngStickerFileIdOrUrl string, pngSt
 			return nil, er
 		}
 		return ss.bot.apiInterface.AddStickerToSet(
-			userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), emojies, maskPosition, tgsSticker,
+			ss.userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), emojies, maskPosition, tgsSticker,
 		)
 	}
 }

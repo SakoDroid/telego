@@ -580,6 +580,9 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	var err error
 	if tgsSticker == nil {
 		if pngStickerFile == nil {
+			if pngStickerFileIdOrUrl == "" {
+				return nil, errors.New("wrong file id or url")
+			}
 			res, err = bot.apiInterface.CreateNewStickerSet(
 				userId, name, title, pngStickerFileIdOrUrl, "", emojies, containsMask, maskPosition, nil,
 			)
@@ -607,7 +610,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	if !res.Result {
 		return nil, errors.New("false returned from server")
 	}
-	out := &StickerSet{bot: bot, stickerSet: &objs.StickerSet{
+	out := &StickerSet{bot: bot, userId: userId, stickerSet: &objs.StickerSet{
 		Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
 	}}
 	out.update()
