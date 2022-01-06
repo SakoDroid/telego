@@ -16,32 +16,46 @@ type StickerSet struct {
 
 /*Updates this sticker set*/
 func (ss *StickerSet) update() {
-	res, err := ss.bot.apiInterface.GetStickerSet(ss.stickerSet.Name)
-	if err != nil {
-		logger.Logger.Println("Error while updating sticker set.", err.Error())
-	} else {
-		ss.stickerSet = res.Result
+	if ss != nil {
+		res, err := ss.bot.apiInterface.GetStickerSet(ss.stickerSet.Name)
+		if err != nil {
+			logger.Logger.Println("Error while updating sticker set.", err.Error())
+		} else {
+			ss.stickerSet = res.Result
+		}
 	}
 }
 
 /*Returns the title of this sticker set*/
 func (ss *StickerSet) GetTitle() string {
+	if ss == nil {
+		return ""
+	}
 	return ss.stickerSet.Title
 }
 
 /*Returnes the name of this sticker set*/
 func (ss *StickerSet) GetName() string {
+	if ss == nil {
+		return ""
+	}
 	return ss.stickerSet.Name
 }
 
 /*Returns the sticker in this sticker set.*/
 func (ss *StickerSet) GetStickers() []objs.Sticker {
+	if ss == nil {
+		return nil
+	}
 	ss.update()
 	return ss.stickerSet.Stickers
 }
 
 /*Returns the thumbnail of this sticker set*/
 func (ss *StickerSet) GetThumb() *objs.PhotoSize {
+	if ss == nil {
+		return nil
+	}
 	ss.update()
 	return ss.stickerSet.Thumb
 }
@@ -52,6 +66,9 @@ Use this method to add a new sticker to a set created by the bot. You must use e
 
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
 func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+	if ss == nil {
+		return nil, errors.New("sticker set is nil")
+	}
 	if tgsSticker == nil {
 		if pngStickerFile == nil {
 			if pngStickerFileIdOrUrl == "" {
@@ -85,6 +102,9 @@ Use this method to move a sticker in a set created by the bot to a specific posi
 
 "sticker" is file identifier of the sticker and "position" is new sticker position in the set, zero-based*/
 func (ss *StickerSet) SetStickerPosition(sticker string, position int) (*objs.LogicalResult, error) {
+	if ss == nil {
+		return nil, errors.New("sticker set is nil")
+	}
 	return ss.bot.apiInterface.SetStickerPositionInSet(sticker, position)
 }
 
@@ -93,16 +113,25 @@ Use this method to delete a sticker from a set created by the bot. Returns True 
 
 "sticker" is file identifier of the sticker.*/
 func (ss *StickerSet) DeleteStickerFromSet(sticker string) (*objs.LogicalResult, error) {
+	if ss == nil {
+		return nil, errors.New("sticker set is nil")
+	}
 	return ss.bot.apiInterface.DeleteStickerFromSet(sticker)
 }
 
-/*Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
+/*Use this method to set the thumbnail of a sticker set using url or file id. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
 func (ss *StickerSet) SetThumb(userId int, thumb string) (*objs.LogicalResult, error) {
+	if ss == nil {
+		return nil, errors.New("sticker set is nil")
+	}
 	return ss.bot.apiInterface.SetStickerSetThumb(ss.stickerSet.Name, thumb, userId, nil)
 }
 
-/*Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
+/*Use this method to set the thumbnail of a sticker set using a file on the computer. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
 func (ss *StickerSet) SetThumbByFile(userId int, thumb *os.File) (*objs.LogicalResult, error) {
+	if ss == nil {
+		return nil, errors.New("sticker set is nil")
+	}
 	stats, err := thumb.Stat()
 	if err != nil {
 		return nil, err
