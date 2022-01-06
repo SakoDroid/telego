@@ -25,7 +25,11 @@ func (bot *Bot) Run() error {
 	logger.InitTheLogger(bot.botCfg)
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
-	return bot.apiInterface.StartUpdateRoutine()
+	if bot.botCfg.Webhook {
+		return tba.StartWebHook(bot.botCfg.WebHookConfigs, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
+	} else {
+		return bot.apiInterface.StartUpdateRoutine()
+	}
 }
 
 /*Returns the channel which new updates received from api server are pushed into.*/
@@ -854,6 +858,9 @@ loop:
 
 /*Return a new bot instance with the specified configs*/
 func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
+	if !cfg.Check() {
+		return nil, errors.New("config check failed. Please check the configs")
+	}
 	api, err := tba.CreateInterface(cfg)
 	if err != nil {
 		return nil, err
