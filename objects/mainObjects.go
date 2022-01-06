@@ -244,7 +244,7 @@ type ResponseParameters struct {
 }
 
 /*Contains information about the current status of a webhook.*/
-type Webhookinfo struct {
+type WebhookInfo struct {
 	/*Webhook URL, may be empty if webhook is not set up*/
 	URL string `json:"url"`
 	/*True, if a custom certificate was provided for webhook certificate checks*/

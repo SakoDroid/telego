@@ -95,3 +95,8 @@ type UserResult struct {
 	Ok     bool  `json:"ok"`
 	Result *User `json:"result"`
 }
+
+type WebhookInfoResult struct {
+	Ok     bool         `json:"ok"`
+	Result *WebhookInfo `json:"result"`
+}

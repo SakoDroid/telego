@@ -14,6 +14,65 @@ type MethodArguments interface {
 	ToMultiPart(wr *mp.Writer)
 }
 
+type SetWebhookArgs struct {
+	/*HTTPS url to send updates to. Use an empty string to remove webhook integration*/
+	URL string
+	/*public key certificate */
+	Certificate string
+	/*The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS*/
+	IPAddress string
+	/*Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.*/
+	MaxConnections int
+	/*A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
+	Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.*/
+	AllowedUpdates []string
+	/*	Pass True to drop all pending updates*/
+	DropPendingUpdates bool
+}
+
+func (args *SetWebhookArgs) ToJson() []byte {
+	//Arguments of this method are never passed as json.
+	return nil
+}
+
+func (args *SetWebhookArgs) ToMultiPart(wr *mp.Writer) {
+	fr, _ := wr.CreateFormField("url")
+	_, _ = io.Copy(fr, strings.NewReader(args.URL))
+	fr, _ = wr.CreateFormField("certificate")
+	_, _ = io.Copy(fr, strings.NewReader(args.Certificate))
+	if args.IPAddress != "" {
+		fr, _ = wr.CreateFormField("ip_address")
+		_, _ = io.Copy(fr, strings.NewReader(args.IPAddress))
+	}
+	if args.MaxConnections != 0 {
+		fr, _ = wr.CreateFormField("max_connections")
+		_, _ = io.Copy(fr, strings.NewReader(strconv.Itoa(args.MaxConnections)))
+	}
+	if args.AllowedUpdates != nil {
+		fr, _ = wr.CreateFormField("allowed_updates")
+		bts, _ := json.Marshal(args.AllowedUpdates)
+		_, _ = io.Copy(fr, bytes.NewReader(bts))
+	}
+	fr, _ = wr.CreateFormField("drop_pending_updates")
+	_, _ = io.Copy(fr, strings.NewReader(strconv.FormatBool(args.DropPendingUpdates)))
+}
+
+type DeleteWebhookArgs struct {
+	DropPendingUpdates bool `json:"drop_pending_updates"`
+}
+
+func (args *DeleteWebhookArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+func (args *DeleteWebhookArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this method are never passed as multipart.
+}
+
 type GetUpdatesArgs struct {
 	/*Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id. The negative offset can be specified to retrieve updates starting from -offset update from the end of the updates queue. All previous updates will forgotten.*/
 	Offset int `json:"offset,omitempty"`

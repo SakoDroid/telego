@@ -2137,7 +2137,64 @@ func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inl
 	return msg, nil
 }
 
-/*Calls the given method on api server wtih the given arguments. "MP" options indicates that the request should be made in multipart/formadata form. If this method sends a file to the api server the "MP" option should be true*/
+/*Returnes the web hook info of the bot.*/
+func (bai *BotAPIInterface) GetWebhookInfo() (*objs.WebhookInfoResult, error) {
+	res, err := bai.SendCustom("getWebhookInfo", nil, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.WebhookInfoResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Sets a webhook for the bot.*/
+func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdates []string, dropPendingUpdates bool, keyFile *os.File) (*objs.LogicalResult, error) {
+	stat, errs := keyFile.Stat()
+	if errs != nil {
+		return nil, errs
+	}
+	args := objs.SetWebhookArgs{
+		URL:                url,
+		IPAddress:          ip,
+		Certificate:        "attach://" + stat.Name(),
+		MaxConnections:     maxCnc,
+		AllowedUpdates:     allowedUpdates,
+		DropPendingUpdates: dropPendingUpdates,
+	}
+	res, err := bai.SendCustom("setWebhook", &args, true, keyFile)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Deletes the webhook for this bot*/
+func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.LogicalResult, error) {
+	args := objs.DeleteWebhookArgs{
+		DropPendingUpdates: dropPendingUpdates,
+	}
+	res, err := bai.SendCustom("deleteWebhook", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*Calls the given method on api server wtih the given arguments. "MP" options indicates that the request should be made in multipart/formdata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 	var res []byte

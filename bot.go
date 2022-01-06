@@ -23,13 +23,88 @@ type Bot struct {
 /*Starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run() error {
 	logger.InitTheLogger(bot.botCfg)
+	if !bot.checkWebHook() {
+		logger.Logger.Fatalln("Webhook check failed. See the logs for more info.")
+	}
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
 	if bot.botCfg.Webhook {
-		return tba.StartWebHook(bot.botCfg.WebHookConfigs, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
+		return tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
 	} else {
 		return bot.apiInterface.StartUpdateRoutine()
 	}
+}
+
+func (bot *Bot) checkWebHook() bool {
+	wi, err := bot.apiInterface.GetWebhookInfo()
+	if err != nil {
+		logger.Logger.Println(err)
+		return false
+	}
+	if wi.Result.URL == "" {
+		if bot.botCfg.Webhook {
+			err2 := bot.setWebhook()
+			if err2 != nil {
+				logger.Logger.Println("Unable to set a new webhook.", err2)
+				return false
+			}
+		}
+	} else {
+		if bot.botCfg.Webhook {
+			if wi.Result.URL != bot.botCfg.WebHookConfigs.URL {
+				logger.Logger.Println("A webhook is already set in the API server to this url :", wi.Result.URL, ". Deleting the webhook ...")
+				err2 := bot.deleteWebhook()
+				if err2 != nil {
+					logger.Logger.Println("Unable to delete webhook.", err2)
+					return false
+				}
+				err3 := bot.setWebhook()
+				if err3 != nil {
+					logger.Logger.Println("Unable to set webhook.", err3)
+					return false
+				}
+			}
+		} else {
+			logger.Logger.Println("A webhook has been set.")
+			err2 := bot.deleteWebhook()
+			if err2 != nil {
+				logger.Logger.Println("Unable to delete webhook.", err2)
+				return false
+			}
+		}
+	}
+	return true
+}
+
+/*Sets a new webhook*/
+func (bot *Bot) setWebhook() error {
+	logger.Logger.Println("Setting webhook ...")
+	whcfg := bot.botCfg.WebHookConfigs
+	fl, err2 := os.Open(whcfg.CertFile)
+	if err2 != nil {
+		return err2
+	}
+	res, err3 := bot.apiInterface.SetWebhook(whcfg.URL, whcfg.IP, whcfg.MaxConnections, whcfg.AllowedUpdates, whcfg.DropPendingUpdates, fl)
+	if err3 != nil {
+		return err3
+	}
+	if !res.Result {
+		return errors.New("unable to set webhook. API server returned false")
+	}
+	return nil
+}
+
+/*Deletes a webhook*/
+func (bot *Bot) deleteWebhook() error {
+	logger.Logger.Println("Deleting the webhook ...")
+	res, err2 := bot.apiInterface.DeleteWebhook(false)
+	if err2 != nil {
+		return err2
+	}
+	if !res.Result {
+		return errors.New("failed to delete the webhook. API server returned false")
+	}
+	return nil
 }
 
 /*Returns the channel which new updates received from api server are pushed into.*/

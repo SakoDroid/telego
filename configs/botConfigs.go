@@ -44,8 +44,12 @@ func (bc *BotConfigs) Check() bool {
 type WebHookConfigs struct {
 	/*The web hook url.*/
 	URL string
+	/*The port that webhook server will run on. Telegram api only suppotrs 80,443,88,8443. 443 is recommended. Pass 0 for default https port (443)*/
+	Port int
 	/*The address of the public key certificate file.*/
-	Certificate string
+	KeyFile string
+	/*The address of the certificate file.*/
+	CertFile string
 	/*The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS*/
 	IP string
 	/*Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.*/
@@ -61,8 +65,14 @@ func (whc *WebHookConfigs) check(apiKey string) bool {
 	if whc.URL == "" {
 		return false
 	}
-	if whc.Certificate == "" {
+	if whc.KeyFile == "" {
 		return false
+	}
+	if whc.CertFile == "" {
+		return false
+	}
+	if whc.Port == 0 {
+		whc.Port = 443
 	}
 	if !strings.HasSuffix(whc.URL, apiKey) {
 		if !strings.HasSuffix(whc.URL, "/") {
