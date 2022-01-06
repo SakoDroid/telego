@@ -44,7 +44,7 @@ func (bc *BotConfigs) Check() bool {
 type WebHookConfigs struct {
 	/*The web hook url.*/
 	URL string
-	/*The port that webhook server will run on. Telegram api only suppotrs 80,443,88,8443. 443 is recommended. Pass 0 for default https port (443)*/
+	/*The port that webhook server will run on. Telegram api only suppotrs 80,443,88,8443. 8443 is recommended. Pass 0 for default https port (443)*/
 	Port int
 	/*The address of the public key certificate file.*/
 	KeyFile string
