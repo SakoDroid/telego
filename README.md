@@ -16,6 +16,8 @@ A Go library for creating telegram bots.
     * [Quick start](#quick-start)
     * [Step by step](#step-by-step)
         * [Creating the bot](#creating-the-bot)
+            * [Not using webhook](#not-using-webhook)
+            * [Using webhook](#using-webhook)
         * [Receiving updates](#receiving-updates)
             * [Handlers](#handlers)
             * [Special channels](#special-channels)
@@ -37,6 +39,7 @@ A Go library for creating telegram bots.
 ## Features
 * Fast and reliable
 * Highly customizable
+* Webhook support
 * Full support for [telegram bot api](https://core.telegram.org/bots/api)
 * Offers two different ways for managing the bot updates :
     1. [Handlers](#handlers).
@@ -142,17 +145,19 @@ and monitor the poll update via a go channel.
 
  UpdateConfigs *UpdateConfigs
 
- /*This field idicates if webhook should be used for receiving updates or not.
- Recommend : false*/
+ /*This field idicates if webhook should be used for receiving updates or not.*/
 
  Webhook bool
+
+ /*This field represents the configs related to webhook.*/
+ WebHookConfigs *WebHookConfigs
 
  /*All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value*/
 
  LogFileAddress string
 ```
 
- * **Note** : telego library currently does not support webhooks so Webhook field should always be *false*.
+### **Not using webhook**
 
 To create bot configs you need an UpdateConfigs to populate related field in BotConfigs. **UpdateConfigs** struct contains following fields :
 
@@ -174,9 +179,83 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
 
  UpdateFrequency time.Duration
  ```
- You can use **`configs.DefaultUpdateConfigs()`** to create default update configs. Otherwise you can create your own custom update configs.
+ You can use **`configs.DefaultUpdateConfigs()`** to create default update configs. Otherwise you can create your own custom update configs. You can read
+
+### **Using webhook**
+
+To use webhook you need a key file and a certificate file since webhook is based on HTTPS. Telegram bot API supports self-signed certificates. You can create a self-signed certificate using [**OpenSSL**](https://en.wikipedia.org/wiki/OpenSSL). Read [this article](https://linuxize.com/post/creating-a-self-signed-ssl-certificate/) to find out how.
+
+To define the configs for webhook, `WebHookConfig` struct shuld be used. It contains the following fields :
+```
+
+type WebHookConfigs struct {
+
+	/*The web hook url.*/
+	URL string
+
+	/*The port that webhook server will run on. Telegram api only suppotrs 80,443,88,8443. 8443 is recommended. Pass 0 for default https port (443)*/
+	Port int
+
+	/*The address of the public key certificate file.*/
+	KeyFile string
+
+	/*The address of the certificate file.*/
+	CertFile string
+
+	/*The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS*/
+	IP string
+
+	/*Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.*/
+	MaxConnections int
+
+	/*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
+	Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
+	AllowedUpdates []string
+
+	/*Pass True to drop all pending updates*/
+	DropPendingUpdates bool
+}
+```
+This struct is located in the `configs` package. To use webhook, first you need to create a `WebHooConfigs` and populate it's fields. Then populate `WebHookConfigs` field of the `BotConfigs` with it. Thats all! We recommend using port *8443* for webhook, using 80 or 443 needs root permession which means your bot will have root permissions which is not safe. You can see an example code below :
+
+**Note :** *UpdateConfigs* is no longer needed if you're using webhook. So leave this field empty.
+
+```
+import (
+	bt "github.com/SakoDroid/telego"
+	cfg "github.com/SakoDroid/telego/configs"
+	objs "github.com/SakoDroid/telego/objects"
+ )
+
+ func main(){
+
+    //WebHookConfigs. We are using 8443 port here.
+    whcfg := &cfg.WebHookConfigs{
+		URL:      "https://example.com:8443",
+		IP:       "123.45.78.90",
+		KeyFile:  "keyfile.key",
+		CertFile: "certfile.crt",
+		Port:     8443,
+	}
+    
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", Webhook: true, WebHookConfigs: whcfg, LogFileAddress: cfg.DefaultLogFile}
+
+    bot, err := bt.NewBot(&cf)
+    if err == nil{
+        err == bot.Run()
+        if err == nil{
+            //Do anything you want with the bot.
+        }
+    }
+ }
+```
+
+### **Creating and starting the bot**
 
  After you have created BotConfigs you can create the bot by passing the `BotConfigs` struct you've created to **NewBot** method located in **telego** package. After bot is created call **Run()** method and your bot will start working and will receive updates from the api server: 
+
+ **Note :** Webhook is not used in the example codes. Using webhook only changes the code related to creating the bot and receiving updates or sending data abviously won't be affected.
+
  ```
  import (
 	bt "github.com/SakoDroid/telego"
