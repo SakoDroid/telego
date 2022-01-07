@@ -55,15 +55,15 @@ func (tr *HandlerTree) findTheNodeRegex(text, chatType string) *TreeNode {
 			}
 		}
 	}
-	return tr.checkForChatTypes(node, chatType)
+	return tr.checkForChatTypes(node, chatType, text)
 }
 
-func (tr *HandlerTree) checkForChatTypes(currentNode *TreeNode, chatType string) *TreeNode {
+func (tr *HandlerTree) checkForChatTypes(currentNode *TreeNode, chatType, text string) *TreeNode {
 	for {
 		if currentNode == nil {
 			break
 		}
-		if strings.Contains(currentNode.data.chatType, chatType) || strings.Contains(currentNode.data.chatType, "all") {
+		if (strings.Contains(currentNode.data.chatType, chatType) || strings.Contains(currentNode.data.chatType, "all")) && currentNode.data.regex.Match([]byte(text)) {
 			break
 		} else {
 			currentNode = currentNode.father
