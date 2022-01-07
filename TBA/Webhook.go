@@ -1,6 +1,7 @@
 package TBA
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"strings"
@@ -30,7 +31,7 @@ func startTheServer() {
 	go func() {
 		err := http.ListenAndServeTLS(":"+strconv.Itoa(configs.WebHookConfigs.Port), configs.WebHookConfigs.CertFile, configs.WebHookConfigs.KeyFile, mux)
 		if err != nil {
-			log.Logger.Fatalln("Failed to start web hook. Failed to init the https server.", err)
+			log.Logger.Fatalln("Webhook : Failed to start the HTTPS server.", err)
 		}
 	}()
 }
@@ -47,28 +48,31 @@ func handleReq(wr http.ResponseWriter, req *http.Request) {
 			body := make([]byte, req.ContentLength)
 			_, err := req.Body.Read(body)
 			if err == nil {
-				_, err = up.ParseUpdate(body, interfaceUpdateChannel, chatUpdateChannel)
-				if err != nil {
-					log.Logger.Println("WebHook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", err)
+				update := &objs.Update{}
+				jsonErr := json.Unmarshal(body, update)
+				if jsonErr == nil {
+					up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel)
+				} else {
+					log.Logger.Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
 				}
 			} else {
-				log.Logger.Println("WebHook : Error reading the body. Address :", req.RemoteAddr, ". Error :", err)
+				log.Logger.Println("Webhook : Error reading the body. Address :", req.RemoteAddr, ". Error :", err)
 			}
 			wr.WriteHeader(200)
 			wr.Write([]byte{})
 		} else {
-			log.Logger.Println("WebHook : Request has no body. Address :", req.RemoteAddr)
-			send404(&wr, "Request has no body")
+			log.Logger.Println("Webhook : Request has no body. Address :", req.RemoteAddr)
+			send400(&wr, "Request has no body")
 		}
 	} else {
-		log.Logger.Println("WebHook : \"Content-Type\" header is not json or it's missing. Address :", req.RemoteAddr)
-		send404(&wr, " \"Content-Type\" header is not json or it's missing")
+		log.Logger.Println("Webhook : \"Content-Type\" header is not json or it's missing. Address :", req.RemoteAddr)
+		send400(&wr, " \"Content-Type\" header is not json or it's missing")
 	}
 }
 
-func send404(wr *http.ResponseWriter, reason string) {
+func send400(wr *http.ResponseWriter, reason string) {
 	(*wr).Header().Add("Content-Type", "text/plain")
 	(*wr).Header().Add("Content-Length", strconv.Itoa(len(reason)))
-	(*wr).WriteHeader(404)
+	(*wr).WriteHeader(400)
 	(*wr).Write([]byte(reason))
 }
