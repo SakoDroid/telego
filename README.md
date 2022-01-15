@@ -68,7 +68,7 @@ and monitor the poll update via a go channel.
 
  ### Quick start
 
- The following code creates a bot and starts receving updates. If the update is a text message that contains "hi" the bot will respond "hi to you too!".
+ The following code creates a bot and starts receiving updates. If the update is a text message that contains "hi" the bot will respond "hi to you too!".
 
  ```
  import (
@@ -179,13 +179,13 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
 
  UpdateFrequency time.Duration
  ```
- You can use **`configs.DefaultUpdateConfigs()`** to create default update configs. Otherwise you can create your own custom update configs. You can read
+ You can use **`configs.DefaultUpdateConfigs()`** to create default update configs. Otherwise, you can create your own custom update configs. You can read
 
 ### **Using webhook**
 
 To use webhook you need a key file and a certificate file since webhook is based on HTTPS. Telegram bot API supports self-signed certificates. You can create a self-signed certificate using [**OpenSSL**](https://en.wikipedia.org/wiki/OpenSSL). Read [this article](https://linuxize.com/post/creating-a-self-signed-ssl-certificate/) to find out how.
 
-To define the configs for webhook, `WebHookConfig` struct shuld be used. It contains the following fields :
+To define the configs for webhook, `WebHookConfig` struct should be used. It contains the following fields :
 ```
 
 type WebHookConfigs struct {
@@ -278,7 +278,7 @@ import (
  }
 ```
 
-Now that the bot is running it will receive updates from api server and passes them into UpdateeChannel. So you can use this channel to know if an update is received from api server. You can get the channel via **GetUpdateChannel()** method of the bot :
+Now that the bot is running it will receive updates from api server and passes them into UpdateChannel. So you can use this channel to know if an update is received from api server. You can get the channel via **GetUpdateChannel()** method of the bot :
 
  ```
  import (
@@ -313,7 +313,7 @@ Now that the bot is running it will receive updates from api server and passes t
 ### Receiving updates
 #### **Handlers**
 
-You can use handlers for routing text messages. You specify a function and everytime a text message is recevied which the handlers regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
+You can use handlers for routing text messages. You specify a function and everytime a text message is received which the handler's regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
 1. "Pattern" is the regex pattern which will be matched against the received text message.
 2. "chatType" : is a string array containing chat types which the handler will act on. It can be "private","group","supergroup","channel" and "all".
 3. "handler" : is the function that will be called.
@@ -322,8 +322,8 @@ Handlers are super easy to use; You can see an example in [Quick start](#quick-s
 
 #### **Special channels**
 
-In telego you can register special channels. Special channels are channels for a specific update type. Meaning this channels will be uptaded when the the specified update type is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
-1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identificator of a chat or username of a channel or supergroup. You can pass an empty string for this argument.
+In telego you can register special channels. Special channels are channels for a specific update type. Meaning this channels will be updated when the specified update type is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
+1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identification of a chat or username of a channel or supergroup. You can pass an empty string for this argument.
 2. mediaType : This argument specifies an update type which the channel will be dedicated to. For example if you pass "message", the returned channel will only be updated when an update containing message field [for a specified chat] is received. You can pass an empty string for this argument.
 
 **Note :** Both arguments can be used together to create channels that will be updated only when a certain field (mediaType) is present in the received update for a specified chat (chatId).
@@ -333,9 +333,9 @@ Examples :
 This method can be used in four ways :
 1. RegisterChannel("123456","message") : The returned channel will be updated when a message (text,photo,video ...) is received from a chat with "123456" as it's chat id.
 
-2. RegiterChannel("","message") : The returned channel will be updated everytime a message is received from any chat.
+2. RegisterChannel("","message") : The returned channel will be updated everytime a message is received from any chat.
 
-3. RegisterChannel("123456","") : The returned channel will be updated everytime an update of anykind is received for the specified chat.
+3. RegisterChannel("123456","") : The returned channel will be updated everytime an update of any kind is received for the specified chat.
 
 4. RegisterChannel("","") : The returned is the global update channel which will be updated everytime an update is received. You can get this channel by calling `getUpdateChannel()` method too.
 
@@ -343,19 +343,19 @@ This method can be used in four ways :
 
 Once a channel is created it cannot be edited, But it can be deleted. To delete a channel (unregister it) call `UnRegisterChannel(chatId string,mediaType string)` method of the **AdvancedBot**. **If** a channel has been registered for the given arguments it will be cleared.
 
-#### **Update receving priority :**
+#### **Update receiving priority :**
 
 Since different types of channels and handlers may get involved it's important to know the priority of them. Meaning when an update is received which methods have higher priority to be executed and in case of channels which channels will be first considered to have the update passed into them. Basically this is how handlers and channels are prioritized :
 
-1. Hanlders
+1. Handlers
 2. Chat channels :
     1. Update types
     2. General
 2. Global channels :
-    1. Updates types
+    1. Update types
     2. General channel
 
-When an update is received, first it is compared against all the handlers. If a handler's regex matching is successfull the handler will be executed. If not handler is successfull then channels are checked. (Hanlders don't have priority and every successful regex match is executed.)
+When an update is received, first it is compared against all the handlers. If a handler's regex matching is successful the handler will be executed. If not handler is successfull then channels are checked. (Hanlders don't have priority and every successful regex match is executed.)
 
 After none of the handlers are executed, the update is checked to see if it contains chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you haved called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
 
@@ -384,7 +384,7 @@ if chat channel check fails  |
 
 **Note :** 
 
-Handlers and special channels cnan be used together. For example the below code add a hander for text message "hi". Everytime the bot receives "hi" in a private chat it responds "hi to you too, send a location". Then it rgisters a channel for receiving messages in that chat and waits for the user to send a message. After message is received it sends the exact same location the user has sent back to the user : 
+Handlers and special channels can be used together. For example the below code add a handler for text message "hi". Everytime the bot receives "hi" in a private chat it responds "hi to you too, send a location". Then it rgisters a channel for receiving messages in that chat and waits for the user to send a message. After message is received it sends the exact same location the user has sent back to the user : 
 
 ```
 import (
@@ -455,7 +455,7 @@ import (
 
  To send back text or media (such as photo, video, gif, ...) you can use *Send methods*. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat identificator end with `UN`.
  
- We will cover some of the methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
+ We will cover some methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
   * **Note** : All bot methods are simplified to avoid unnecessary arguments. To access more options for each method you can call `AdvancedMode()` method of the bot that will return an advanced version of bot which will give you full access.
 
  #### **Text messages**
@@ -487,13 +487,13 @@ _, err := bot.AdvancedMode().ASendMessage(
 
  #### **Media messages**
 
- To send media types such as photo,video,gif,audio,voice,videonote,mpeg4 gif,sticker and document you can use their specified method. In general there are three ways to send media :
+ To send media types such as photo,video,gif,audio,voice,video note,mpeg4 gif,sticker and document you can use their specified method. In general there are three ways to send media :
  
  1. **By file id** : File id is a unique id for a file that already exists in telegram servers. [Telegram bot api documentation](https://core.telegram.org/bots/api) recommends using file id.
- 2. **By URL** : You can pass an HTTP url to send. The file will be downloaded in telegram servers and then it will be sent to the specified chat.
- 3. **By file** : You can send a file on your computer. The file will be uploaded to telegram servers and then it will be sent to the specified chat.
+ 2. **By URL** : You can pass an HTTP url to send. The file will be downloaded in telegram servers, and then it will be sent to the specified chat.
+ 3. **By file** : You can send a file on your computer. The file will be uploaded to telegram servers, and then it will be sent to the specified chat.
 
- Calling each media sending related method returnes a MediaSender. MediaSender has all methods that are needed to send a media. For example lets send photo in our computer :
+ Calling each media sending related method returns a MediaSender. MediaSender has all methods that are needed to send a media. For example lets send photo in our computer :
 
  ```
  photoFile,err := os.Open("photo.jpg")
@@ -545,7 +545,7 @@ if err != nil {
 
 telego library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because everytime an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
 
-* **Note** : If an update is received that contains update about a poll and the poll is not registered with the Polls map, the given update is passed into *UpdateChannel* of the bot. Otherwise as described above, the related poll will be updated.
+* **Note** : If an update is received that contains update about a poll and the poll is not registered with the Polls map, the given update is passed into *UpdateChannel* of the bot. Otherwise, as described above, the related poll will be updated.
 
 Let's see an example :
 
@@ -588,7 +588,7 @@ func pollTest(chatId int) {
 
 #### **Files**
 
-You can get informations of a file that is stored in telegram servers and download it into your computer by calling **`GetFile`** method. If you want to download the file, pass true for *download* argument of the method. The below example downloads a received sticker from the user and saves it into the given file (read full documentation of the method for more information) :
+You can get information about a file that is stored in telegram servers and download it into your computer by calling **`GetFile`** method. If you want to download the file, pass true for *download* argument of the method. The below example downloads a received sticker from the user and saves it into the given file (read full documentation of the method for more information) :
 
 ```
 //Receives upadate
@@ -760,7 +760,7 @@ The result of the above code will be like this :
 
 
 ### **Inline queries**
-First of all if you don't know what inline queries are, check [here](https://core.telegram.org/bots/inline). For your bot to receive inline queries you should enable this feature via BotFather. To enable this option, send the `/setinline` command to [BotFather](https://telegram.me/botfather) and provide the placeholder text that the user will see in the input field after typing your bot’s name.
+First, if you don't know what inline queries are, check [here](https://core.telegram.org/bots/inline). For your bot to receive inline queries you should enable this feature via BotFather. To enable this option, send the `/setinline` command to [BotFather](https://telegram.me/botfather) and provide the placeholder text that the user will see in the input field after typing your bot’s name.
 
 After you have enabled this option, you can register a channel for inline queries by calling `RegisterChannel("","inline_query")` method of the advanced bot. Any received inline query will be passed into this channel.
 
@@ -852,7 +852,7 @@ And when this result is clicked, the message in the photo below is sent :
 
 ## License
 
-telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commerical and private apps and can be modified.
+telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
 
 ---------------------------
 
