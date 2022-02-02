@@ -32,6 +32,7 @@ A Go library for creating telegram bots.
             * [Custom keyboards](#custom-keyboards)
             * [Inline keyboards](#inline-keyboards)
         * [Inline queries](#inline-queries)
+        * [Stickers](#stickers)
 * [License](#license)
 
 ---------------------------------
@@ -847,6 +848,34 @@ And when this result is clicked, the message in the photo below is sent :
 
 ![Sent message](https://i.ibb.co/Zf3fNDb/photo-2021-12-30-22-06-26.jpg)
 
+### **Stickers**
+
+To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateStickerSet` method should be called. Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has some methods for adding new stickers to it and managing the pack such as `AddPngSticker`,`AddAnimatedSticker` and `AddVideoSticker`. Example :
+```
+fl1, err := os.Open("Sticker1.png")
+if err != nil {
+    fmt.Println(err)
+}
+
+fl2, err := os.Open("Sticker2.png")
+if err != nil {
+    fmt.Println(err)
+}
+
+//Create the sticker set
+st, er := bot.CreateNewStickerSet("owner_user_id", "stickerset_by_TestBot", "stickersettest", "", fl1, nil, "✌", false, nil)
+if er != nil {
+    fmt.Println(er, st)
+}
+
+//Add a new sticker to the set
+_, _ = st.AddPngStickerByFile(fl2, "✌", nil)
+ms := bot.SendSticker(msg.Message.Chat.Id, msg.Message.MessageId)
+_, err = ms.SendByFileIdOrUrl(st.GetStickers()[0].FileId, false, false)
+if err != nil {
+    fmt.Println(err)
+}
+```
 
 ---------------------------
 
