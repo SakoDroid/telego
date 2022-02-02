@@ -649,21 +649,31 @@ func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFi
 }
 
 /*
-Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker. Returns the created sticker set on success.
+Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker or webmSticker. Returns the created sticker set on success.
 
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).
 
 "name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”. <bot_username> is case insensitive. 1-64 characters.*/
-func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
+func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, webmSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
 	var res *objs.LogicalResult
 	var err error
 	if tgsSticker == nil {
 		if pngStickerFile == nil {
 			if pngStickerFileIdOrUrl == "" {
-				return nil, errors.New("wrong file id or url")
+				if webmSticker == nil {
+					return nil, errors.New("wrong file id or url")
+				} else {
+					stat, er := webmSticker.Stat()
+					if er != nil {
+						return nil, er
+					}
+					res, err = bot.apiInterface.CreateNewStickerSet(
+						userId, name, title, "", "", "attach://"+stat.Name(), emojies, containsMask, maskPosition, pngStickerFile,
+					)
+				}
 			}
 			res, err = bot.apiInterface.CreateNewStickerSet(
-				userId, name, title, pngStickerFileIdOrUrl, "", emojies, containsMask, maskPosition, nil,
+				userId, name, title, pngStickerFileIdOrUrl, "", "", emojies, containsMask, maskPosition, nil,
 			)
 		} else {
 			stat, er := pngStickerFile.Stat()
@@ -671,7 +681,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 				return nil, er
 			}
 			res, err = bot.apiInterface.CreateNewStickerSet(
-				userId, name, title, "attach://"+stat.Name(), "", emojies, containsMask, maskPosition, pngStickerFile,
+				userId, name, title, "attach://"+stat.Name(), "", "", emojies, containsMask, maskPosition, pngStickerFile,
 			)
 		}
 	} else {
@@ -680,7 +690,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 			return nil, er
 		}
 		res, err = bot.apiInterface.CreateNewStickerSet(
-			userId, name, title, "", "attach://"+stat.Name(), emojies, containsMask, maskPosition, tgsSticker,
+			userId, name, title, "", "attach://"+stat.Name(), "", emojies, containsMask, maskPosition, tgsSticker,
 		)
 	}
 	if err != nil {

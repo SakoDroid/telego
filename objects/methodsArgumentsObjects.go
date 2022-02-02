@@ -301,6 +301,7 @@ type CreateNewStickerSetArgs struct {
 	Title         string        `json:"title"`
 	PngSticker    string        `json:"png_sticker,omitempty"`
 	TgsSticker    string        `json:"tgs_sticker,omitempty"`
+	WebmSticker   string        `json:"webm_sticker,omitmepty"`
 	Emojis        string        `json:"emojis"`
 	ContainsMasks bool          `json:"contains_masks"`
 	MaskPosition  *MaskPosition `json:"mask_position"`
@@ -328,6 +329,10 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 		fw, _ = wr.CreateFormField("tgs_sticker")
 		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
 	}
+	if args.WebmSticker != "" {
+		fw, _ = wr.CreateFormField("webm_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.WebmSticker))
+	}
 	fw, _ = wr.CreateFormField("contains_masks")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.ContainsMasks)))
 	if args.MaskPosition != nil {
@@ -342,6 +347,7 @@ type AddStickerSetArgs struct {
 	Name         string        `json:"name"`
 	PngSticker   string        `json:"png_sticker,omitempty"`
 	TgsSticker   string        `json:"tgs_sticker,omitempty"`
+	WebmSticker  string        `json:"webm_sticker,omitmepty"`
 	Emojis       string        `json:"emojis"`
 	MaskPosition *MaskPosition `json:"mask_position"`
 }
@@ -365,6 +371,10 @@ func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	if args.TgsSticker != "" {
 		fw, _ = wr.CreateFormField("tgs_sticker")
 		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
+	}
+	if args.WebmSticker != "" {
+		fw, _ = wr.CreateFormField("webm_sticker")
+		_, _ = io.Copy(fw, strings.NewReader(args.WebmSticker))
 	}
 	if args.MaskPosition != nil {
 		fw, _ = wr.CreateFormField("mask_position")

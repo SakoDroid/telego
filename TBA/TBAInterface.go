@@ -1786,19 +1786,17 @@ func (bai *BotAPIInterface) UploadStickerFile(userId int, pngSticker string, fil
 }
 
 /*Creates a new sticker set with the given arguments*/
-func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, emojies string, containsMasks bool, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, webmSticker, emojies string, containsMasks bool, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.CreateNewStickerSetArgs{
 		UserId:        userId,
 		Name:          name,
 		Title:         title,
 		Emojis:        emojies,
+		PngSticker:    pngSticker,
+		TgsSticker:    tgsSticker,
+		WebmSticker:   webmSticker,
 		ContainsMasks: containsMasks,
 		MaskPosition:  maskPosition,
-	}
-	if pngSticker == "" {
-		args.TgsSticker = tgsSticker
-	} else {
-		args.PngSticker = pngSticker
 	}
 	res, err := bai.SendCustom("createNewStickerSet", args, true, file)
 	if err != nil {
@@ -1813,12 +1811,13 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngStic
 }
 
 /*Adds a new sticker to the given set.*/
-func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, emojies string, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, webmSticker, emojies string, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.AddStickerSetArgs{
 		UserId:       userId,
 		Name:         name,
 		PngSticker:   pngSticker,
 		TgsSticker:   tgsSticker,
+		WebmSticker:  webmSticker,
 		Emojis:       emojies,
 		MaskPosition: maskPosition,
 	}
