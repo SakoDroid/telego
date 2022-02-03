@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"encoding/json"
+	"os"
 	"strings"
 	"time"
 )
@@ -10,18 +12,18 @@ const DefaultLogFile = "./bot-logs.log"
 
 type BotConfigs struct {
 	/*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
-	BotAPI string
+	BotAPI string `json:"bot_api"`
 	/*The API key for your bot. You can get the api key (token) from botfather*/
-	APIKey string
+	APIKey string `json:"api_key"`
 	/*The settings related to getting updates from the api server. This field shoud only be populated when Webhook field is false, otherwise it is ignored.*/
-	UpdateConfigs *UpdateConfigs
+	UpdateConfigs *UpdateConfigs `json:"update_configs,omitempty"`
 	/*This field idicates if webhook should be used for receiving updates or not.
 	Recommend : false*/
-	Webhook bool
+	Webhook bool `json:"webhook"`
 	/*This field represents the configs related to web hook.*/
-	WebHookConfigs *WebHookConfigs
+	WebHookConfigs *WebHookConfigs `json:"webhook_configs,omitempty"`
 	/*All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value*/
-	LogFileAddress string
+	LogFileAddress string `json:"log_file"`
 }
 
 func (bc *BotConfigs) Check() bool {
@@ -41,6 +43,40 @@ func (bc *BotConfigs) Check() bool {
 	}
 }
 
+func Load(file string) (*BotConfigs, error) {
+	fl, err := os.Open(file)
+	defer fl.Close()
+	if err != nil {
+		return nil, err
+	}
+	st, err := fl.Stat()
+	if err != nil {
+		return nil, err
+	}
+	data := make([]byte, st.Size())
+	_, err = fl.Read(data)
+	if err != nil {
+		return nil, err
+	}
+	bc := &BotConfigs{}
+	err = json.Unmarshal(data, bc)
+	return bc, err
+}
+
+func Dump(bc *BotConfigs, file string) error {
+	fl, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY, 0666)
+	defer fl.Close()
+	if err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(bc, "", " ")
+	if err != nil {
+		return err
+	}
+	_, err = fl.Write(data)
+	return err
+}
+
 type WebHookConfigs struct {
 	/*The web hook url.*/
 	URL string `json:"url"`
@@ -56,7 +92,7 @@ type WebHookConfigs struct {
 	MaxConnections int `json:"max_connections"`
 	/*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
 	Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
-	AllowedUpdates []string `json:"allowed_updates"`
+	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 	/*Pass True to drop all pending updates*/
 	DropPendingUpdates bool `json:"drop_pending_reqs"`
 }
@@ -90,11 +126,15 @@ type UpdateConfigs struct {
 	Timeout int `json:"timeout"`
 	/*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
 	Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
-	AllowedUpdates []string `json:"allowed_updates"`
+	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 	/*This field indicates the frequency to call getUpdates method. Default is one second*/
 	UpdateFrequency time.Duration `json:"update_freq"`
 }
 
 func DefaultUpdateConfigs() *UpdateConfigs {
 	return &UpdateConfigs{Limit: 100, Timeout: 0, UpdateFrequency: time.Duration(300 * time.Millisecond), AllowedUpdates: nil}
+}
+
+func Default(apiKey string) *BotConfigs {
+	return &BotConfigs{BotAPI: DefaultBotAPI, APIKey: apiKey, UpdateConfigs: DefaultUpdateConfigs(), Webhook: false, LogFileAddress: DefaultLogFile}
 }

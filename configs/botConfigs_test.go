@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"os"
+	"reflect"
 	"testing"
 )
 
@@ -18,6 +20,24 @@ func TestConfigCheck(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestLoadAndDump(t *testing.T) {
+	bc1 := Default("123hUHASDa66aDTDAFshdASDKabda6dg982edua")
+	err := Dump(bc1, "temp.json")
+	if err != nil {
+		t.Error(err)
+	}
+	bc2, err := Load("temp.json")
+	if err != nil {
+		t.Error(err)
+	}
+	if reflect.DeepEqual(bc1, bc2) {
+		t.Log("bc1 and bc2 are equal")
+	} else {
+		t.Error("bc1 and bc2 are not equal")
+	}
+	_ = os.Remove("temp.json")
 }
 
 func initTheCfgs() {

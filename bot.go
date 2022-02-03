@@ -943,6 +943,9 @@ loop:
 
 /*Return a new bot instance with the specified configs*/
 func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
+	if cfg == nil {
+		return nil, errors.New("cfg is nil")
+	}
 	if !cfg.Check() {
 		return nil, errors.New("config check failed. Please check the configs")
 	}
