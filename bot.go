@@ -18,6 +18,7 @@ type Bot struct {
 	interfaceUpdateChannel *chan *objs.Update
 	chatUpdateChannel      *chan *objs.ChatUpdate
 	prcRoutineChannel      *chan bool
+	ab                     *AdvancedBot
 }
 
 /*Run starts the bot. If the bot has already been started it returns an error.*/
@@ -870,7 +871,7 @@ func (bot *Bot) Stop() {
 
 /*AdvancedMode returns and advanced version of the bot which gives more customized functions to iteract with the bot*/
 func (bot *Bot) AdvancedMode() *AdvancedBot {
-	return &AdvancedBot{bot: bot}
+	return bot.ab
 }
 
 func (bot *Bot) processUpdate(update *objs.Update, mapKey string) bool {
@@ -957,5 +958,6 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	bt := &Bot{botCfg: cfg, apiInterface: api, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch, channelsMap: make(map[string]map[string]*chan *objs.Update)}
 	bt.channelsMap["global"] = make(map[string]*chan *objs.Update)
 	bt.channelsMap["global"]["all"] = &uc
+	bt.ab = &AdvancedBot{bot: bt}
 	return bt, nil
 }
