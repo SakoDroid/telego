@@ -43,22 +43,22 @@ func (bc *BotConfigs) Check() bool {
 
 type WebHookConfigs struct {
 	/*The web hook url.*/
-	URL string
+	URL string `json:"url"`
 	/*The port that webhook server will run on. Telegram api only suppotrs 80,443,88,8443. 8443 is recommended. Pass 0 for default https port (443)*/
-	Port int
+	Port int `json:"port"`
 	/*The address of the public key certificate file.*/
-	KeyFile string
+	KeyFile string `json:"keyfile"`
 	/*The address of the certificate file.*/
-	CertFile string
+	CertFile string `json:"certfile"`
 	/*The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS*/
-	IP string
+	IP string `json:"ip,omitempty"`
 	/*Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.*/
-	MaxConnections int
+	MaxConnections int `json:"max_connections"`
 	/*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
 	Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
-	AllowedUpdates []string
+	AllowedUpdates []string `json:"allowed_updates"`
 	/*Pass True to drop all pending updates*/
-	DropPendingUpdates bool
+	DropPendingUpdates bool `json:"drop_pending_reqs"`
 }
 
 func (whc *WebHookConfigs) check(apiKey string) bool {
@@ -85,14 +85,14 @@ func (whc *WebHookConfigs) check(apiKey string) bool {
 
 type UpdateConfigs struct {
 	/*Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.*/
-	Limit int
+	Limit int `json:"limit"`
 	/*Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.*/
-	Timeout int
+	Timeout int `json:"timeout"`
 	/*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
 	Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
-	AllowedUpdates []string
+	AllowedUpdates []string `json:"allowed_updates"`
 	/*This field indicates the frequency to call getUpdates method. Default is one second*/
-	UpdateFrequency time.Duration
+	UpdateFrequency time.Duration `json:"update_freq"`
 }
 
 func DefaultUpdateConfigs() *UpdateConfigs {
