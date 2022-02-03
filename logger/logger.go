@@ -7,8 +7,10 @@ import (
 	cfg "github.com/SakoDroid/telego/configs"
 )
 
+//Logger is the default logger of the bot.
 var Logger *log.Logger
 
+//InitiTheLogger initializes the default logger of the bot.
 func InitTheLogger(botCfg *cfg.BotConfigs) {
 	if Logger == nil {
 		file, err := os.OpenFile(botCfg.LogFileAddress, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)

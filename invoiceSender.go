@@ -2,6 +2,7 @@ package telego
 
 import objs "github.com/SakoDroid/telego/objects"
 
+//Invoice is an invoice that can be modified and sent to the user.
 type Invoice struct {
 	bot                                                                                                                                             *Bot
 	chatIdInt                                                                                                                                       int
@@ -14,14 +15,14 @@ type Invoice struct {
 	allowSendingWithoutReply, needName, needPhoneNumber, needEmail, needShippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible bool
 }
 
-/*Adds a new price label to this invoice.
+/*AddPrice adds a new price label to this invoice.
 
 "amount" is the price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145.*/
 func (is *Invoice) AddPrice(label string, amount int) {
 	is.prices = append(is.prices, objs.LabeledPrice{Label: label, Amount: amount})
 }
 
-/*Sends this invoice.
+/*Send sends this invoice.
 
 -------------------------------
 

@@ -20,6 +20,7 @@ const (
 	STICKER   MediaType = 8
 )
 
+//MediaSender is a tool for sending media messages.
 type MediaSender struct {
 	bot                                                       *Bot
 	chatIdInt                                                 int
@@ -34,7 +35,7 @@ type MediaSender struct {
 	thumbFile                                                 *os.File
 }
 
-/*Sends a file that already exists on telegram servers (file id) or a url on the web.*/
+/*SendByFileIdOrUrl sends a file that already exists on telegram servers (file id) or a url on the web.*/
 func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	switch ms.mediaType {
 	case PHOTO:
@@ -88,7 +89,7 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectCont
 
 }
 
-/*Sends a file that is located in this device.*/
+/*SendByFile sends a file that is located in this device.*/
 func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -145,15 +146,13 @@ func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*
 	}
 }
 
-/*This method sets the tumbnail of the file. It takes a file id or a url. If you want to send a file use "setThumbnailFile" instead.
-
+/*SetThumbnail sets the tumbnail of the file. It takes a file id or a url. If you want to send a file use "setThumbnailFile" instead.
 If this media does not support thumbnail, the thumbnail will be ignored.*/
 func (ms *MediaSender) SetThumbnail(fileIdOrURL string) {
 	ms.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device.
-
+/*SetThumbnailFile sets the thumbnail of the file. It takes a file existing on the device.
 If this media does not support thumbnail, the thumbnail will be ignored.*/
 func (ms *MediaSender) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()

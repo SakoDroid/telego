@@ -4,10 +4,11 @@ import (
 	"errors"
 	"os"
 
-	errs "github.com/SakoDroid/telego/Errors"
+	errs "github.com/SakoDroid/telego/errors"
 	objs "github.com/SakoDroid/telego/objects"
 )
 
+//MediaGroup is a media group that can be sent
 type MediaGroup struct {
 	bot                     *Bot
 	replyTo                 int
@@ -17,13 +18,14 @@ type MediaGroup struct {
 	files                   []*os.File
 }
 
+//PhotoInserter is a tool for inserting photos into the MediaGroup.
 type PhotoInserter struct {
 	mg                 *MediaGroup
 	caption, parseMode string
 	captionEntities    []objs.MessageEntity
 }
 
-/*Adds this file by file id or url*/
+/*AddByFileIdOrURL adds this file by file id or url*/
 func (pi *PhotoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaPhoto{
 		InputMediaDefault: fixTheDefault("photo", fileIdOrUrl, pi.caption, pi.parseMode, pi.captionEntities),
@@ -31,7 +33,7 @@ func (pi *PhotoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	pi.mg.media = append(pi.mg.media, im)
 }
 
-/*Adds an existing file in the device*/
+/*AddByFile adds an existing file in the device*/
 func (pi *PhotoInserter) AddByFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -45,6 +47,7 @@ func (pi *PhotoInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
+//VideoInserter is a tool for inserting videos into the MediaGroup.
 type VideoInserter struct {
 	mg                        *MediaGroup
 	caption, parseMode, thumb string
@@ -54,7 +57,7 @@ type VideoInserter struct {
 	supportsStreaming         bool
 }
 
-/*Adds this file by file id or url*/
+/*AddByFileIdOrURL adds this file by file id or url*/
 func (vi *VideoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaVideo{
 		InputMediaDefault: fixTheDefault("video", fileIdOrUrl, vi.caption, vi.parseMode, vi.captionEntities),
@@ -76,7 +79,7 @@ func (vi *VideoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	}
 }
 
-/*Adds an existing file in the device*/
+/*AddByFile adds an existing file in the device*/
 func (vi *VideoInserter) AddByFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -104,12 +107,12 @@ func (vi *VideoInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*SetThumbnail sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (vi *VideoInserter) SetThumbnail(fileIdOrURL string) {
 	vi.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*SetThumbnailFile sets the tumbnail of the file. It takes a file existing on the device*/
 func (vi *VideoInserter) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -120,6 +123,7 @@ func (vi *VideoInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//AnimationInserter is a tool for inserting animations into the MediaGroup.
 type AnimationInserter struct {
 	mg                        *MediaGroup
 	caption, parseMode, thumb string
@@ -128,7 +132,7 @@ type AnimationInserter struct {
 	width, height, duration   int
 }
 
-/*Adds this file by file id or url*/
+/*AddByFileIdOrURL adds this file by file id or url*/
 func (ai *AnimationInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaAnimation{
 		InputMediaDefault: fixTheDefault("animation", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
@@ -149,7 +153,7 @@ func (ai *AnimationInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	}
 }
 
-/*Adds an existing file in the device*/
+/*AddByFile adds an existing file in the device*/
 func (ai *AnimationInserter) AddByFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -176,12 +180,12 @@ func (ai *AnimationInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*SetThumbnail sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (ai *AnimationInserter) SetThumbnail(fileIdOrURL string) {
 	ai.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*SetThumbnailFile sets the tumbnail of the file. It takes a file existing on the device*/
 func (ai *AnimationInserter) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -192,6 +196,7 @@ func (ai *AnimationInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//AudioInserter is a tool for inserting audios into the MediaGroup.
 type AudioInserter struct {
 	mg                                          *MediaGroup
 	caption, parseMode, thumb, performer, title string
@@ -200,7 +205,7 @@ type AudioInserter struct {
 	duration                                    int
 }
 
-/*Adds this file by file id or url*/
+/*AddByFileIdOrURL adds this file by file id or url*/
 func (ai *AudioInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaAudio{
 		InputMediaDefault: fixTheDefault("audio", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
@@ -217,7 +222,7 @@ func (ai *AudioInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	}
 }
 
-/*Adds an existing file in the device*/
+/*AddByFile adds an existing file in the device*/
 func (ai *AudioInserter) AddByFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -240,12 +245,12 @@ func (ai *AudioInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*SetThumbnail sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (ai *AudioInserter) SetThumbnail(fileIdOrURL string) {
 	ai.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*SetThumbnailFile sets the tumbnail of the file. It takes a file existing on the device*/
 func (ai *AudioInserter) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -256,6 +261,7 @@ func (ai *AudioInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//DocumentInserter is a tool for inserting documents into the MediaGroup.
 type DocumentInserter struct {
 	mg                          *MediaGroup
 	caption, parseMode, thumb   string
@@ -264,7 +270,7 @@ type DocumentInserter struct {
 	disableContentTypeDetection bool
 }
 
-/*Adds this file by file id or url*/
+/*AddByFileIdOrURL adds this file by file id or url*/
 func (di *DocumentInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaDocument{
 		InputMediaDefault:           fixTheDefault("document", fileIdOrUrl, di.caption, di.parseMode, di.captionEntities),
@@ -277,7 +283,7 @@ func (di *DocumentInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	}
 }
 
-/*Adds an existing file in the device*/
+/*AddByFile adds an existing file in the device*/
 func (di *DocumentInserter) AddByFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -296,12 +302,12 @@ func (di *DocumentInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*SetThumbnail sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (di *DocumentInserter) SetThumbnail(fileIdOrURL string) {
 	di.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*SetThumbnailFile sets the tumbnail of the file. It takes a file existing on the device*/
 func (di *DocumentInserter) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -312,8 +318,7 @@ func (di *DocumentInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
-/*Sends this album (to all types of chat but channels, to send to channels use "SendToChannel" method)
-
+/*Send sends this album (to all types of chat but channels, to send to channels use "SendToChannel" method)
 
 --------------------
 
@@ -335,7 +340,7 @@ func (mg *MediaGroup) Send(chatId int, silent, protectContent bool) (*objs.SendM
 	)
 }
 
-/*Sends this album to a channel.
+/*Send sends this album to a channel.
 
 
 --------------------
@@ -358,7 +363,7 @@ func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) 
 	)
 }
 
-/*Returns a PhotoInserter to add a photo to the album*/
+/*AddPhoto returns a PhotoInserter to add a photo to the album*/
 func (mg *MediaGroup) AddPhoto(caption, parseMode string, captionEntitie []objs.MessageEntity) (*PhotoInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
@@ -366,7 +371,7 @@ func (mg *MediaGroup) AddPhoto(caption, parseMode string, captionEntitie []objs.
 	return &PhotoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie}, nil
 }
 
-/*Returns a VideoInserter to add a video to the album*/
+/*AddVideo returns a VideoInserter to add a video to the album*/
 func (mg *MediaGroup) AddVideo(caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity) (*VideoInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
@@ -374,7 +379,7 @@ func (mg *MediaGroup) AddVideo(caption, parseMode string, width, height, duratio
 	return &VideoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming}, nil
 }
 
-/*Returns an AnimationInserter to add an animation to the album*/
+/*AddAnimation returns an AnimationInserter to add an animation to the album*/
 func (mg *MediaGroup) AddAnimation(caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity) (*AnimationInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
@@ -382,7 +387,7 @@ func (mg *MediaGroup) AddAnimation(caption, parseMode string, width, height, dur
 	return &AnimationInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration}, nil
 }
 
-/*Returns an AudioInserter to add an audio to the album*/
+/*AddAudio returns an AudioInserter to add an audio to the album*/
 func (mg *MediaGroup) AddAudio(caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity) (*AudioInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
@@ -390,7 +395,7 @@ func (mg *MediaGroup) AddAudio(caption, parseMode, performer, title string, dura
 	return &AudioInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, performer: performer, title: title, duration: duration}, nil
 }
 
-/*Returns a DocumentInserter to add a document to the album*/
+/*AddDocument returns a DocumentInserter to add a document to the album*/
 func (mg *MediaGroup) AddDocument(caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity) (*DocumentInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}

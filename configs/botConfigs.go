@@ -7,9 +7,13 @@ import (
 	"time"
 )
 
+//DefaultBotAPI is the telegrams default bot api server.
 const DefaultBotAPI = "https://api.telegram.org/bot"
+
+//DefaultLogFile is a default file for saving the bot logs in it.
 const DefaultLogFile = "./bot-logs.log"
 
+//BotConfigs is a struct holding the bots configs.
 type BotConfigs struct {
 	/*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
 	BotAPI string `json:"bot_api"`
@@ -26,6 +30,7 @@ type BotConfigs struct {
 	LogFileAddress string `json:"log_file"`
 }
 
+//Check checks the bot configs for any problem.
 func (bc *BotConfigs) Check() bool {
 	if bc.BotAPI == "" {
 		return false
@@ -43,6 +48,7 @@ func (bc *BotConfigs) Check() bool {
 	}
 }
 
+//Load loads the configs from a file and returns the BotConfigs pointer.
 func Load(file string) (*BotConfigs, error) {
 	fl, err := os.Open(file)
 	defer fl.Close()
@@ -63,6 +69,7 @@ func Load(file string) (*BotConfigs, error) {
 	return bc, err
 }
 
+//Dump saves the given BotConfigs struct in a json format in the given file address.
 func Dump(bc *BotConfigs, file string) error {
 	fl, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY, 0666)
 	defer fl.Close()
@@ -77,6 +84,7 @@ func Dump(bc *BotConfigs, file string) error {
 	return err
 }
 
+//WebHookConfigs contains the configs necessary for webhook.
 type WebHookConfigs struct {
 	/*The web hook url.*/
 	URL string `json:"url"`
@@ -119,6 +127,7 @@ func (whc *WebHookConfigs) check(apiKey string) bool {
 	return true
 }
 
+//UpdateConfigs contains the necessary configs for receiving updates.
 type UpdateConfigs struct {
 	/*Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.*/
 	Limit int `json:"limit"`
@@ -131,10 +140,12 @@ type UpdateConfigs struct {
 	UpdateFrequency time.Duration `json:"update_freq"`
 }
 
+//DefaultUpdateConfigs returns a default update configs.
 func DefaultUpdateConfigs() *UpdateConfigs {
 	return &UpdateConfigs{Limit: 100, Timeout: 0, UpdateFrequency: time.Duration(300 * time.Millisecond), AllowedUpdates: nil}
 }
 
+//Default returns default setting for the bot.
 func Default(apiKey string) *BotConfigs {
 	return &BotConfigs{BotAPI: DefaultBotAPI, APIKey: apiKey, UpdateConfigs: DefaultUpdateConfigs(), Webhook: false, LogFileAddress: DefaultLogFile}
 }

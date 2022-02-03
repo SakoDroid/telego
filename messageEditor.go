@@ -6,12 +6,14 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
+//MessageEditor is a tool for editing messsages.
 type MessageEditor struct {
 	bot          *Bot
 	chatIdInt    int
 	chatIdString string
 }
 
+//PhotoEditor is a tool for editing photos.
 type PhotoEditor struct {
 	mg                                  *MessageEditor
 	messageId                           int
@@ -20,7 +22,7 @@ type PhotoEditor struct {
 	replyMarkup                         *objs.InlineKeyboardMarkup
 }
 
-/*Edits this photo by file id or url*/
+/*EditByFileIdOrURL edits this photo by file id or url*/
 func (pi *PhotoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
 	im := &objs.InputMediaPhoto{
 		InputMediaDefault: fixTheDefault("photo", fileIdOrUrl, pi.caption, pi.parseMode, pi.captionEntities),
@@ -28,7 +30,7 @@ func (pi *PhotoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 	return pi.mg.editMedia(pi.messageId, pi.inlineMessageId, im, pi.replyMarkup, nil)
 }
 
-/*Edits this photo with an existing file in the device*/
+/*EditByFile edits this photo with an existing file in the device*/
 func (pi *PhotoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -40,6 +42,7 @@ func (pi *PhotoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	return pi.mg.editMedia(pi.messageId, pi.inlineMessageId, im, pi.replyMarkup, file)
 }
 
+//VideoEditor is a tool for editing videos.
 type VideoEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -51,7 +54,7 @@ type VideoEditor struct {
 	replyMarkup                                *objs.InlineKeyboardMarkup
 }
 
-/*Edits this video by file id or url*/
+/*EditByFileIdOrURL edits this video by file id or url*/
 func (vi *VideoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
 	im := &objs.InputMediaVideo{
 		InputMediaDefault: fixTheDefault("video", fileIdOrUrl, vi.caption, vi.parseMode, vi.captionEntities),
@@ -70,7 +73,7 @@ func (vi *VideoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 	return vi.mg.editMedia(vi.messageId, vi.inlineMessageId, im, vi.replyMarkup, nil, vi.thumbFile)
 }
 
-/*Edits this video by file in the device*/
+/*EditByFile edits this video by file in the device*/
 func (vi *VideoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -93,12 +96,12 @@ func (vi *VideoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	return vi.mg.editMedia(vi.messageId, vi.inlineMessageId, im, vi.replyMarkup, file, vi.thumbFile)
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*EditThumbnail edits the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (vi *VideoEditor) EditThumbnail(fileIdOrURL string) {
 	vi.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*EditThumbnailFile edits the thumbnail of the file. It takes a file existing on the device*/
 func (vi *VideoEditor) EditThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -109,6 +112,7 @@ func (vi *VideoEditor) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//AnimationEditor is a tool for editing animations.
 type AnimationEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -119,7 +123,7 @@ type AnimationEditor struct {
 	replyMarkup                                *objs.InlineKeyboardMarkup
 }
 
-/*Edits this animation file by file id or url*/
+/*EditByFileIdOrURL edits this animation file by file id or url*/
 func (ai *AnimationEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
 	im := &objs.InputMediaAnimation{
 		InputMediaDefault: fixTheDefault("animation", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
@@ -137,7 +141,7 @@ func (ai *AnimationEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultR
 	return ai.mg.editMedia(ai.messageId, ai.inlineMessageId, im, ai.replyMarkup, nil, ai.thumbFile)
 }
 
-/*Edits this animation by file in the device*/
+/*EditByFile edits this animation by file in the device*/
 func (ai *AnimationEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -159,12 +163,12 @@ func (ai *AnimationEditor) EditByFile(file *os.File) (*objs.DefaultResult, error
 	return ai.mg.editMedia(ai.messageId, ai.inlineMessageId, im, ai.replyMarkup, file, ai.thumbFile)
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*EditThumbnail edits the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (ai *AnimationInserter) EditThumbnail(fileIdOrURL string) {
 	ai.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*EditThumbnailFile edits the thumbnail of the file. It takes a file existing on the device*/
 func (ai *AnimationInserter) EditThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -175,6 +179,7 @@ func (ai *AnimationInserter) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//AudioEditor is a tool for editing audios.
 type AudioEditor struct {
 	mg                                                           *MessageEditor
 	messageId                                                    int
@@ -185,7 +190,7 @@ type AudioEditor struct {
 	replyMarkup                                                  *objs.InlineKeyboardMarkup
 }
 
-/*Adds this file by file id or url*/
+/*EditByFileIdOrURL edits this file by file id or url*/
 func (ai *AudioEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
 	im := &objs.InputMediaAudio{
 		InputMediaDefault: fixTheDefault("audio", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
@@ -199,7 +204,7 @@ func (ai *AudioEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 	return ai.mg.editMedia(ai.messageId, ai.inlineMessageId, im, ai.replyMarkup, nil, ai.thumbFile)
 }
 
-/*Adds an existing file in the device*/
+/*EditByFile edits this audio by file in the device*/
 func (ai *AudioEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -217,12 +222,12 @@ func (ai *AudioEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	return ai.mg.editMedia(ai.messageId, ai.inlineMessageId, im, ai.replyMarkup, file, ai.thumbFile)
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*EditThumbnail edits the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (ai *AudioEditor) EditThumbnail(fileIdOrURL string) {
 	ai.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*EditThumbnailFile edits the thumbnail of the file. It takes a file existing on the device*/
 func (ai *AudioEditor) EditThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -233,6 +238,7 @@ func (ai *AudioEditor) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
+//DocumentEditor is a tool for editing documents.
 type DocumentEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -243,7 +249,7 @@ type DocumentEditor struct {
 	replyMarkup                                *objs.InlineKeyboardMarkup
 }
 
-/*Adds this file by file id or url*/
+/*EditByFileIdOrURL edits this file by file id or url*/
 func (di *DocumentEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
 	im := &objs.InputMediaDocument{
 		InputMediaDefault:           fixTheDefault("document", fileIdOrUrl, di.caption, di.parseMode, di.captionEntities),
@@ -253,7 +259,7 @@ func (di *DocumentEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultRe
 	return di.mg.editMedia(di.messageId, di.inlineMessageId, im, di.replyMarkup, nil, di.thumbFile)
 }
 
-/*Adds an existing file in the device*/
+/*EditByFile edits this document by file in the device*/
 func (di *DocumentEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	stat, err := file.Stat()
 	if err != nil {
@@ -267,12 +273,12 @@ func (di *DocumentEditor) EditByFile(file *os.File) (*objs.DefaultResult, error)
 	return di.mg.editMedia(di.messageId, di.inlineMessageId, im, di.replyMarkup, file, di.thumbFile)
 }
 
-/*This method sets the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
+/*EditThumbnail edits the tumbnail of the file. It takes a fileId or a url. If you want to send a file use "setThumbnailFile" instead.*/
 func (di *DocumentEditor) EditThumbnail(fileIdOrURL string) {
 	di.thumb = fileIdOrURL
 }
 
-/*This method sets the thumbnail of the file. It takes a file existing on the device*/
+/*EditThumbnailFile edits the thumbnail of the file. It takes a file existing on the device*/
 func (di *DocumentEditor) EditThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {
@@ -283,8 +289,7 @@ func (di *DocumentEditor) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
-/*
-Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
+/*EditText can be used to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
 func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -296,8 +301,7 @@ func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMod
 	)
 }
 
-/*
-Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
+/*EditCaption can be used to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
 func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -309,7 +313,7 @@ func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, pa
 	)
 }
 
-/*Returns a PhotoEditor to edit a photo*/
+/*EditMediaPhoto returns a PhotoEditor to edit a photo*/
 func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *PhotoEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -318,7 +322,7 @@ func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string
 	return &PhotoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, replyMarkup: &replyMarkup}
 }
 
-/*Returns a VideoEditor to edit a video*/
+/*EditMediaVideo returns a VideoEditor to edit a video*/
 func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *VideoEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -327,7 +331,7 @@ func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string
 	return &VideoEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming, replyMarkup: &replyMarkup}
 }
 
-/*Returns an AnimationEditor to edit an animation*/
+/*EditMediaAnimation returns an AnimationEditor to edit an animation*/
 func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AnimationEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -336,7 +340,7 @@ func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode st
 	return &AnimationEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, replyMarkup: &replyMarkup}
 }
 
-/*Returns an AudioEditor to edit an audio*/
+/*EditMediaAudio returns an AudioEditor to edit an audio*/
 func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AudioEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -345,7 +349,7 @@ func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, perfo
 	return &AudioEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, performer: performer, title: title, duration: duration, replyMarkup: &replyMarkup}
 }
 
-/*Returns a DocumentEditor to edit a document*/
+/*EditMediaDocument returns a DocumentEditor to edit a document*/
 func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *DocumentEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -354,7 +358,7 @@ func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode str
 	return &DocumentEditor{mg: mg, messageId: messageId, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, disableContentTypeDetection: disableContentTypeDetection, replyMarkup: &replyMarkup}
 }
 
-/*Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
+/*EditReplyMarkup can be used to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
 func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
@@ -365,8 +369,7 @@ func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, 
 	)
 }
 
-/*
-Use this method to delete a message, including service messages, with the following limitations:
+/*DeleteMessage can be used to delete a message, including service messages, with the following limitations:
 
 - A message can only be deleted if it was sent less than 48 hours ago.
 

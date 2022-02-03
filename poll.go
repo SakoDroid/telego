@@ -6,8 +6,10 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
+//Polls contains the pointers to all of the created maps.
 var Polls = make(map[string]*Poll)
 
+//Poll is an automatic poll.
 type Poll struct {
 	bot                                                                     *Bot
 	chatIdInt, messageId, totalVoterCount                                   int
@@ -20,7 +22,7 @@ type Poll struct {
 	explanationEntities                                                     []objs.MessageEntity
 }
 
-/*Adds an option to poll.
+/*AddOption adds an option to poll.
 
 -If the poll has been sent this method will do nothing.*/
 func (p *Poll) AddOption(option string) {
@@ -29,7 +31,7 @@ func (p *Poll) AddOption(option string) {
 	}
 }
 
-/*Set explanation if this poll.
+/*SetExplanation sets explanation if this poll.
 
 If the poll has been sent this method will do nothing.*/
 func (p *Poll) SetExplanation(explanation, explanationParseMode string, explanationEntities []objs.MessageEntity) {
@@ -40,7 +42,7 @@ func (p *Poll) SetExplanation(explanation, explanationParseMode string, explanat
 	}
 }
 
-/*Sets the correct option id for the poll. The correct option is the index of the the true option in the options array.(0 based)
+/*SetCorrectOption sets the correct option id for the poll. The correct option is the index of the the true option in the options array.(0 based)
 
 -If the type of this bot is "regular" this method will do nothing.
 
@@ -51,7 +53,7 @@ func (p *Poll) SetCorrectOption(co int) {
 	}
 }
 
-/*Sets the flags of this poll. Flags are "isClosed","isAnonymous" and "allowMultipleAnswers".
+/*SetFlags sets the flags of this poll. Flags are "isClosed","isAnonymous" and "allowMultipleAnswers".
 
 -If the poll has been sent this method will do nothing.*/
 func (p *Poll) SetFlags(isClosed, isAnonymous, allowMA bool) {
@@ -62,7 +64,7 @@ func (p *Poll) SetFlags(isClosed, isAnonymous, allowMA bool) {
 	}
 }
 
-/*Sets open period of this poll. According to official telegram doc, open period is amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+/*SetOpenPeriod sets open period of this poll. According to official telegram doc, open period is amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
 
 -If close date has been specified, this method wont set open period.
 
@@ -73,7 +75,7 @@ func (p *Poll) SetOpenPeriod(op int) {
 	}
 }
 
-/*Sets the close date of this poll.
+/*SetCloseDate sets the close date of this poll.
 
 -If open period has been specified, this method wont set close date for the poll.
 
@@ -84,7 +86,7 @@ func (p *Poll) SetCloseDate(cd int) {
 	}
 }
 
-/*This method takes an update object and extracts the poll update from it.
+/*Update takes an poll object and extracts the poll update from it.
 
 May return error if the update does not contain any poll or the poll in the update is not this poll*/
 func (p *Poll) Update(poll *objs.Poll) error {
@@ -100,52 +102,52 @@ func (p *Poll) Update(poll *objs.Poll) error {
 	return nil
 }
 
-/*Returns the poll type. Its either "regular" or "quiz".*/
+/*GetType returns the poll type. Its either "regular" or "quiz".*/
 func (p *Poll) GetType() string {
 	return p.pollType
 }
 
-/*Returns the id of this poll*/
+/*GetId returns the id of this poll*/
 func (p *Poll) GetId() string {
 	return p.id
 }
 
-/*Returns the question of this poll*/
+/*GetQuestion returns the question of this poll*/
 func (p *Poll) GetQuestion() string {
 	return p.question
 }
 
-/*Returns the explanation of this poll*/
+/*GetExplanation returns the explanation of this poll*/
 func (p *Poll) GetExplanation() string {
 	return p.explanation
 }
 
-/*Returns the options of this poll*/
+/*GetOptions returns the options of this poll*/
 func (p *Poll) GetOptions() []string {
 	return p.options
 }
 
-/*Returns the correct option id. returnes 0 if type of the poll is "regular"*/
+/*GetCorrectOption returns the correct option id. returnes 0 if type of the poll is "regular"*/
 func (p *Poll) GetCorrectOption() int {
 	return p.correctOptionId
 }
 
-/*Returns the update channel for this poll. Everytime an update is received which contains update for this poll, true is passed into the channel.*/
+/*GetUpdateChannel returns the update channel for this poll. Everytime an update is received which contains update for this poll, true is passed into the channel.*/
 func (p *Poll) GetUpdateChannel() *chan bool {
 	return p.updateChannel
 }
 
-/*Returns the up to date result of the poll*/
+/*GetResult returns the up to date result of the poll*/
 func (p *Poll) GetResult() []objs.PollOption {
 	return p.result
 }
 
-/*Returns the up to date total number of voters for this poll*/
+/*GetTotalVoters returns the up to date total number of voters for this poll*/
 func (p *Poll) GetTotalVoters() int {
 	return p.totalVoterCount
 }
 
-/*Sends the poll. If you want more options foe sending the bot, use "SendAdvanced" method.
+/*Send sends the poll. If you want more options foe sending the bot, use "SendAdvanced" method.
 
 If "silent" argument is true, the message will be sent without notification.
 
@@ -168,7 +170,7 @@ func (p *Poll) Send(silent, protectContent bool, replyTo int) error {
 	return nil
 }
 
-/*Sends the poll. This method has more options than "Send" method.
+/*SendAdvanced sends the poll. This method has more options than "Send" method.
 
 If "silent" argument is true, the message will be sent without notification.
 
@@ -191,7 +193,7 @@ func (p *Poll) SendAdvanced(replyTo int, silent, allowSendingWithOutReply, prote
 	return nil
 }
 
-/*stops the poll*/
+/*Stop stops the poll*/
 func (p *Poll) Stop() error {
 	_, err := p.bot.apiInterface.StopPoll(
 		p.chatIdInt, p.chatIdString, p.messageId, nil,

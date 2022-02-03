@@ -4,11 +4,11 @@ import (
 	"errors"
 	"os"
 
-	upp "github.com/SakoDroid/telego/Parser"
-	tba "github.com/SakoDroid/telego/TBA"
 	cfg "github.com/SakoDroid/telego/configs"
 	logger "github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
+	upp "github.com/SakoDroid/telego/parser"
+	tba "github.com/SakoDroid/telego/tba"
 )
 
 type Bot struct {
@@ -20,7 +20,7 @@ type Bot struct {
 	prcRoutineChannel      *chan bool
 }
 
-/*Starts the bot. If the bot has already been started it returns an error.*/
+/*Run starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run() error {
 	logger.InitTheLogger(bot.botCfg)
 	if !bot.checkWebHook() {
@@ -107,12 +107,12 @@ func (bot *Bot) deleteWebhook() error {
 	return nil
 }
 
-/*Returns the channel which new updates received from api server are pushed into.*/
+/*GetUpdateChannel returns the channel which new updates received from api server are pushed into.*/
 func (bot *Bot) GetUpdateChannel() *chan *objs.Update {
 	return bot.channelsMap["global"]["all"]
 }
 
-/*Adds a handler for a text message that matches the given regex pattern and chatType.
+/*AddHandler adds a handler for a text message that matches the given regex pattern and chatType.
 
 "pattern" is a regex pattern.
 
@@ -127,7 +127,7 @@ func (bot *Bot) AddHandler(pattern string, handler func(*objs.Update), chatTypes
 
 }
 
-/*Returnes the received informations about the bot from api server.
+/*GetMe returns the received informations about the bot from api server.
 
 ---------------------
 
@@ -138,7 +138,7 @@ func (bot *Bot) GetMe() (*objs.UserResult, error) {
 	return bot.apiInterface.GetMe()
 }
 
-/*Send a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
+/*SendMessage sens a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
 
 If "silent" argument is true, the message will be sent without notification.
@@ -148,7 +148,7 @@ func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, sil
 	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
 }
 
-/*Send a text message to a channel and returns the sent message on success
+/*SendMesssageUN sens a text message to a channel and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
 
 If "silent" argument is true, the message will be sent without notification.
@@ -158,34 +158,34 @@ func (bot *Bot) SendMesssageUN(chatId, text, parseMode string, replyTo int, sile
 	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
 }
 
-/*Returns a MessageForwarder which has several methods for forwarding a message
+/*ForwardMessage returns a MessageForwarder which has several methods for forwarding a message
 
 If "protectContent" argument is true, the message can't be forwarded or saved.*/
 func (bot *Bot) ForwardMessage(messageId int, disableNotif, protectContent bool) *MessageForwarder {
 	return &MessageForwarder{bot: bot, messageId: messageId, disableNotif: disableNotif, protectContent: protectContent}
 }
 
-/*Returns a MessageCopier which has several methods for copying a message
+/*CopyMessage returns a MessageCopier which has several methods for copying a message
 
 If "protectContent" argument is true, the message can't be forwarded or saved.*/
 func (bot *Bot) CopyMessage(messageId int, disableNotif, protectContent bool) *MessageCopier {
 	return &MessageCopier{bot: bot, messageId: messageId, disableNotif: disableNotif, protectContent: protectContent}
 }
 
-/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
+/*SendPhoto returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")*/
 func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
+/*SendPhotoUN returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
 func (bot *Bot) SendPhotoUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
 	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoUN" method.
+/*SendVideo returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to all types of chat except channels. To send a video to a channel use "SendVideoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -197,7 +197,7 @@ func (bot *Bot) SendVideo(chatId int, replyTo int, caption, parseMode string) *M
 	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to a channels.
+/*SendVideoUN returns a MediaSender which has several methods for sending a video. This method is only used for sending a video to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -209,7 +209,7 @@ func (bot *Bot) SendVideoUN(chatId string, replyTo int, caption, parseMode strin
 	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioUN" method.
+/*SendAudio returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to all types of chat except channels. To send a audio to a channel use "SendAudioUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -223,7 +223,7 @@ func (bot *Bot) SendAudio(chatId, replyTo int, caption, parseMode string) *Media
 	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
+/*SendAudioUN returns a MediaSender which has several methods for sending a audio. This method is only used for sending a audio to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -237,7 +237,7 @@ func (bot *Bot) SendAudioUN(chatId string, replyTo int, caption, parseMode strin
 	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentUN" method.
+/*SendDocument returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to all types of chat except channels. To send a audio to a channel use "SendDocumentUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -249,7 +249,7 @@ func (bot *Bot) SendDocument(chatId, replyTo int, caption, parseMode string) *Me
 	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to a channels.
+/*SendDocumentUN returns a MediaSender which has several methods for sending a document. This method is only used for sending a document to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -261,7 +261,7 @@ func (bot *Bot) SendDocumentUN(chatId string, replyTo int, caption, parseMode st
 	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationUN" method.
+/*SendAnimation returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to all types of chat except channels. To send a audio to a channel use "SendAnimationUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -273,7 +273,7 @@ func (bot *Bot) SendAnimation(chatId int, replyTo int, caption, parseMode string
 	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to channels
+/*SendAnimationUN returns a MediaSender which has several methods for sending an animation. This method is only used for sending an animation to channels
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -285,7 +285,7 @@ func (bot *Bot) SendAnimationUN(chatId string, replyTo int, caption, parseMode s
 	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceUN" method.
+/*SendVoice returns a MediaSender which has several methods for sending a voice. This method is only used for sending a voice to all types of chat except channels. To send a voice to a channel use "SendVoiceUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -297,7 +297,7 @@ func (bot *Bot) SendVoice(chatId int, replyTo int, caption, parseMode string) *M
 	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns an MediaSender which has several methods for sending a voice. This method is only used for sending a voice to channels.
+/*SendVoiceUN returns an MediaSender which has several methods for sending a voice. This method is only used for sending a voice to channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -309,7 +309,7 @@ func (bot *Bot) SendVoiceUN(chatId string, replyTo int, caption, parseMode strin
 	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteUN" method.
+/*SendVideoNote returns a MediaSender which has several methods for sending a video note. This method is only used for sending a video note to all types of chat except channels. To send a video note to a channel use "SendVideoNoteUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -321,7 +321,7 @@ func (bot *Bot) SendVideoNote(chatId int, replyTo int, caption, parseMode string
 	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*Returns an MediaSender which has several methods for sending a video note. This method is only used for sending a video note to channels.
+/*SendVideoNoteUN returns an MediaSender which has several methods for sending a video note. This method is only used for sending a video note to channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 
 ---------------------------------
@@ -333,12 +333,13 @@ func (bot *Bot) SendVideoNoteUN(chatId string, replyTo int, caption, parseMode s
 	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
-/*To ignore replyTo argument, pass 0.*/
+/*CreateAlbum returns a MediaGroup for grouping media messages.
+To ignore replyTo argument, pass 0.*/
 func (bot *Bot) CreateAlbum(replyTo int) *MediaGroup {
 	return &MediaGroup{replyTo: replyTo, bot: bot, media: make([]objs.InputMedia, 0), files: make([]*os.File, 0)}
 }
 
-/*Sends a venue to all types of chat but channels. To send it to channels use "SendVenueUN" method.
+/*SendVenue sends a venue to all types of chat but channels. To send it to channels use "SendVenueUN" method.
 
 ---------------------------------
 
@@ -355,7 +356,7 @@ func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, titl
 	)
 }
 
-/*Sends a venue to a channel.
+/*SendVenueUN sends a venue to a channel.
 
 ---------------------------------
 
@@ -372,7 +373,7 @@ func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude floa
 	)
 }
 
-/*Sends a contact to all types of chat but channels. To send it to channels use "SendContactUN" method.
+/*SendContact sends a contact to all types of chat but channels. To send it to channels use "SendContactUN" method.
 
 ---------------------------------
 
@@ -389,7 +390,7 @@ func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastNam
 	)
 }
 
-/*Sends a contact to a channel.
+/*SendContactUN sends a contact to a channel.
 
 ---------------------------------
 
@@ -406,7 +407,7 @@ func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName
 	)
 }
 
-/*Creates a poll for all types of chat but channels. To create a poll for channels use "CreatePollForChannel" method.
+/*CreatePoll creates a poll for all types of chat but channels. To create a poll for channels use "CreatePollForChannel" method.
 
 The poll type can be "regular" or "quiz"*/
 func (bot *Bot) CreatePoll(chatId int, question, pollType string) (*Poll, error) {
@@ -416,7 +417,7 @@ func (bot *Bot) CreatePoll(chatId int, question, pollType string) (*Poll, error)
 	return &Poll{bot: bot, pollType: pollType, chatIdInt: chatId, question: question, options: make([]string, 0)}, nil
 }
 
-/*Creates a poll for a channel.
+/*CreatePollForChannel creates a poll for a channel.
 
 The poll type can be "regular" or "quiz"*/
 func (bot *Bot) CreatePollForChannel(chatId, question, pollType string) (*Poll, error) {
@@ -426,7 +427,7 @@ func (bot *Bot) CreatePollForChannel(chatId, question, pollType string) (*Poll, 
 	return &Poll{bot: bot, pollType: pollType, chatIdString: chatId, question: question, options: make([]string, 0)}, nil
 }
 
-/*Sends a dice message to all types of chat but channels. To send it to channels use "SendDiceUN" method.
+/*SendDice sends a dice message to all types of chat but channels. To send it to channels use "SendDiceUN" method.
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
 
@@ -445,7 +446,7 @@ func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent, protectConte
 	)
 }
 
-/*Sends a dice message to a channel.
+/*SendDiceUN sends a dice message to a channel.
 
 Available emojies : “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
 
@@ -464,7 +465,7 @@ func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, pro
 	)
 }
 
-/*Sends a chat action message to all types of chat but channels. To send it to channels use "SendChatActionUN" method.
+/*SendChatAction sends a chat action message to all types of chat but channels. To send it to channels use "SendChatActionUN" method.
 
 ---------------------------------
 
@@ -481,7 +482,7 @@ func (bot *Bot) SendChatAction(chatId int, action string) (*objs.SendMethodsResu
 	return bot.apiInterface.SendChatAction(chatId, "", action)
 }
 
-/*Sends a chat action message to a channel.
+/*SendChatActionUN sends a chat action message to a channel.
 
 ---------------------------------
 
@@ -498,7 +499,7 @@ func (bot *Bot) SendChatActionUN(chatId, action string) (*objs.SendMethodsResult
 	return bot.apiInterface.SendChatAction(0, chatId, action)
 }
 
-/*Sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationUN" method.
+/*SendLocation sends a location (not live) to all types of chats but channels. To send it to channel use "SendLocationUN" method.
 
 You can not use this methods to send a live location. To send a live location use AdvancedBot.
 
@@ -517,7 +518,7 @@ func (bot *Bot) SendLocation(chatId int, silent, protectContent bool, latitude, 
 	)
 }
 
-/*Sends a location (not live) to a channel.
+/*SendLocationUN sends a location (not live) to a channel.
 
 You can not use this methods to send a live location. To send a live location use AdvancedBot.
 
@@ -536,7 +537,7 @@ func (bot *Bot) SendLocationUN(chatId string, silent, protectContent bool, latit
 	)
 }
 
-/*Gets the given user profile photos.
+/*GetUserProfilePhotos gets the given user profile photos.
 
 "userId" argument is required. Other arguments are optinoal and to ignore them pass 0.
 
@@ -549,7 +550,7 @@ func (bot *Bot) GetUserProfilePhotos(userId, offset, limit int) (*objs.ProfilePh
 	return bot.apiInterface.GetUserProfilePhotos(userId, offset, limit)
 }
 
-/*Gets a file from telegram server. If it is successful the File object is returned.
+/*GetFile gets a file from telegram server. If it is successful the File object is returned.
 
 If "download option is true, the file will be saved into the given file and if the given file is nil file will be saved in the same name as it has been saved in telegram servers.*/
 func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File, error) {
@@ -566,45 +567,45 @@ func (bot *Bot) GetFile(fileId string, download bool, file *os.File) (*objs.File
 	return res.Result, nil
 }
 
-/*Creates and returns a ChatManager for groups and other chats witch an integer id.
+/*GetChatManagerById creates and returns a ChatManager for groups and other chats witch an integer id.
 
 To manage supergroups and channels which have usernames use "GetChatManagerByUsername".*/
 func (bot *Bot) GetChatManagerById(chatId int) *ChatManager {
 	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
 }
 
-/*Creates and returns a ChatManager for supergroups and channels which have usernames
+/*GetChatManagerByUsrename creates and returns a ChatManager for supergroups and channels which have usernames
 
 To manage groups and other chats witch an integer id use "GetChatManagerById".*/
 func (bot *Bot) GetChatManagerByUsrename(chatId int) *ChatManager {
 	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
 }
 
-/*Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.
+/*AnswerCallbackQuery can be used to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.
 
 Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @Botfather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.*/
 func (bot *Bot) AnswerCallbackQuery(callbackQueryId, text string, showAlert bool) (*objs.LogicalResult, error) {
 	return bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, "", showAlert, 0)
 }
 
-/*Returns a command manager which has several method for manaing bot commands.*/
+/*GetCommandManager returns a command manager which has several method for manaing bot commands.*/
 func (bot *Bot) GetCommandManager() *CommandsManager {
 	return &CommandsManager{bot: bot}
 }
 
-/*Returns a MessageEditor for a chat with id which has several methods for editing messages.
+/*GetMsgEditor returns a MessageEditor for a chat with id which has several methods for editing messages.
 
 To edit messages in a channel or a chat with username, use "GetMsgEditorWithUN"*/
 func (bot *Bot) GetMsgEditor(chatId int) *MessageEditor {
 	return &MessageEditor{bot: bot, chatIdInt: chatId}
 }
 
-/*Returns a MessageEditor for a chat with username which has several methods for editing messages.*/
+/*GetMsgEditorWithUN returns a MessageEditor for a chat with username which has several methods for editing messages.*/
 func (bot *Bot) GetMsgEditorWithUN(chatId string) *MessageEditor {
 	return &MessageEditor{bot: bot, chatIdInt: 0, chatIdString: chatId}
 }
 
-/*Returns a MediaSender which has several methods for sending an sticker to all types of chats but channels.
+/*SendSticker returns a MediaSender which has several methods for sending an sticker to all types of chats but channels.
 To send it to a channel use "SendStickerWithUN".
 
 --------------------
@@ -617,7 +618,7 @@ func (bot *Bot) SendSticker(chatId, replyTo int) *MediaSender {
 	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo}
 }
 
-/*Returns a MediaSender which has several methods for sending an sticker to channels.
+/*SendStickerWithUn returns a MediaSender which has several methods for sending an sticker to channels.
 
 --------------------
 
@@ -629,7 +630,7 @@ func (bot *Bot) SendStickerWithUn(chatId string, replyTo int) *MediaSender {
 	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo}
 }
 
-/*Returns an sticker set with the given name*/
+/*GetStickerSet returns an sticker set with the given name*/
 func (bot *Bot) GetStickerSet(name string) (*StickerSet, error) {
 	res, err := bot.apiInterface.GetStickerSet(name)
 	if err != nil {
@@ -638,8 +639,7 @@ func (bot *Bot) GetStickerSet(name string) (*StickerSet, error) {
 	return &StickerSet{bot: bot, stickerSet: res.Result}, nil
 }
 
-/*
-Use this method to upload a .PNG file with a sticker for later use in CreateNewStickerSet and AddStickerToSet methods (can be used multiple times). Returns the uploaded File on success.*/
+/*UploadStickerFile can be used to upload a .PNG file with a sticker for later use in CreateNewStickerSet and AddStickerToSet methods (can be used multiple times). Returns the uploaded File on success.*/
 func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFileResult, error) {
 	stat, err := stickerFile.Stat()
 	if err != nil {
@@ -648,8 +648,7 @@ func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFi
 	return bot.apiInterface.UploadStickerFile(userId, "attach://"+stat.Name(), stickerFile)
 }
 
-/*
-Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker or webmSticker. Returns the created sticker set on success.
+/*CreateNewStickerSet can be used to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker or webmSticker. Returns the created sticker set on success.
 
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).
 
@@ -706,7 +705,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	return out, nil
 }
 
-/*Returns an InlineQueryResponder which has several methods for answering an inline query.
+/*AnswerInlineQuery returns an InlineQueryResponder which has several methods for answering an inline query.
 To access more options use "AAsnwerInlineQuery" method in advanced bot.
 
 --------------------------
@@ -719,7 +718,7 @@ func (bot *Bot) AnswerInlineQuery(id string, cacheTime int) *InlineQueryResponde
 	return &InlineQueryResponder{bot: bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0)}
 }
 
-/*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
+/*CreateInvoice returns an InvoiceSender which has several methods for creating and sending an invoice.
 
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "CreateInvoiceUN" method.
 
@@ -730,7 +729,7 @@ func (bot *Bot) CreateInvoice(chatId int, title, description, payload, providerT
 	}
 }
 
-/*Returnes an InvoiceSender which has several methods for creating and sending an invoice.
+/*CreateInvoiceUN returns an InvoiceSender which has several methods for creating and sending an invoice.
 
 To access more options, use "ACreateInvoiceUN" method in advanced mode.*/
 func (bot *Bot) CreateInvoiceUN(chatId, title, description, payload, providerToken, currency string) *Invoice {
@@ -739,7 +738,7 @@ func (bot *Bot) CreateInvoiceUN(chatId, title, description, payload, providerTok
 	}
 }
 
-/*Answers an incoming shipping query.
+/*AnswerShippingQuery answers an incoming shipping query.
 
 -----------------------
 
@@ -756,7 +755,7 @@ func (bot *Bot) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOpt
 	return bot.apiInterface.AnswerShippingQuery(shippingQueryId, ok, shippingOptions, errorMessage)
 }
 
-/*Answers a pre checkout query.
+/*AnswerPreCheckoutQuery answers a pre checkout query.
 
 -----------------------
 
@@ -771,7 +770,7 @@ func (bot *Bot) AnswerPreCheckoutQuery(shippingQueryId string, ok bool, errorMes
 	return bot.apiInterface.AnswerPreCheckoutQuery(shippingQueryId, ok, errorMessage)
 }
 
-/*Sends a game to the chat.
+/*SendGame sends a game to the chat.
 
 **To access more options use "ASendGame" method in advanced mode.
 
@@ -786,7 +785,7 @@ func (bot *Bot) SendGame(chatId int, gameShortName string, silent bool, replyTo 
 	)
 }
 
-/*Sets the score of the given user.
+/*SetGameScore sets the score of the given user.
 
 
 **To access more option use "ASetGameScoe" in advanced mode.
@@ -804,7 +803,7 @@ func (bot *Bot) SetGameScore(userId, score, chatId, messageId int) (*objs.Defaul
 	)
 }
 
-/*Returns the high scores of the user.
+/*GetGameHighScores returns the high scores of the user.
 
 -------------------------
 
@@ -824,9 +823,9 @@ func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId
 	return bot.apiInterface.GetGameHighScores(userId, chatId, messageId, inlineMessageId)
 }
 
-/*This method create a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
+/*CreateKeyboard creates a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
 
-You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of the method. The methods that supoort keybaord are mostly located in the advanced mode.
+You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of the method. The methods that supoort keyboard are mostly located in the advanced mode.
 
 Arguments (as described in telegram bot api):
 
@@ -851,25 +850,25 @@ func (bot *Bot) CreateKeyboard(resizeKeyboard, oneTimeKeyboard, selective bool, 
 	}
 }
 
-/*This method create a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
+/*CreateInlineKeyboard creates a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
 
-You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of a method. The methods that supoort keybaord are mostly located in the advanced mode.*/
+You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of a method. The methods that supoort keyboard are mostly located in the advanced mode.*/
 func (bot *Bot) CreateInlineKeyboard() *inlineKeyboard {
 	return &inlineKeyboard{}
 }
 
-/*This method returns a MessageFormatter that can be used for formatting a text message. You can add bold,italic,underline,spoiler,mention,url,link and some other texts with this tool.*/
+/*GetTextFormatter returns a MessageFormatter that can be used for formatting a text message. You can add bold,italic,underline,spoiler,mention,url,link and some other texts with this tool.*/
 func (bot *Bot) GetTextFormatter() *TextFormatter {
 	return &TextFormatter{entites: make([]objs.MessageEntity, 0)}
 }
 
-/*Stops the bot*/
+/*Stop stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
 	*bot.prcRoutineChannel <- true
 }
 
-/*Returns and advanced version which gives more customized functions to iteract with the bot*/
+/*AdvancedMode returns and advanced version of the bot which gives more customized functions to iteract with the bot*/
 func (bot *Bot) AdvancedMode() *AdvancedBot {
 	return &AdvancedBot{bot: bot}
 }
@@ -941,7 +940,7 @@ loop:
 	}
 }
 
-/*Return a new bot instance with the specified configs*/
+/*NewBot returns a new bot instance with the specified configs*/
 func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	if cfg == nil {
 		return nil, errors.New("cfg is nil")

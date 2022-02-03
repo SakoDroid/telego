@@ -1,10 +1,11 @@
 package telego
 
 import (
-	errs "github.com/SakoDroid/telego/Errors"
+	errs "github.com/SakoDroid/telego/errors"
 	objs "github.com/SakoDroid/telego/objects"
 )
 
+//LiveLocation is a live location that can be sent to a user.
 type LiveLocation struct {
 	bot                                       *Bot
 	chatIdInt                                 int
@@ -17,7 +18,7 @@ type LiveLocation struct {
 	livePeriod, heading, proximityAlertRadius int
 }
 
-/*Sends this live location to all types of chats but channels. To send it to a channel use "SendToChannelMethod".
+/*Send sends this live location to all types of chats but channels. To send it to a channel use "SendToChannelMethod".
 
 If "silent" argument is true, the message will be sent without notification.
 
@@ -41,7 +42,7 @@ func (ll *LiveLocation) Send(chatId int, silent, protectContent bool) (*objs.Sen
 	return res, err
 }
 
-/*Sends this live location to a channel. Chat id should be the username of the channel.
+/*SendToChannel sends this live location to a channel. Chat id should be the username of the channel.
 
 If "silent" argument is true, the message will be sent without notification.
 
@@ -65,7 +66,7 @@ func (ll *LiveLocation) SendToChannel(chatId string, silent, protectContent bool
 	return res, err
 }
 
-/*This methods edits the live location.
+/*Edit edits the live location.
 
 ------------------------
 
@@ -84,12 +85,11 @@ func (ll *LiveLocation) Edit(latitude, langitude, horizontalAccuracy float32, he
 			ll.chatIdInt, ll.chatIdString, "", ll.messageId, ll.latitude, ll.longitude,
 			ll.horizontalAccuracy, ll.heading, ll.proximityAlertRadius, replyMarkUp,
 		)
-	} else {
-		return nil, &errs.LiveLocationNotStarted{}
 	}
+	return nil, &errs.LiveLocationNotStarted{}
 }
 
-/*This method stops the live location.
+/*Stop stops the live location.
 
 ------------------------
 

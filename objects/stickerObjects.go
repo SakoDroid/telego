@@ -1,6 +1,6 @@
 package objects
 
-/*This object represents a sticker.*/
+/*Sticker represents a sticker.*/
 type Sticker struct {
 	/*Identifier for this file, which can be used to download or reuse the file*/
 	FileId string `json:"file_id"`
@@ -26,7 +26,7 @@ type Sticker struct {
 	FileSize int `json:"file_size,omitempty"`
 }
 
-/*This object represents a sticker set.*/
+/*StickerSet represents a sticker set.*/
 type StickerSet struct {
 	/*Sticker set name*/
 	Name string `json:"name"`
@@ -44,7 +44,7 @@ type StickerSet struct {
 	Thumb *PhotoSize `json:"thumb,omitempty"`
 }
 
-/*This object describes the position on faces where a mask should be placed by default.*/
+/*MaskPosition describes the position on faces where a mask should be placed by default.*/
 type MaskPosition struct {
 	/*The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.*/
 	Point string `json:"point"`

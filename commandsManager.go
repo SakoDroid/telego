@@ -6,13 +6,14 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
+//CommandsManager is a tool for managing bot commands
 type CommandsManager struct {
 	bot      *Bot
 	commands []objs.BotCommand
 	scope    objs.BotCommandScope
 }
 
-/*Adds a new command to the commands list.
+/*AddCommand adds a new command to the commands list.
 
 At most 100 commands can be added.*/
 func (cm *CommandsManager) AddCommand(command, description string) error {
@@ -23,7 +24,7 @@ func (cm *CommandsManager) AddCommand(command, description string) error {
 	return nil
 }
 
-/*Sets the scope of this command manager.
+/*SetScope sets the scope of this command manager.
 
 Scope can have these values : "defaut","all_group_chats","all_private_chats","all_chat_administrators","chat","chat_administrator","chat_member". If scope is not valid error is returned. */
 func (cm *CommandsManager) SetScope(scope string, chatId []byte, userId int) error {
@@ -48,7 +49,7 @@ func (cm *CommandsManager) SetScope(scope string, chatId []byte, userId int) err
 	return nil
 }
 
-/*Call the realted method on the api server and sets the added command with the specified scope.
+/*SetCommands calls the realted method on the api server and sets the added commansd with their specified scopes.
 
 "languageCode" is a two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
 
@@ -65,7 +66,7 @@ func (cm *CommandsManager) SetCommands(languageCode string) (*objs.LogicalResult
 	return cm.bot.apiInterface.SetMyCommands(cm.commands, cm.scope, languageCode)
 }
 
-/*Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, higher level commands will be shown to affected users. Returns True on success.*/
+/*DeleteCommands can be used to delete the list of the bot's commands for the given scope and user language. After deletion, higher level commands will be shown to affected users. Returns True on success.*/
 func (cm *CommandsManager) DeleteCommands(languageCode string) (*objs.LogicalResult, error) {
 	if cm.scope == nil {
 		return nil, errors.New("scope is not set. Use `SetScope` method")
@@ -73,6 +74,7 @@ func (cm *CommandsManager) DeleteCommands(languageCode string) (*objs.LogicalRes
 	return cm.bot.apiInterface.DeleteMyCommands(cm.scope, languageCode)
 }
 
+//GetCommands returns the commands of this bot.
 func (cm *CommandsManager) GetCommands(languageCode string) ([]objs.BotCommand, error) {
 	if cm.scope == nil {
 		return nil, errors.New("scope is not set. Use `SetScope` method")
