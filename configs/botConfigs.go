@@ -11,7 +11,7 @@ import (
 const DefaultBotAPI = "https://api.telegram.org/bot"
 
 //DefaultLogFile is a default file for saving the bot logs in it.
-const DefaultLogFile = "./bot-logs.log"
+const DefaultLogFile = "STDOUT"
 
 //BotConfigs is a struct holding the bots configs.
 type BotConfigs struct {
