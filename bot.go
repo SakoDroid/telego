@@ -905,8 +905,6 @@ loop:
 		case up := <-*bot.interfaceUpdateChannel:
 			if !bot.processUpdate(up, "global") {
 				*bot.channelsMap["global"]["all"] <- up
-			} else {
-				logger.Logger.Println("Update received and passed into a global special channel.")
 			}
 		}
 	}
@@ -916,12 +914,12 @@ func (bot *Bot) processPoll(update *objs.Update) {
 	id := update.Poll.Id
 	pl := Polls[id]
 	if pl == nil {
-		logger.Logger.Println("Could not update poll `" + id + "`. Not found in the Polls map")
+		logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`. Not found in the Polls map", "917", logger.BOLD+logger.FAIL, logger.WARNING)
 		*bot.channelsMap["global"]["all"] <- update
 	} else {
 		err3 := pl.Update(update.Poll)
 		if err3 != nil {
-			logger.Logger.Println("Could not update poll `" + id + "`." + err3.Error())
+			logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`."+err3.Error(), "922", logger.BOLD+logger.FAIL, logger.WARNING)
 		}
 	}
 }
@@ -940,8 +938,6 @@ loop:
 				} else {
 					*bot.interfaceUpdateChannel <- up.Update
 				}
-			} else {
-				logger.Logger.Println("Update received and passed into a special channel of chat", up.ChatId, ".")
 			}
 		}
 	}

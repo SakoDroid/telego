@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	errs "github.com/SakoDroid/telego/errors"
+	"github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
 )
 
@@ -39,6 +40,7 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpda
 
 //ParseSingleUpdate processes the given update object.
 func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) {
+	logger.Log("Update", "\t\t\t\t", up.GetType(), "", logger.HEADER, logger.OKCYAN)
 	if !checkHandlers(up) && !processChat(up, cu) {
 		*uc <- up
 	}

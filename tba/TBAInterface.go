@@ -1944,35 +1944,22 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 
 /*SendCustom calls the given method on api server with the given arguments. "MP" options indicates that the request should be made in multipart/formdata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
+	start := time.Now().UnixMicro()
 	cl := httpSenderClient{botApi: bai.botConfigs.BotAPI, apiKey: bai.botConfigs.APIKey}
 	var res []byte
 	var err2 error
-	go bai.logTheReq(methodName, MP, files...)
 	if MP {
 		res, err2 = cl.sendHttpReqMultiPart(methodName, args, files...)
 	} else {
 		res, err2 = cl.sendHttpReqJson(methodName, args)
 	}
+	done := time.Now().UnixMicro()
 	if err2 != nil {
+		logger.Log(logger.BOLD+methodName, "\t\t\t", "Error  ", strconv.FormatInt((done-start), 10)+"µs", logger.OKBLUE, logger.FAIL)
 		return nil, err2
 	}
+	logger.Log(logger.BOLD+methodName, "\t\t\t", "Success", strconv.FormatInt((done-start), 10)+"µs", logger.OKBLUE, logger.OKGREEN)
 	return bai.preParseResult(res, methodName)
-}
-
-func (bai *BotAPIInterface) logTheReq(methodName string, MP bool, files ...*os.File) {
-	logeText := "calling `" + methodName + "` method, arguments passed as "
-	if MP {
-		filesCount := 0
-		for _, v := range files {
-			if v != nil {
-				filesCount++
-			}
-		}
-		logeText += "multipart/formdata, sending " + strconv.Itoa(filesCount) + " files."
-	} else {
-		logeText += "json"
-	}
-	logger.Logger.Println(logeText)
 }
 
 func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
