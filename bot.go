@@ -863,9 +863,9 @@ func (bot *Bot) GetTextFormatter() *TextFormatter {
 	return &TextFormatter{entites: make([]objs.MessageEntity, 0)}
 }
 
-/*VerifyJoin verifies if the user has joined this channel. Returns true if the user is present in the given chat, returns false if not or an error has occured.*/
-func (bot *Bot) VerifyJoin(userID int, channelUserName string) bool {
-	_, err := bot.apiInterface.GetChatMember(0, channelUserName, userID)
+/*VerifyJoin verifies if the user has joined the given channel or supergroup. Returns true if the user is present in the given chat, returns false if not or an error has occured.*/
+func (bot *Bot) VerifyJoin(userID int, UserName string) bool {
+	_, err := bot.apiInterface.GetChatMember(0, UserName, userID)
 	return err == nil
 }
 
