@@ -155,7 +155,7 @@ If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
 If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.*/
-func (bot *Bot) SendMesssageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
 }
 
@@ -578,8 +578,8 @@ func (bot *Bot) GetChatManagerById(chatId int) *ChatManager {
 /*GetChatManagerByUsrename creates and returns a ChatManager for supergroups and channels which have usernames
 
 To manage groups and other chats witch an integer id use "GetChatManagerById".*/
-func (bot *Bot) GetChatManagerByUsrename(chatId int) *ChatManager {
-	return &ChatManager{bot: bot, chatIdInt: chatId, chatIdString: ""}
+func (bot *Bot) GetChatManagerByUsrename(userName string) *ChatManager {
+	return &ChatManager{bot: bot, chatIdInt: 0, chatIdString: userName}
 }
 
 /*AnswerCallbackQuery can be used to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.

@@ -882,7 +882,7 @@ if err != nil {
 
 ## License
 
-telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
+Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
 
 ---------------------------
 

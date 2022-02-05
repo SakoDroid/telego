@@ -166,20 +166,8 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 			MessageId:           messageId,
 			ProtectContent:      ProtectContent,
 		}
-		if chatIdInt == 0 {
-			bt, _ := json.Marshal(chatIdString)
-			fm.ChatId = bt
-		} else {
-			bt, _ := json.Marshal(chatIdInt)
-			fm.ChatId = bt
-		}
-		if fromChatIdInt == 0 {
-			bt, _ := json.Marshal(fromChatIdString)
-			fm.FromChatId = bt
-		} else {
-			bt, _ := json.Marshal(fromChatIdInt)
-			fm.FromChatId = bt
-		}
+		fm.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		fm.FromChatId = bai.fixChatId(fromChatIdInt, fromChatIdString)
 		res, err := bai.SendCustom("forwardMessage", fm, false, nil, nil)
 		if err != nil {
 			return nil, err
@@ -523,13 +511,7 @@ func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString,
 			ProximityAlertRadius: proximityAlertRadius,
 			ReplyMarkup:          reply_markup,
 		}
-		if chatIdInt == 0 {
-			bt, _ := json.Marshal(chatIdString)
-			args.ChatId = bt
-		} else {
-			bt, _ := json.Marshal(chatIdInt)
-			args.ChatId = bt
-		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 		res, err := bai.SendCustom("editMessageLiveLocation", args, false, nil)
 		if err != nil {
 			return nil, err
@@ -557,13 +539,7 @@ func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString,
 			MessageId:       messageId,
 			ReplyMarkup:     replyMarkup,
 		}
-		if chatIdInt == 0 {
-			bt, _ := json.Marshal(chatIdString)
-			args.ChatId = bt
-		} else {
-			bt, _ := json.Marshal(chatIdInt)
-			args.ChatId = bt
-		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 		res, err := bai.SendCustom("stopMessageLiveLocation", args, false, nil)
 		if err != nil {
 			return nil, err
@@ -726,13 +702,7 @@ func (bai *BotAPIInterface) SendChatAction(chatIdInt int, chatIdString, chatActi
 		args := &objs.SendChatActionArgs{
 			Action: chatAction,
 		}
-		if chatIdInt == 0 {
-			bt, _ := json.Marshal(chatIdString)
-			args.ChatId = bt
-		} else {
-			bt, _ := json.Marshal(chatIdInt)
-			args.ChatId = bt
-		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 		res, err := bai.SendCustom("sendChatAction", args, false, nil)
 		if err != nil {
 			return nil, err
@@ -815,13 +785,7 @@ func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, us
 		UntilDate:      untilDate,
 		RevokeMessages: revokeMessages,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("banChatMember", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -840,13 +804,7 @@ func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, 
 		UserId:       userId,
 		OnlyIfBanned: onlyIfBanned,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("unbanChatMember", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -865,13 +823,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 		UserId:     userId,
 		Permission: permissions,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("restrictChatMember", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -900,13 +852,7 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 		CanInviteUsers:      canInviteUsers,
 		CanPinMessages:      canPinMessages,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("promoteChatMember", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -925,13 +871,7 @@ func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatI
 		UserId:      userId,
 		CustomTitle: customTitle,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatAdministratorCustomTitle", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -949,13 +889,7 @@ func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString
 	args := &objs.BanChatSenderChatArgs{
 		SenderChatId: senderChatId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	var method string
 	if ban {
 		method = "banChatSenderChat"
@@ -979,13 +913,7 @@ func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString strin
 	args := &objs.SetChatPermissionsArgs{
 		Permissions: permissions,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatPermissions", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1001,13 +929,7 @@ func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString strin
 /*ExportChatInviteLink exports the chat invite link and returns the new invite link as string.*/
 func (bai *BotAPIInterface) ExportChatInviteLink(chatIdInt int, chatIdString string) (*objs.StringResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("exprotChatInviteLink", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1028,13 +950,7 @@ func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, na
 		MemberLimit:        memberLimit,
 		CreatesjoinRequest: createsJoinRequest,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("createChatInviteLink", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1056,13 +972,7 @@ func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, invi
 		MemberLimit:        memberLimit,
 		CreatesjoinRequest: createsJoinRequest,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("editChatInviteLink", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1080,13 +990,7 @@ func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, in
 	args := &objs.RevokeChatInviteLinkArgs{
 		InviteLink: inviteLink,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("revokeChatInviteLink", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1104,13 +1008,7 @@ func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString s
 	args := &objs.ApproveChatJoinRequestArgs{
 		UserId: userId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("approveChatJoinRequest", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1128,13 +1026,7 @@ func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString s
 	args := &objs.DeclineChatJoinRequestArgs{
 		UserId: userId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("declineChatJoinRequest", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1150,13 +1042,7 @@ func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString s
 /*SetChatPhoto sets the chat photo to given file.*/
 func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.SetChatPhotoArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	stats, er := file.Stat()
 	if er != nil {
 		return nil, er
@@ -1177,13 +1063,7 @@ func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, fil
 /*DeleteChatPhoto deletes chat photo.*/
 func (bai *BotAPIInterface) DeleteChatPhoto(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("deleteChatPhoto", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1201,13 +1081,7 @@ func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title stri
 	args := &objs.SetChatTitleArgs{
 		Title: title,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatTitle", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1225,13 +1099,7 @@ func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, desc
 	args := &objs.SetChatDescriptionArgs{
 		Description: descriptions,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatDescription", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1250,13 +1118,7 @@ func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, m
 		MessageId:           messageId,
 		DisableNotification: disableNotification,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("pinChatMessage", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1274,13 +1136,7 @@ func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string,
 	args := &objs.UnpinChatMessageArgs{
 		MessageId: messageId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("unpinChatMessage", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1296,13 +1152,7 @@ func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string,
 /*UnpinAllChatMessages unpins all the pinned messages in the chat.*/
 func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("unpinAllChatMessages", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1318,13 +1168,7 @@ func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString str
 /*LeaveChat, the bot will leave the chat if this method is called.*/
 func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("leaveChat", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1340,13 +1184,7 @@ func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs
 /*GetChat : a Chat object containing the information of the chat will be returned*/
 func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.ChatResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChat", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1362,13 +1200,7 @@ func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.C
 /*GetChatAdministrators returns an array of ChatMember containing the informations of the chat administrators.*/
 func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString string) (*objs.ChatAdministratorsResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChatAdministrators", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1384,13 +1216,7 @@ func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString st
 /* GetChatMemberCount returns the number of the memebrs of the chat.*/
 func (bai *BotAPIInterface) GetChatMemberCount(chatIdInt int, chatIdString string) (*objs.IntResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChatMemberCount", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1408,13 +1234,7 @@ func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, us
 	args := &objs.GetChatMemberArgs{
 		UserId: userId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChatMember", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1432,13 +1252,7 @@ func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stick
 	args := &objs.SetChatStcikerSet{
 		StickerSetName: stickerSetName,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatStickerSet", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1454,13 +1268,7 @@ func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stick
 /*DeleteChatStickerSet deletes the sticker set of the chat..*/
 func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
 	args := &objs.DefaultChatArgs{}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("deleteChatStickerSet", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1564,13 +1372,7 @@ func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, 
 		Entities:              entities,
 		DisablewebpagePreview: disableWebPagePreview,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("editMessageText", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1595,13 +1397,7 @@ func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString strin
 		ParseMode:       parseMode,
 		CaptionEntities: captionEntities,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("editMessageCaption", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1624,13 +1420,7 @@ func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string,
 		},
 		Media: media,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("editMessageMedia", args, true, file...)
 	if err != nil {
 		return nil, err
@@ -1652,13 +1442,7 @@ func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString s
 			ReplyMarkup:     replyMakrup,
 		},
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("editMessageReplyMarkup", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1677,13 +1461,7 @@ func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, message
 		MessageId:   messageId,
 		ReplyMarkup: replyMakrup,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("stopPoll", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1701,13 +1479,7 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 	args := &objs.DeleteMessageArgs{
 		MessageId: messageId,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("deleteMessage", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -1732,13 +1504,7 @@ func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker str
 		},
 		Sticker: sticker,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("sendSticker", args, true, file)
 	if err != nil {
 		return nil, err
@@ -1942,13 +1708,7 @@ func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, desc
 		SendEmailToProvider:       sendEmailToProvider,
 		IsFlexible:                isFlexible,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		args.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		args.ChatId = bt
-	}
+	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("sendInvoice", args, false, nil)
 	if err != nil {
 		return nil, err
@@ -2012,20 +1772,8 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 			MessageId:           messageId,
 			ProtectContent:      ProtectContent,
 		}
-		if chatIdInt == 0 {
-			bt, _ := json.Marshal(chatIdString)
-			fm.ChatId = bt
-		} else {
-			bt, _ := json.Marshal(chatIdInt)
-			fm.ChatId = bt
-		}
-		if fromChatIdInt == 0 {
-			bt, _ := json.Marshal(fromChatIdString)
-			fm.FromChatId = bt
-		} else {
-			bt, _ := json.Marshal(fromChatIdInt)
-			fm.FromChatId = bt
-		}
+		fm.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		fm.FromChatId = bai.fixChatId(fromChatIdInt, fromChatIdString)
 		cp := &objs.CopyMessageArgs{
 			ForwardMessageArgs:       fm,
 			Caption:                  caption,
@@ -2235,13 +1983,7 @@ func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_i
 		ReplyToMessageId:         reply_to_message_id,
 		ReplyMarkup:              reply_markup,
 	}
-	if chatIdInt == 0 {
-		bt, _ := json.Marshal(chatIdString)
-		def.ChatId = bt
-	} else {
-		bt, _ := json.Marshal(chatIdInt)
-		def.ChatId = bt
-	}
+	def.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	return def
 }
 
@@ -2260,6 +2002,19 @@ func (bai *BotAPIInterface) preParseResult(res []byte, method string) ([]byte, e
 		return nil, &errs.MethodNotSentError{Method: method, Reason: "server returned false ok filed", FailureResult: fr}
 	}
 	return res, nil
+}
+
+func (bai *BotAPIInterface) fixChatId(chatIdInt int, chatIdString string) []byte {
+	if chatIdInt == 0 {
+		if !strings.HasPrefix(chatIdString, "@") {
+			chatIdString = "@" + chatIdString
+		}
+		bt, _ := json.Marshal(chatIdString)
+		return bt
+	} else {
+		bt, _ := json.Marshal(chatIdInt)
+		return bt
+	}
 }
 
 /*CreateInterface returns an iterface to communicate with the bot api.
