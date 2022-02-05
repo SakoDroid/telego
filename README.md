@@ -886,7 +886,7 @@ Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 
 ---------------------------
 
-## Chnage logs
+## Change logs
 
 ### v1.6.7
 * Added support for telegram bot API 5.7
