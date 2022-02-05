@@ -863,6 +863,12 @@ func (bot *Bot) GetTextFormatter() *TextFormatter {
 	return &TextFormatter{entites: make([]objs.MessageEntity, 0)}
 }
 
+/*VerifyJoin verifies if the user has joined this channel. Returns true if the user is present in the given chat, returns false if not or an error has occured.*/
+func (bot *Bot) VerifyJoin(userID int, channelUserName string) bool {
+	_, err := bot.apiInterface.GetChatMember(0, channelUserName, userID)
+	return err == nil
+}
+
 /*Stop stops the bot*/
 func (bot *Bot) Stop() {
 	bot.apiInterface.StopUpdateRoutine()
