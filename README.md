@@ -34,6 +34,7 @@ A Go library for creating telegram bots.
         * [Inline queries](#inline-queries)
         * [Stickers](#stickers)
 * [License](#license)
+* [Change logs](#change-logs)
 
 ---------------------------------
 
@@ -884,5 +885,40 @@ if err != nil {
 telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
 
 ---------------------------
+
+## Chnage logs
+
+### v1.6.7
+* Added support for telegram bot API 5.7
+* Improved sticker creation experience by adding new separate methods.
+* Correct syntax errors by @ityulkanov
+* Bug fixes
+
+### v1.5.7
+* Bug fixes
+
+### v1.5.5
+* Added webhook support
+* Improved handlers and regex bug fixed.
+* Some other bug fixes.
+
+### v1.4.5
+* Added TextFormatter tool for formatting texts.
+* Bug fixes
+
+### v1.3.5
+* Added support for telegram bot API 5.6 .
+* Improved documentation.
+
+### v1.3.4
+* Custom keyboard button handler
+* Major bug fixes
+
+### v1.3.3
+* Callback handlers
+* keyboard creation tool
+
+---------------------------
+
 
 ![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)
