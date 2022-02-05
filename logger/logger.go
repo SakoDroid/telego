@@ -48,7 +48,7 @@ func Log(header, space, content, after, headerColor, contentColor string) {
 		text := "| " + headerColor + header + ENDC + space + contentColor + content + ENDC + " |" + after
 		Logger.Println(text)
 	} else {
-		text := "| " + header + space + content + "|\t" + after
+		text := "| " + header + space + content + "|" + after
 		Logger.Println(text)
 	}
 
