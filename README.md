@@ -2,7 +2,8 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego.svg)](https://pkg.go.dev/github.com/SakoDroid/telego)
 ![example workflow](https://github.com/SakoDroid/telego/actions/workflows/go.yml/badge.svg)
-![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.5.7%20%20-success)
+[![Go Report Card](https://goreportcard.com/badge/github.com/SakoDroid/telego)](https://goreportcard.com/report/github.com/SakoDroid/telego)
+![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.7.0%20%20-success)
 ![Development status](https://img.shields.io/badge/%20%20Development%20%20-%20%20Active%20%20-blueviolet)
 
 A Go library for creating telegram bots.
@@ -15,9 +16,11 @@ A Go library for creating telegram bots.
 * [Usage](#usage)
     * [Quick start](#quick-start)
     * [Step by step](#step-by-step)
-        * [Creating the bot](#creating-the-bot)
+        * [Configuring the bot](#configuring-the-bot)
             * [Not using webhook](#not-using-webhook)
             * [Using webhook](#using-webhook)
+            * [Loading and saving the configs](#loading-and-saving-the-configs)
+        * [Creating and starting the bot](#creating-and-starting-the-bot)
         * [Receiving updates](#receiving-updates)
             * [Handlers](#handlers)
             * [Special channels](#special-channels)
@@ -33,8 +36,8 @@ A Go library for creating telegram bots.
             * [Inline keyboards](#inline-keyboards)
         * [Inline queries](#inline-queries)
         * [Stickers](#stickers)
+        * [Blocking users](#blocking-users)
 * [License](#license)
-* [Change logs](#change-logs)
 
 ---------------------------------
 
@@ -82,16 +85,11 @@ and monitor the poll update via a go channel.
  )
 
  func main(){
-    up := cfg.DefaultUpdateConfigs()
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
 
-    bot, err := bt.NewBot(&cf)
+    bot, err := bt.NewBot(cfg.Default("your API key"))
 
     if err == nil{
-
         err == bot.Run()
-
         if err == nil{
             go start(bot)
         }
@@ -121,7 +119,7 @@ and monitor the poll update via a go channel.
  ```
  ## Step by step
 
-### **Creating the bot**
+### **Configuring the bot**
  First you need to import required libraries :
 
  ```
@@ -132,7 +130,9 @@ and monitor the poll update via a go channel.
  )
  ```
 
- Then you need to create bot configs. **BotConfigs** struct is located in configs package and contains these fields :
+ Then you need to create bot configs. You can use default configs by using `Default(apiKey string)` method of the *configs* pckage. This method generates a **BotConfig** that does not use webhook and queries the updates from the server every 300 milli seconds. You can create a *BotConfig* struct to access more options (including webhook).
+
+ **BotConfigs** struct is located in configs package and contains these fields :
 
  ```
  /*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
@@ -157,6 +157,11 @@ and monitor the poll update via a go channel.
  /*All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value*/
 
  LogFileAddress string
+
+
+ //BlockedUsers is a list of blocked users.
+
+ BlockedUsers []BlockedUser `json:"blocked_users"`
 ```
 
 ### **Not using webhook**
@@ -251,6 +256,19 @@ import (
     }
  }
 ```
+### **Loading and saving the configs**
+You can load the bot configs from config file or save it in the file using `Load` and `Dump` methods. Config file's name is `config.json`. These methods are located in configs package. In the example code below first we create a config, then save it and then load it again into a new config :
+
+```
+bc1 := configs.Default("API key")
+_ := configs.Dump(bc1)
+
+bc2, _ := configs.Load()
+
+fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
+```
+
+**Note:** Since telego 1.7.0 an option has been added which updates the bot configs every second. This option works while the bot is running and reads the configs from the `configs.json` file. This file is created automatically when the bot starts. With the help of this option you can change the bot configs even when the bot is up and running only by changing the `config.json` file, this means you don't need to stop the bot to change the configs or to remove a user from the block list.
 
 ### **Creating and starting the bot**
 
@@ -312,7 +330,7 @@ Now that the bot is running it will receive updates from api server and passes t
  }
 ```
 
-### Receiving updates
+### **Receiving updates**
 #### **Handlers**
 
 You can use handlers for routing text messages. You specify a function and everytime a text message is received which the handler's regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
@@ -878,15 +896,26 @@ if err != nil {
 }
 ```
 
+### **Blocking users**
+Telego gives you the ability to block a user. You can also implement a mechanism to block the user more customized or you can use builtin blocking option. To block a user you can simply call `Block` method of the bot and pass the **User** object to the method. When a user is blocked, received updates from the user will be ignored.
+
 ---------------------------
 
 ## License
 
-Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
+telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
 
 ---------------------------
 
-## Change logs
+## Chnage logs
+
+### v1.7.0
+* Added config updating option while bot is running.
+* Added block option.
+* Added `VerifyJoin` method for checking if a user has joined a channel or supergroup or not.
+* Added file based configs.
+* Improved logging system.
+* Improved documentation
 
 ### v1.6.7
 * Added support for telegram bot API 5.7
@@ -919,6 +948,4 @@ Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 * keyboard creation tool
 
 ---------------------------
-
-
 ![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)
