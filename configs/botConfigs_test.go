@@ -24,11 +24,11 @@ func TestConfigCheck(t *testing.T) {
 
 func TestLoadAndDump(t *testing.T) {
 	bc1 := Default("123hUHASDa66aDTDAFshdASDKabda6dg982edua")
-	err := Dump(bc1, "temp.json")
+	err := Dump(bc1)
 	if err != nil {
 		t.Error(err)
 	}
-	bc2, err := Load("temp.json")
+	bc2, err := Load()
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +37,7 @@ func TestLoadAndDump(t *testing.T) {
 	} else {
 		t.Error("bc1 and bc2 are not equal")
 	}
-	_ = os.Remove("temp.json")
+	_ = os.Remove("configs.json")
 }
 
 func initTheCfgs() {

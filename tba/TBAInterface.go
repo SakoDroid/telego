@@ -90,7 +90,7 @@ loop:
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
 	of, err := up.ParseUpdate(
-		body, bai.updateChannel, bai.chatUpadateChannel,
+		body, bai.updateChannel, bai.chatUpadateChannel, bai.botConfigs,
 	)
 	if err != nil {
 		return err
@@ -1955,10 +1955,10 @@ func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArgume
 	}
 	done := time.Now().UnixMicro()
 	if err2 != nil {
-		logger.Log(methodName, "\t\t\t", "Error  ", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.FAIL)
+		logger.Log(methodName, "\t\t\t", "Error  ", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.FAIL, "")
 		return nil, err2
 	}
-	logger.Log(methodName, "\t\t\t", "Success", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.OKGREEN)
+	logger.Log(methodName, "\t\t\t", "Success", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.OKGREEN, "")
 	return bai.preParseResult(res, methodName)
 }
 

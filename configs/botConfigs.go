@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+//BlockedUser is a struct used for storing a blocked user informations.
+type BlockedUser struct {
+	UserID   int    `json:"user_id"`
+	UserName string `json:"username"`
+}
+
 //DefaultBotAPI is the telegrams default bot api server.
 const DefaultBotAPI = "https://api.telegram.org/bot"
 
@@ -28,6 +34,8 @@ type BotConfigs struct {
 	WebHookConfigs *WebHookConfigs `json:"webhook_configs,omitempty"`
 	/*All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value*/
 	LogFileAddress string `json:"log_file"`
+	//BlockedUsers is a list of blocked users.
+	BlockedUsers []BlockedUser `json:"blocked_users"`
 }
 
 //Check checks the bot configs for any problem.
@@ -48,9 +56,9 @@ func (bc *BotConfigs) Check() bool {
 	}
 }
 
-//Load loads the configs from a file and returns the BotConfigs pointer.
-func Load(file string) (*BotConfigs, error) {
-	fl, err := os.Open(file)
+//Load loads the configs from the config file (configs.json) and returns the BotConfigs pointer.
+func Load() (*BotConfigs, error) {
+	fl, err := os.Open("configs.json")
 	defer fl.Close()
 	if err != nil {
 		return nil, err
@@ -69,9 +77,9 @@ func Load(file string) (*BotConfigs, error) {
 	return bc, err
 }
 
-//Dump saves the given BotConfigs struct in a json format in the given file address.
-func Dump(bc *BotConfigs, file string) error {
-	fl, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY, 0666)
+//Dump saves the given BotConfigs struct in a json format in the config file (configs.json).
+func Dump(bc *BotConfigs) error {
+	fl, err := os.OpenFile("configs.json", os.O_CREATE|os.O_WRONLY, 0666)
 	defer fl.Close()
 	if err != nil {
 		return err

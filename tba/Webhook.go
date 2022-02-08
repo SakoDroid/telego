@@ -52,7 +52,7 @@ func handleReq(wr http.ResponseWriter, req *http.Request) {
 				update := &objs.Update{}
 				jsonErr := json.Unmarshal(body, update)
 				if jsonErr == nil {
-					up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel)
+					up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel, configs)
 				} else {
 					log.Logger.Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
 				}

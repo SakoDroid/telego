@@ -43,9 +43,9 @@ func InitTheLogger(botCfg *cfg.BotConfigs) {
 }
 
 //Log logs the given paramteres based on the defined format.
-func Log(header, space, content, after, headerColor, contentColor string) {
+func Log(header, space, content, after, headerColor, contentColor, afterColor string) {
 	if colorized {
-		text := "| " + headerColor + header + ENDC + space + contentColor + content + ENDC + " |" + after
+		text := "| " + headerColor + header + ENDC + space + contentColor + content + ENDC + " |" + afterColor + after + ENDC
 		Logger.Println(text)
 	} else {
 		text := "| " + header + space + content + "|" + after

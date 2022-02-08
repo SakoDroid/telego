@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/SakoDroid/telego/configs"
 	cfg "github.com/SakoDroid/telego/configs"
 	logger "github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
@@ -29,6 +30,7 @@ func (bot *Bot) Run() error {
 	}
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
+	configs.Dump(bot.botCfg)
 	if bot.botCfg.Webhook {
 		return tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
 	} else {
@@ -106,6 +108,17 @@ func (bot *Bot) deleteWebhook() error {
 		return errors.New("failed to delete the webhook. API server returned false")
 	}
 	return nil
+}
+
+//BlockUser blocks a user based on their ID and username.
+func (bot *Bot) BlockUser(user *objs.User) {
+	for _, us := range bot.botCfg.BlockedUsers {
+		if us.UserID == us.UserID {
+			return
+		}
+	}
+	us := configs.BlockedUser{UserID: user.Id, UserName: user.Username}
+	bot.botCfg.BlockedUsers = append(bot.botCfg.BlockedUsers, us)
 }
 
 /*GetUpdateChannel returns the channel which new updates received from api server are pushed into.*/
@@ -914,12 +927,12 @@ func (bot *Bot) processPoll(update *objs.Update) {
 	id := update.Poll.Id
 	pl := Polls[id]
 	if pl == nil {
-		logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`. Not found in the Polls map", "917", logger.BOLD+logger.FAIL, logger.WARNING)
+		logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`. Not found in the Polls map", "917", logger.BOLD+logger.FAIL, logger.WARNING, "")
 		*bot.channelsMap["global"]["all"] <- update
 	} else {
 		err3 := pl.Update(update.Poll)
 		if err3 != nil {
-			logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`."+err3.Error(), "922", logger.BOLD+logger.FAIL, logger.WARNING)
+			logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`."+err3.Error(), "922", logger.BOLD+logger.FAIL, logger.WARNING, "")
 		}
 	}
 }

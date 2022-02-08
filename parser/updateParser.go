@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/SakoDroid/telego/configs"
 	errs "github.com/SakoDroid/telego/errors"
 	"github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
 )
 
 //ParseUpdate parses the received update and returns the last update offset.
-func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) (int, error) {
+func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
 	def := &objs.DefaultResult{}
 	err2 := json.Unmarshal(body, def)
 	if err2 != nil {
@@ -24,25 +25,29 @@ func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) 
 	if err != nil {
 		return 0, err
 	}
-	return parse(ur, uc, cu)
+	return parse(ur, uc, cu, cfg)
 }
 
-func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) (int, error) {
+func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
 	lastOffset := 0
 	for _, val := range ur.Result {
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		ParseSingleUpdate(val, uc, cu)
+		ParseSingleUpdate(val, uc, cu, cfg)
 	}
 	return lastOffset, nil
 }
 
 //ParseSingleUpdate processes the given update object.
-func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate) {
-	logger.Log("Update", "\t\t\t\t", up.GetType(), "", logger.HEADER, logger.OKCYAN)
-	if !checkHandlers(up) && !processChat(up, cu) {
-		*uc <- up
+func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) {
+	if !isUserBlocked(up, cfg) {
+		logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
+		if !checkHandlers(up) && !processChat(up, cu) {
+			*uc <- up
+		}
+	} else {
+		logger.Log("Update", "\t\t\t\t", up.GetType(), "User is blocked", logger.HEADER, logger.OKCYAN, logger.FAIL)
 	}
 }
 
@@ -79,4 +84,34 @@ func createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
 		out.ChatId = strconv.Itoa(chat.Id)
 	}
 	return &out
+}
+
+func isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) bool {
+	switch up.GetType() {
+	case "message":
+		return checkBlocked(up.Message.From, cfg)
+	case "inline_query":
+		return checkBlocked(up.InlineQuery.From, cfg)
+	case "chosen_inline_result":
+		return checkBlocked(&up.ChosenInlineResult.From, cfg)
+	case "callback_query":
+		return checkBlocked(&up.CallbackQuery.From, cfg)
+	case "shipping_query":
+		return checkBlocked(up.ShippingQuery.From, cfg)
+	case "pre_checkout_query":
+		return checkBlocked(up.PreCheckoutQuery.From, cfg)
+	case "poll_answer":
+		return checkBlocked(up.PollAnswer.User, cfg)
+	default:
+		return false
+	}
+}
+
+func checkBlocked(user *objs.User, cfg *configs.BotConfigs) bool {
+	for _, us := range cfg.BlockedUsers {
+		if us.UserID == user.Id {
+			return true
+		}
+	}
+	return false
 }
