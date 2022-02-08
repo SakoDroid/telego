@@ -2,6 +2,7 @@ package parser
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/SakoDroid/telego/configs"
@@ -41,13 +42,14 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpda
 
 //ParseSingleUpdate processes the given update object.
 func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) {
-	if !isUserBlocked(up, cfg) {
+	userId, isUserBlocked := isUserBlocked(up, cfg)
+	if !isUserBlocked {
 		logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
 		if !checkHandlers(up) && !processChat(up, cu) {
 			*uc <- up
 		}
 	} else {
-		logger.Log("Update", "\t\t\t\t", up.GetType(), "User is blocked", logger.HEADER, logger.OKCYAN, logger.FAIL)
+		logger.Log("Update", "\t\t\t\t", up.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
 	}
 }
 
@@ -86,10 +88,12 @@ func createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
 	return &out
 }
 
-func isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) bool {
+func isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) (int, bool) {
 	switch up.GetType() {
 	case "message":
 		return checkBlocked(up.Message.From, cfg)
+	case "edited_message":
+		return checkBlocked(up.EditedMessage.From, cfg)
 	case "inline_query":
 		return checkBlocked(up.InlineQuery.From, cfg)
 	case "chosen_inline_result":
@@ -103,15 +107,15 @@ func isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) bool {
 	case "poll_answer":
 		return checkBlocked(up.PollAnswer.User, cfg)
 	default:
-		return false
+		return 0, false
 	}
 }
 
-func checkBlocked(user *objs.User, cfg *configs.BotConfigs) bool {
+func checkBlocked(user *objs.User, cfg *configs.BotConfigs) (int, bool) {
 	for _, us := range cfg.BlockedUsers {
 		if us.UserID == user.Id {
-			return true
+			return us.UserID, true
 		}
 	}
-	return false
+	return 0, false
 }
