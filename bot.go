@@ -31,6 +31,7 @@ func (bot *Bot) Run() error {
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
 	configs.Dump(bot.botCfg)
+	go bot.botCfg.StartCfgUpdateRoutine()
 	if bot.botCfg.Webhook {
 		return tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
 	} else {

@@ -56,6 +56,18 @@ func (bc *BotConfigs) Check() bool {
 	}
 }
 
+//StartCfgUpdateRoutine starts a routine which updates the configs every second.
+func (bc *BotConfigs) StartCfgUpdateRoutine() {
+	for {
+		err := LoadInto(bc)
+		if err != nil {
+			println("Error in \"StartCfgUpdateRoutine\" function.", err.Error())
+			break
+		}
+		time.Sleep(time.Second)
+	}
+}
+
 //Load loads the configs from the config file (configs.json) and returns the BotConfigs pointer.
 func Load() (*BotConfigs, error) {
 	fl, err := os.Open("configs.json")
@@ -75,6 +87,26 @@ func Load() (*BotConfigs, error) {
 	bc := &BotConfigs{}
 	err = json.Unmarshal(data, bc)
 	return bc, err
+}
+
+//LoadInto works the same way as "Load" but it won't return the config, instead it loads the config into the given object.
+func LoadInto(bc *BotConfigs) error {
+	fl, err := os.Open("configs.json")
+	defer fl.Close()
+	if err != nil {
+		return err
+	}
+	st, err := fl.Stat()
+	if err != nil {
+		return err
+	}
+	data := make([]byte, st.Size())
+	_, err = fl.Read(data)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(data, bc)
+	return err
 }
 
 //Dump saves the given BotConfigs struct in a json format in the config file (configs.json).
