@@ -616,7 +616,7 @@ func (bot *AdvancedBot) RegisterChannel(chatId, mediaType string) (*chan *objs.U
 	if mediaType == "" {
 		mediaType = "all"
 	}
-	if mediaType != "" && mediaType != "message" && mediaType != "edited_message" && mediaType != "channel_post" && mediaType != "edited_channel_post" && mediaType != "inline_query" && mediaType != "chosen_inline_result" && mediaType != "callback_query" && mediaType != "shipping_query" && mediaType != "pre_checkout_query" && mediaType != "poll_answer" && mediaType != "my_chat_member" && mediaType != "chat_member" && mediaType != "chat_join_request" {
+	if mediaType != "all" && mediaType != "message" && mediaType != "edited_message" && mediaType != "channel_post" && mediaType != "edited_channel_post" && mediaType != "inline_query" && mediaType != "chosen_inline_result" && mediaType != "callback_query" && mediaType != "shipping_query" && mediaType != "pre_checkout_query" && mediaType != "poll_answer" && mediaType != "my_chat_member" && mediaType != "chat_member" && mediaType != "chat_join_request" {
 		return nil, errors.New("unknown media type : " + mediaType)
 	}
 	return bot.getChannel(chatId, mediaType), nil
