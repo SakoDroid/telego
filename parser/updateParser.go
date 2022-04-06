@@ -70,6 +70,8 @@ func processChat(update *objs.Update, chatUpdateChannel *chan *objs.ChatUpdate) 
 		chat = update.ChatMember.Chat
 	case update.ChatJoinRequest != nil:
 		chat = update.ChatJoinRequest.Chat
+	case update.CallbackQuery != nil:
+		chat = update.CallbackQuery.Message.Chat
 	}
 	if chat == nil {
 		return false
