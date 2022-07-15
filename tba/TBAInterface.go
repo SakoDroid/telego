@@ -1901,19 +1901,21 @@ func (bai *BotAPIInterface) GetWebhookInfo() (*objs.WebhookInfoResult, error) {
 
 /*SetWebhook sets a webhook for the bot.*/
 func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdates []string, dropPendingUpdates bool, keyFile *os.File) (*objs.LogicalResult, error) {
-	stat, errs := keyFile.Stat()
-	if errs != nil {
-		return nil, errs
-	}
 	args := objs.SetWebhookArgs{
 		URL:                url,
 		IPAddress:          ip,
-		Certificate:        "attach://" + stat.Name(),
 		MaxConnections:     maxCnc,
 		AllowedUpdates:     allowedUpdates,
 		DropPendingUpdates: dropPendingUpdates,
 	}
-	res, err := bai.SendCustom("setWebhook", &args, true, keyFile)
+	if keyFile != nil {
+		stat, errs := keyFile.Stat()
+		if errs != nil {
+			return nil, errs
+		}
+		args.Certificate = "attach://" + stat.Name()
+	}
+	res, err := bai.SendCustom("setWebhook", &args, keyFile != nil, keyFile)
 	if err != nil {
 		return nil, err
 	}

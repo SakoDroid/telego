@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 
-	"github.com/SakoDroid/telego/configs"
 	cfg "github.com/SakoDroid/telego/configs"
 	logger "github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
@@ -30,7 +29,7 @@ func (bot *Bot) Run() error {
 	}
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
-	configs.Dump(bot.botCfg)
+	cfg.Dump(bot.botCfg)
 	go bot.botCfg.StartCfgUpdateRoutine()
 	if bot.botCfg.Webhook {
 		return tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
@@ -84,9 +83,13 @@ func (bot *Bot) checkWebHook() bool {
 func (bot *Bot) setWebhook() error {
 	logger.Logger.Println("Setting webhook ...")
 	whcfg := bot.botCfg.WebHookConfigs
-	fl, err2 := os.Open(whcfg.CertFile)
-	if err2 != nil {
-		return err2
+	var fl *os.File
+	if whcfg.SelfSigned {
+		var err2 error
+		fl, err2 = os.Open(whcfg.CertFile)
+		if err2 != nil {
+			return err2
+		}
 	}
 	res, err3 := bot.apiInterface.SetWebhook(whcfg.URL, whcfg.IP, whcfg.MaxConnections, whcfg.AllowedUpdates, whcfg.DropPendingUpdates, fl)
 	if err3 != nil {
@@ -114,11 +117,11 @@ func (bot *Bot) deleteWebhook() error {
 //BlockUser blocks a user based on their ID and username.
 func (bot *Bot) BlockUser(user *objs.User) {
 	for _, us := range bot.botCfg.BlockedUsers {
-		if us.UserID == us.UserID {
+		if us.UserID == user.Id {
 			return
 		}
 	}
-	us := configs.BlockedUser{UserID: user.Id, UserName: user.Username}
+	us := cfg.BlockedUser{UserID: user.Id, UserName: user.Username}
 	bot.botCfg.BlockedUsers = append(bot.botCfg.BlockedUsers, us)
 }
 

@@ -134,6 +134,8 @@ type WebHookConfigs struct {
 	KeyFile string `json:"keyfile"`
 	/*The address of the certificate file.*/
 	CertFile string `json:"certfile"`
+	/*Is your certificate self signed?*/
+	SelfSigned bool
 	/*The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS*/
 	IP string `json:"ip,omitempty"`
 	/*Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.*/
