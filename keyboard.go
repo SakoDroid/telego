@@ -28,14 +28,14 @@ func (kb *keyboard) fixRows(row int) {
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
 func (kb *keyboard) AddButton(text string, row int) {
-	kb.addButton(text, row, false, false, nil)
+	kb.addButton(text, row, false, false, nil, nil)
 }
 
 /*AddButtonHandler adds a new button holding the given text to the specified row. This method also adds a handler for that button so everytime this button is pressed the handler will be called. You can read the documentation of "AddHandler" for better understanding on handlers.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
 func (kb *keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
-	kb.addButton(text, row, false, false, nil)
+	kb.addButton(text, row, false, false, nil, nil)
 	upp.AddHandler(text, handler, chatTypes...)
 }
 
@@ -45,7 +45,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
 func (kb *keyboard) AddContactButton(text string, row int) {
-	kb.addButton(text, row, true, false, nil)
+	kb.addButton(text, row, true, false, nil, nil)
 }
 
 /*AddLocationButton adds a new location button. According to telegram bot api when this button is pressed,the user's location will be sent. Available in private chats only.
@@ -54,7 +54,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
 func (kb *keyboard) AddLocationButton(text string, row int) {
-	kb.addButton(text, row, false, true, nil)
+	kb.addButton(text, row, false, true, nil, nil)
 }
 
 /*AddPollButton adds a new poll button. According to telegram bot api, the user will be asked to create a poll and send it to the bot when this button is pressed. Available in private chats only.
@@ -66,11 +66,19 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 Note : poll type can be "regular" or "quiz". Any other value will cause the button not to be added.*/
 func (kb *keyboard) AddPollButton(text string, row int, pollType string) {
 	if pollType == "regular" || pollType == "quiz" {
-		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType})
+		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType}, nil)
 	}
 }
 
-func (kb *keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType) {
+/* AddWebAppButton adds a button which opens a web app when it's pressed.
+
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
+*/
+func (kb *keyboard) AddWebAppButton(text string, row int, url string) {
+	kb.addButton(text, row, false, false, nil, &objs.WebAppInfo{URL: url})
+}
+
+func (kb *keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType, webApp *objs.WebAppInfo) {
 	if row >= 1 {
 		kb.fixRows(row)
 		kb.keys[row-1] = append(kb.keys[row-1], &objs.KeyboardButton{
@@ -78,6 +86,7 @@ func (kb *keyboard) addButton(text string, row int, contact, location bool, poll
 			RequestContact:  contact,
 			RequestLocation: location,
 			RequestPoll:     poll,
+			WebApp:          webApp,
 		})
 	}
 }
@@ -100,7 +109,7 @@ type inlineKeyboard struct {
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
 func (in *inlineKeyboard) AddURLButton(text, url string, row int) {
-	in.addButton(text, url, "", "", "", nil, nil, false, row)
+	in.addButton(text, url, "", "", "", nil, nil, nil, false, row)
 }
 
 /*AddLoginURLButton adds a button that will be used for automatic authorization. According to telegram bot api, login url is an HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
@@ -123,7 +132,7 @@ func (in *inlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername 
 		ForwardText:        forwardText,
 		BotUsername:        botUsername,
 		RequestWriteAccess: requestWriteAccess,
-	}, nil, false, row)
+	}, nil, nil, false, row)
 }
 
 /*AddCallbackButton adds a button that when its pressed, a call back query with the given data is sen to the bot
@@ -131,7 +140,7 @@ func (in *inlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddCallbackButton(text, callbackData string, row int) {
-	in.addButton(text, "", callbackData, "", "", nil, nil, false, row)
+	in.addButton(text, "", callbackData, "", "", nil, nil, nil, false, row)
 }
 
 /*AddCallbackButtonHandler adds a button that when its pressed, a call back query with the given data is sen to the bot. A handler is also added which will be called everytime a call back query is received for this button.
@@ -139,7 +148,7 @@ func (in *inlineKeyboard) AddCallbackButton(text, callbackData string, row int) 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddCallbackButtonHandler(text, callbackData string, row int, handler func(*objs.Update)) {
-	in.addButton(text, "", callbackData, "", "", nil, nil, false, row)
+	in.addButton(text, "", callbackData, "", "", nil, nil, nil, false, row)
 	upp.AddCallbackHandler(callbackData, handler)
 }
 
@@ -151,16 +160,16 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 */
 func (in *inlineKeyboard) AddSwitchInlineQueryButton(text, inlineQuery string, row int, currenChat bool) {
 	if currenChat {
-		in.addButton(text, "", "", "", inlineQuery, nil, nil, false, row)
+		in.addButton(text, "", "", "", inlineQuery, nil, nil, nil, false, row)
 	} else {
-		in.addButton(text, "", "", inlineQuery, "", nil, nil, false, row)
+		in.addButton(text, "", "", inlineQuery, "", nil, nil, nil, false, row)
 	}
 }
 
 /*AddGameButton adds a game button. Everytime a user presses this button a game will be launched. Use botfather to set up a game.
 NOTE: This type of button must always be the first button in the first row.*/
 func (in *inlineKeyboard) AddGameButton(text string, row int) {
-	in.addButton(text, "", "", "", "", nil, &objs.CallbackGame{}, false, row)
+	in.addButton(text, "", "", "", "", nil, &objs.CallbackGame{}, nil, false, row)
 }
 
 /*AddPayButton adds a pay button.
@@ -170,10 +179,18 @@ NOTE: This type of button must always be the first button in the first row.
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddPayButton(text string, row int) {
-	in.addButton(text, "", "", "", "", nil, nil, true, row)
+	in.addButton(text, "", "", "", "", nil, nil, nil, true, row)
 }
 
-func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, pay bool, row int) {
+/* AddWebAppButton adds a button which opens a web app when it's pressed.
+
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
+*/
+func (in *inlineKeyboard) AddWebAppButton(text string, row int, url string) {
+	in.addButton(text, "", "", "", "", nil, nil, &objs.WebAppInfo{URL: url}, false, row)
+}
+
+func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, webApp *objs.WebAppInfo, pay bool, row int) {
 	if row >= 1 {
 		in.fixRows(row)
 		in.keys[row-1] = append(in.keys[row-1], &objs.InlineKeyboardButton{
@@ -185,6 +202,7 @@ func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, 
 			SwitchInlineQueryCurrentChat: switchInlineQueryCurrentChat,
 			CallbackGame:                 callbackGame,
 			Pay:                          pay,
+			WebApp:                       webApp,
 		})
 	}
 }

@@ -34,6 +34,9 @@ type KeyboardButton struct {
 	/*Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
 	Note: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.*/
 	RequestPoll *KeyboardButtonPollType `json:"request_poll,omitempty"`
+	/*A web app info (url) for launching a web app
+	If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.*/
+	WebApp *WebAppInfo `json:"web_app,omitempty"`
 }
 
 /*This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.*/
@@ -88,6 +91,10 @@ type InlineKeyboardButton struct {
 
 	NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.*/
 	Pay bool `json:"pay,omitempty"`
+	/*A web app info (url) for launching a web app
+	Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot.
+	*/
+	WebApp *WebAppInfo `json:"web_app,omitempty"`
 }
 
 /*This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in.*/
