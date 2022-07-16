@@ -322,7 +322,7 @@ type CreateNewStickerSetArgs struct {
 	Title         string        `json:"title"`
 	PngSticker    string        `json:"png_sticker,omitempty"`
 	TgsSticker    string        `json:"tgs_sticker,omitempty"`
-	WebmSticker   string        `json:"webm_sticker,omitmepty"`
+	WebmSticker   string        `json:"webm_sticker,omitempty"`
 	Emojis        string        `json:"emojis"`
 	ContainsMasks bool          `json:"contains_masks"`
 	MaskPosition  *MaskPosition `json:"mask_position"`
@@ -370,7 +370,7 @@ type AddStickerSetArgs struct {
 	Name         string        `json:"name"`
 	PngSticker   string        `json:"png_sticker,omitempty"`
 	TgsSticker   string        `json:"tgs_sticker,omitempty"`
-	WebmSticker  string        `json:"webm_sticker,omitmepty"`
+	WebmSticker  string        `json:"webm_sticker,omitempty"`
 	Emojis       string        `json:"emojis"`
 	MaskPosition *MaskPosition `json:"mask_position"`
 }
@@ -1886,5 +1886,24 @@ func (args *GetGameHighScoresArgs) ToJson() []byte {
 
 //ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetGameHighScoresArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type AnswerWebAppQueryArgs struct {
+	WebAppQueryId string            `json:"web_app_query_id"`
+	Result        InlineQueryResult `json:"result"`
+}
+
+//ToJson converts this strcut into json to be sent to the API server.
+func (args *AnswerWebAppQueryArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *AnswerWebAppQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }

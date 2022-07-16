@@ -1944,6 +1944,23 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 	return msg, nil
 }
 
+func (bai *BotAPIInterface) AnswerWebAppQuery(webAppQueryId string, result objs.InlineQueryResult) (*objs.SentWebAppMessage, error) {
+	args := objs.AnswerWebAppQueryArgs{
+		WebAppQueryId: webAppQueryId,
+		Result:        result,
+	}
+	res, err := bai.SendCustom("answerWebAppQuery", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.SentWebAppMessage{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*SendCustom calls the given method on api server with the given arguments. "MP" options indicates that the request should be made in multipart/formdata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	start := time.Now().UnixMicro()

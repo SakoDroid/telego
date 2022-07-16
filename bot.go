@@ -723,7 +723,7 @@ func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrU
 	return out, nil
 }
 
-/*AnswerInlineQuery returns an InlineQueryResponder which has several methods for answering an inline query.
+/*AnswerInlineQuery returns an InlineQueryResponder which has several methods for answering an inline query or web app query.
 To access more options use "AAsnwerInlineQuery" method in advanced bot.
 
 --------------------------
@@ -734,6 +734,17 @@ Use this method to send answers to an inline query. On success, True is returned
 No more than 50 results per query are allowed.*/
 func (bot *Bot) AnswerInlineQuery(id string, cacheTime int) *InlineQueryResponder {
 	return &InlineQueryResponder{bot: bot, id: id, cacheTime: cacheTime, results: make([]objs.InlineQueryResult, 0)}
+}
+
+/*AnswerWebAppQuery returns an InlineQueryResponder which has several methods for answering an inline query or web app query.
+
+--------------------------
+
+Official telegram doc :
+
+Use this method to set the result of an interaction with a Web App and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a SentWebAppMessage object is returned.*/
+func (bot *Bot) AnswerWebAppQuery(webAppQueryId string) *InlineQueryResponder {
+	return &InlineQueryResponder{id: webAppQueryId, isWebApp: true, results: make([]objs.InlineQueryResult, 0)}
 }
 
 /*CreateInvoice returns an InvoiceSender which has several methods for creating and sending an invoice.

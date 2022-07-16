@@ -198,6 +198,8 @@ type Message struct {
 	VoiceChatEnded *VoiceChatEnded `json:"voice_chat_ended,omitempty"`
 	/*Optional. Service message: new participants invited to a voice chat*/
 	VoiceChatParticipantsInvited *VoiceChatParticipantsInvited `json:"voice_chat_participants_invited,omitempty"`
+	/*Optional. Service message: data sent by a Web App*/
+	WebAppData *WebAppData `json:"web_app_data,omitempty"`
 	/*Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.*/
 	ReplyMakrup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
