@@ -51,10 +51,10 @@ func (cm *ChatManager) RestrictMember(userId int, untilDate int, canSendMessages
 }
 
 /*PromoteChatMember promotes or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass False for all boolean parameters to demote a user. Returns True on success.*/
-func (cm *ChatManager) PromoteChatMember(userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVoiceChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (cm *ChatManager) PromoteChatMember(userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
 	return cm.bot.apiInterface.PromoteChatMember(
 		cm.chatIdInt, cm.chatIdString, userId, isAnonymous, canManageChat,
-		canPostmessages, canEditMessages, canDeleteMessages, canManageVoiceChats,
+		canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats,
 		canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages,
 	)
 }

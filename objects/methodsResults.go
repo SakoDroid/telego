@@ -116,3 +116,13 @@ type WebhookInfoResult struct {
 	Ok     bool         `json:"ok"`
 	Result *WebhookInfo `json:"result"`
 }
+
+type ChatAdministratorRightsResult struct {
+	Ok     bool                     `json:"ok"`
+	Result *ChatAdministratorRights `json:"result"`
+}
+
+type MenuButtonResult struct {
+	Ok     bool        `json:"ok"`
+	Result *MenuButton `json:"result"`
+}

@@ -191,13 +191,13 @@ type Message struct {
 	/*Optional. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.*/
 	ProximityAlertTriggered *ProximityAlertTriggered `json:"proximity_alert_triggered,omitempty"`
 	/*Optional. Service message: voice chat scheduled*/
-	VoiceChatScheduled *VoiceChatScheduled `json:"voice_chat_scheduled,omitempty"`
+	VideoChatScheduled *VideoChatScheduled `json:"video_chat_scheduled,omitempty"`
 	/*Optional. Service message: voice chat started*/
-	VoiceChatStarted *VoiceChatStarted `json:"voice_chat_started,omitempty"`
+	VideoChatStarted *VideoChatStarted `json:"video_chat_started,omitempty"`
 	/*Optional. Service message: voice chat ended*/
-	VoiceChatEnded *VoiceChatEnded `json:"voice_chat_ended,omitempty"`
+	VideoChatEnded *VideoChatEnded `json:"video_chat_ended,omitempty"`
 	/*Optional. Service message: new participants invited to a voice chat*/
-	VoiceChatParticipantsInvited *VoiceChatParticipantsInvited `json:"voice_chat_participants_invited,omitempty"`
+	VideoChatParticipantsInvited *VideoChatParticipantsInvited `json:"video_chat_participants_invited,omitempty"`
 	/*Optional. Service message: data sent by a Web App*/
 	WebAppData *WebAppData `json:"web_app_data,omitempty"`
 	/*Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.*/
@@ -259,6 +259,8 @@ type WebhookInfo struct {
 	LastErrorDate int `json:"last_error_date,omitempty"`
 	/*Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook*/
 	LastErrorMessage string `json:"last_error_message,omitempty"`
+	/*Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters*/
+	LastSynchronizationErrorDate int64 `json:"last_synchronization_error_date,omitempty"`
 	/*Optional. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery*/
 	MaxConnection int `json:"max_connections,omitempty"`
 	/*Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member*/

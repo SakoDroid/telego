@@ -837,7 +837,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 }
 
 /*PromoteChatMember promotes a chat member*/
-func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVoiceChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
 	args := &objs.PromoteChatMemberArgs{
 		UserId:              userId,
 		IsAnonymous:         isAnonymous,
@@ -845,7 +845,7 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 		CanPostMessages:     canPostmessages,
 		CanEditMessages:     canEditMessages,
 		CanDeleteMessages:   canDeleteMessages,
-		CanManageVoiceChats: canManageVoiceChats,
+		CanManageVideoChats: canManageVideoChats,
 		CanRestrictMembers:  canRestrictMembers,
 		CanPromoteMembers:   canPromoteMembers,
 		CanChangeInfo:       canChangeInfo,
@@ -858,6 +858,53 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 		return nil, err
 	}
 	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*SetMyDefaultAdministratorRights sets the admin rights*/
+func (bai *BotAPIInterface) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+	args := &objs.MyDefaultAdministratorRightsArgs{
+		Rights: &objs.ChatAdministratorRights{
+			IsAnonymous:         isAnonymous,
+			CanManageChat:       canManageChat,
+			CanPostMessages:     canPostmessages,
+			CanEditMessages:     canEditMessages,
+			CanDeleteMessages:   canDeleteMessages,
+			CanManageVideoChats: canManageVideoChats,
+			CanRestrictMembers:  canRestrictMembers,
+			CanPromoteMembers:   canPromoteMembers,
+			CanChangeInfo:       canChangeInfo,
+			CanInviteUsers:      canInviteUsers,
+			CanPinMessages:      canPinMessages,
+		},
+		ForChannels: forChannels,
+	}
+	res, err := bai.SendCustom("setMyDefaultAdministratorRights", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*GetMyDefaultAdministratorRights gets the admin rights*/
+func (bai *BotAPIInterface) GetMyDefaultAdministratorRights(forChannels bool) (*objs.ChatAdministratorRightsResult, error) {
+	args := &objs.MyDefaultAdministratorRightsArgs{
+		ForChannels: forChannels,
+	}
+	res, err := bai.SendCustom("getMyDefaultAdministratorRights", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.ChatAdministratorRightsResult{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1944,6 +1991,7 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 	return msg, nil
 }
 
+/*AnswerWebAppQuery answers a web app query*/
 func (bai *BotAPIInterface) AnswerWebAppQuery(webAppQueryId string, result objs.InlineQueryResult) (*objs.SentWebAppMessage, error) {
 	args := objs.AnswerWebAppQueryArgs{
 		WebAppQueryId: webAppQueryId,
@@ -1954,6 +2002,41 @@ func (bai *BotAPIInterface) AnswerWebAppQuery(webAppQueryId string, result objs.
 		return nil, err
 	}
 	msg := &objs.SentWebAppMessage{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*GetChatMenuButton gets the menu button for the given chat*/
+func (bai *BotAPIInterface) GetChatMenuButton(chatId int64) (*objs.MenuButtonResult, error) {
+	args := objs.ChatMenuButtonArgs{
+		ChatId: chatId,
+	}
+	res, err := bai.SendCustom("getChatMenuButton", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.MenuButtonResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*SetChatMenuButton sets the menu button for the given chat*/
+func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.MenuButton) (*objs.LogicalResult, error) {
+	args := objs.ChatMenuButtonArgs{
+		ChatId:     chatId,
+		MenuButton: menuButton,
+	}
+	res, err := bai.SendCustom("setChatMenuButton", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3

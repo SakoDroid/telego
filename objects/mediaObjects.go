@@ -148,17 +148,17 @@ type MessageAutoDeleteTimerChanged struct {
 	MessageAutoDeleteTime int `json:"message_auto_delete_time"`
 }
 
-type VoiceChatScheduled struct {
+type VideoChatScheduled struct {
 	StartDate int `json:"start_date"`
 }
 
-type VoiceChatStarted struct{}
+type VideoChatStarted struct{}
 
-type VoiceChatEnded struct {
+type VideoChatEnded struct {
 	Duration int `json:"duration"`
 }
 
-type VoiceChatParticipantsInvited struct {
+type VideoChatParticipantsInvited struct {
 	Users []User `json:"users"`
 }
 

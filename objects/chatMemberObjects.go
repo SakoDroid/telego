@@ -26,7 +26,7 @@ type ChatMemberOwner struct {
 	/*True, if the administrator can delete messages of other users*/
 	CanDeleteMessages bool `json:"can_delete_messages"`
 	/*True, if the administrator can manage voice chats*/
-	CanManageVoiceChats bool `json:"can_manage_voice_chats"`
+	CanManageVideoChats bool `json:"can_manage_video_chats"`
 	/*True, if the administrator can restrict, ban or unban chat members*/
 	CanRestrictMembers bool `json:"can_restrict_members"`
 	/*True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)*/

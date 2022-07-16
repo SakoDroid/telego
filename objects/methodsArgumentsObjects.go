@@ -1164,7 +1164,7 @@ type PromoteChatMemberArgs struct {
 	CanPostMessages     bool            `json:"can_post_messages"`
 	CanEditMessages     bool            `json:"can_edit_messages"`
 	CanDeleteMessages   bool            `json:"can_delete_messages"`
-	CanManageVoiceChats bool            `json:"can_manage_voice_chats"`
+	CanManageVideoChats bool            `json:"can_manage_video_chats"`
 	CanRestrictMembers  bool            `json:"can_restrict_members"`
 	CanPromoteMembers   bool            `json:"can_promote_members"`
 	CanChangeInfo       bool            `json:"can_change_info"`
@@ -1905,5 +1905,45 @@ func (args *AnswerWebAppQueryArgs) ToJson() []byte {
 
 //ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerWebAppQueryArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type ChatMenuButtonArgs struct {
+	ChatId     int64       `json:"chat_id"`
+	MenuButton *MenuButton `json:"menu_button,omitempty"`
+}
+
+//ToJson converts this strcut into json to be sent to the API server.
+func (args *ChatMenuButtonArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *ChatMenuButtonArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type MyDefaultAdministratorRightsArgs struct {
+	/*Pass True to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.*/
+	ForChannels bool `json:"for_channels"`
+	/*A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.*/
+	Rights *ChatAdministratorRights `json:"rights,omitempty"`
+}
+
+//ToJson converts this strcut into json to be sent to the API server.
+func (args *MyDefaultAdministratorRightsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *MyDefaultAdministratorRightsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }

@@ -852,6 +852,50 @@ func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId
 	return bot.apiInterface.GetGameHighScores(userId, chatId, messageId, inlineMessageId)
 }
 
+/*GetChatMenuButton gets the current menu button of given chat.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns MenuButton on success.*/
+func (bot *Bot) GetChatMenuButton(chatId int64) (*objs.MenuButtonResult, error) {
+	return bot.apiInterface.GetChatMenuButton(chatId)
+}
+
+/*SetCommandChatMenuButton sets the current menu button of given chat to command meaning that it opens the bot's list of commands.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.*/
+func (bot *Bot) SetCommandChatMenuButton(chatId int64) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "commands"})
+}
+
+/*SetDefaultChatMenuButton sets the current menu button of given chat to command meaning that it describes that no specific value for the menu button was set.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.*/
+func (bot *Bot) SetDefaultChatMenuButton(chatId int64) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "default"})
+}
+
+/*SetWebAppChatMenuButton sets the current menu button of given chat to web_app meaning that it launches a Web App.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.*/
+func (bot *Bot) SetWebAppChatMenuButton(chatId int64, text, url string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "web_app", Text: text, WebApp: &objs.WebAppInfo{URL: url}})
+}
+
 /*CreateKeyboard creates a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
 
 You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of the method. The methods that supoort keyboard are mostly located in the advanced mode.

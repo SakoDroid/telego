@@ -563,6 +563,16 @@ func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.Passport
 	)
 }
 
+/*SetMyDefaultAdministratorRights as describe by telegram official doc : Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns True on success.*/
+func (bot *AdvancedBot) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+	return bot.bot.apiInterface.SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages)
+}
+
+/*GetMyDefaultAdministratorRights as describe by telegram official doc : Use this method to get the current default administrator rights of the bot. Returns ChatAdministratorRights on success.*/
+func (bot *AdvancedBot) GetMyDefaultAdministratorRights(forChannels bool) (*objs.ChatAdministratorRightsResult, error) {
+	return bot.bot.apiInterface.GetMyDefaultAdministratorRights(forChannels)
+}
+
 /*RegisterChannel can be used to register special channels. Sepcial channels can be used to get only certain types of updates through them. For example you can register a channel to only receive messages or register a channel to only receive edited messages in a certain chat.
 
 "chatId" argument specifies a chat which this channel will be dedicated to. If an empty string is passed it means that no chat is specified and channel will work for all chats. chatIds that are integer should be converted to string.
