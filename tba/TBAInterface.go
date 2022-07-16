@@ -1768,6 +1768,42 @@ func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, desc
 	return msg, nil
 }
 
+/*CreateInvoiceLink sends an invoice*/
+func (bai *BotAPIInterface) CreateInvoiceLink(title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible bool) (*objs.StringResult, error) {
+	args := &objs.SendInvoiceArgs{
+		Title:                     title,
+		Description:               description,
+		Payload:                   payload,
+		ProviderToken:             providerToken,
+		Currency:                  currency,
+		Prices:                    prices,
+		MaxTipAmount:              maxTipAmount,
+		SuggestedTipAmounts:       suggestedTipAmounts,
+		ProviderData:              providerData,
+		PhotoURL:                  photoURL,
+		PhotoSize:                 photoSize,
+		PhotoWidth:                photoWidth,
+		PhotoHeight:               photoHeight,
+		NeedName:                  needName,
+		NeedPhoneNumber:           needPhoneNumber,
+		NeedEmail:                 needEmail,
+		NeedShippingAddress:       needSippingAddress,
+		SendPhoneNumberToProvider: sendPhoneNumberToProvider,
+		SendEmailToProvider:       sendEmailToProvider,
+		IsFlexible:                isFlexible,
+	}
+	res, err := bai.SendCustom("createInvoiceLink", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.StringResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*AnswerShippingQuery answers a shipping query*/
 func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.LogicalResult, error) {
 	args := &objs.AnswerShippingQueryArgs{

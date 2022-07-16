@@ -217,6 +217,10 @@ type User struct {
 	Username string `json:"username,omitempty"`
 	/*Optional. IETF language tag of the user's language*/
 	LanguageCode string `json:"language_code,omitempty"`
+	/*Optional. True, if this user is a Telegram Premium user*/
+	IsPremium bool `json:"is_premium,omitempty"`
+	/*Optional. True, if this user added the bot to the attachment menu*/
+	AddedToAttachmentMenu bool `json:"added_to_attachment_menu,omitempty"`
 	/*Optional. True, if the bot can be invited to groups.*/
 	CanJoinGroups bool `json:"can_join_groups,omitempty"`
 	/*Optional. True, if privacy mode is disabled for the bot.*/

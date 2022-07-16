@@ -21,6 +21,10 @@ type Chat struct {
 	Bio string `json:"bio,omitempty"`
 	/*Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user.*/
 	HasPrivateForwards bool `json:"has_private_forwards,omitempty"`
+	/*Optional. True, if users need to join the supergroup before they can send messages. Returned only in GetChat.*/
+	JoinToSendMessages bool `json:"join_to_send_messages,omitempty"`
+	/*Optional. True, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in GetChat.*/
+	JoinByRequest bool `json:"join_by_request,omitempty"`
 	/*Optional. Description, for groups, supergroups and channel chats.*/
 	Description string `json:"description,omitempty"`
 	/*Optional. Primary invite link, for groups, supergroups and channel chats.*/

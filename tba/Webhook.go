@@ -15,12 +15,14 @@ import (
 var configs *cfg.BotConfigs
 var interfaceUpdateChannel *chan *objs.Update
 var chatUpdateChannel *chan *objs.ChatUpdate
+var isSecretTokenSet bool
 
 //StartWebHook starts the webhook.
 func StartWebHook(cfg *cfg.BotConfigs, iuc *chan *objs.Update, cuc *chan *objs.ChatUpdate) error {
 	configs = cfg
 	interfaceUpdateChannel = iuc
 	chatUpdateChannel = cuc
+	isSecretTokenSet = cfg.WebHookConfigs.SecretToken != ""
 	startTheServer()
 	return nil
 }
@@ -43,6 +45,14 @@ func mainHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func handleReq(wr http.ResponseWriter, req *http.Request) {
+	if isSecretTokenSet {
+		token := req.Header.Get("X-Telegram-Bot-Api-Secret-Token")
+		if token != configs.WebHookConfigs.SecretToken {
+			wr.WriteHeader(403)
+			wr.Write([]byte{})
+			return
+		}
+	}
 	contentType := req.Header.Get("Content-Type")
 	if contentType != "" && strings.HasSuffix(contentType, "json") {
 		if req.ContentLength > 0 {

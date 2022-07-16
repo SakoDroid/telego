@@ -145,6 +145,8 @@ type WebHookConfigs struct {
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 	/*Pass True to drop all pending updates*/
 	DropPendingUpdates bool `json:"drop_pending_reqs"`
+	/*A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.*/
+	SecretToken string `json:"secret_token,omitempty"`
 }
 
 func (whc *WebHookConfigs) check(apiKey string) bool {

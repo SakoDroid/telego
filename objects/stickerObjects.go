@@ -20,6 +20,8 @@ type Sticker struct {
 	Emoji string `json:"emoji,omitempty"`
 	/*Optional. Name of the sticker set to which the sticker belongs*/
 	SetName string `json:"set_name,omitempty"`
+	/*Optional. Premium animation for the sticker, if the sticker is premium*/
+	PremiumAnimation *File `json:"premium_animation,omitempty"`
 	/*Optional. For mask stickers, the position where the mask should be placed*/
 	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
 	/*Optional. File size in bytes*/

@@ -26,7 +26,7 @@ type Animation struct {
 	Thumb        *PhotoSize `json:"thumb,omitempty"`
 	FileName     string     `json:"file_name,omitempty"`
 	MIMEType     string     `json:"mime_type,omitempty"`
-	FileSize     int        `json:"file_size,omitempty"`
+	FileSize     int64      `json:"file_size,omitempty"`
 }
 
 type Audio struct {
@@ -37,7 +37,7 @@ type Audio struct {
 	Title        string     `json:"title,omitempty"`
 	FileName     string     `json:"file_name,omitempty"`
 	MIMEType     string     `json:"mime_type,omitempty"`
-	FileSize     int        `json:"file_size,omitempty"`
+	FileSize     int64      `json:"file_size,omitempty"`
 	Thumb        *PhotoSize `json:"thumb,omitempty"`
 }
 
@@ -47,7 +47,7 @@ type Document struct {
 	Thumb        *PhotoSize `json:"thumb,omitempty"`
 	FileName     string     `json:"file_name,omitempty"`
 	MIMEType     string     `json:"mime_type,omitempty"`
-	FileSize     int        `json:"file_size,omitempty"`
+	FileSize     int64      `json:"file_size,omitempty"`
 }
 
 type Video struct {
@@ -59,7 +59,7 @@ type Video struct {
 	Thumb        *PhotoSize `json:"thumb,omitempty"`
 	FileName     string     `json:"file_name,omitempty"`
 	MIMEType     string     `json:"mime_type,omitempty"`
-	FileSize     int        `json:"file_size,omitempty"`
+	FileSize     int64      `json:"file_size,omitempty"`
 }
 
 type VideoNote struct {
@@ -76,7 +76,7 @@ type Voice struct {
 	FileUniqueId string `json:"file_unique_id"`
 	Duration     int    `json:"duration"`
 	MIMEType     string `json:"mime_type,omitempty"`
-	FileSize     int    `json:"file_size,omitempty"`
+	FileSize     int64  `json:"file_size,omitempty"`
 }
 
 type Contact struct {
@@ -170,6 +170,6 @@ type UserProfilePhotos struct {
 type File struct {
 	FileId       string `json:"file_id"`
 	FileUniqueId string `json:"file_unique_id"`
-	FileSize     int    `json:"file_size,omitempty"`
+	FileSize     int64  `json:"file_size,omitempty"`
 	FilePath     string `json:"file_path,omitempty"`
 }

@@ -37,3 +37,17 @@ func (is *Invoice) Send(replyTo int, silent bool) (*objs.SendMethodsResult, erro
 		is.sendPhoneNumberToProvider, is.sendEmailToProvider, is.isFlexible, silent, replyTo, is.allowSendingWithoutReply, is.replyMarkup,
 	)
 }
+
+/*CreateLink creates a link for the invoice and returnes the link.
+
+-------------------------------
+
+Official telegram doc :
+
+Use this method to create a link for an invoice. Returns the created invoice link as String on success.*/
+func (is *Invoice) CreateLink() (*objs.StringResult, error) {
+	return is.bot.apiInterface.CreateInvoiceLink(is.title, is.description, is.payload, is.providerToken,
+		is.currency, is.prices, is.maxTipAmount, is.suggestedTipAmounts, is.providerData,
+		is.photoURL, is.photoSize, is.photoWidth, is.photoHeight, is.needName, is.needPhoneNumber, is.needEmail, is.needShippingAddress,
+		is.sendPhoneNumberToProvider, is.sendEmailToProvider, is.isFlexible)
+}
