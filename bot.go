@@ -22,7 +22,7 @@ type Bot struct {
 }
 
 /*Run starts the bot. If the bot has already been started it returns an error.*/
-func (bot *Bot) Run() error {
+func (bot *Bot) Run(pause bool) error {
 	logger.InitTheLogger(bot.botCfg)
 	if !bot.checkWebHook() {
 		logger.Logger.Fatalln("Webhook check failed. See the logs for more info.")
@@ -31,11 +31,18 @@ func (bot *Bot) Run() error {
 	go bot.startUpdateProcessing()
 	cfg.Dump(bot.botCfg)
 	go bot.botCfg.StartCfgUpdateRoutine()
+	var err error
 	if bot.botCfg.Webhook {
-		return tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
+		err = tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
 	} else {
-		return bot.apiInterface.StartUpdateRoutine()
+		err = bot.apiInterface.StartUpdateRoutine()
 	}
+	if err != nil {
+		return err
+	}
+	ch := make(chan bool)
+	<-ch
+	return nil
 }
 
 func (bot *Bot) checkWebHook() bool {
