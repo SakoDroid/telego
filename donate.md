@@ -10,11 +10,6 @@ Thanks!
 
 -----
 
-### ETH and BSC address :
-***0x32B77A76fA4aA06D4758790bEBbeDb11dADD04C6***
-
------
-
 ### BTC address :
 ***bc1q9rnsmgzltfan4zjwjphd7fej4jmkd3gf40hgn9***
 
