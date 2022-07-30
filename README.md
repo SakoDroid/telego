@@ -40,6 +40,10 @@ A Go library for creating telegram bots.
 * [License](#license)
 
 ---------------------------------
+## Donate to telego
+If you want to donate to telego project and keep it running, you can donate using crypto. [More info](https://github.com/SakoDroid/telego/blob/master/donate.md)
+
+---------------------------------
 
 ## Features
 * Fast and reliable
