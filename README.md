@@ -913,6 +913,12 @@ telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 
 ## Chnage logs
 
+### v1.8.0
+* Added full support for telegram bot API 6.0 and 6.1
+* Added support for web apps
+* Fixed some code errors
+* Fixed a bug in webhook
+
 ### v1.7.0
 * Added config updating option while bot is running.
 * Added block option.
