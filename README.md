@@ -66,7 +66,7 @@ and monitor the poll update via a go channel.
 
 ## Installation
  Install the package into your [$GOPATH](https://github.com/golang/go/wiki/GOPATH "GOPATH") with the [go command](https://golang.org/cmd/go/ "go command") from terminal :
- ```
+ ```bash
  $ go get -u github.com/SakoDroid/telego
  ```
  Git needs to be installed on your computer.
@@ -79,7 +79,7 @@ and monitor the poll update via a go channel.
 
  The following code creates a bot and starts receiving updates. If the update is a text message that contains "hi" the bot will respond "hi to you too!".
 
- ```
+ ```go
  import (
     "fmt"
     
@@ -126,7 +126,7 @@ and monitor the poll update via a go channel.
 ### **Configuring the bot**
  First you need to import required libraries :
 
- ```
+ ```go
  import (
     bt "github.com/SakoDroid/telego"
     cfg "github.com/SakoDroid/telego/configs"
@@ -138,32 +138,32 @@ and monitor the poll update via a go channel.
 
  **BotConfigs** struct is located in configs package and contains these fields :
 
- ```
- /*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
+ ```go
+ /* This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field. */
 
  BotAPI string
 
- /*The API key for your bot. You can get the api key (token) from botfather*/
+ /* The API key for your bot. You can get the api key (token) from botfather */
 
  APIKey string
 
- /*The settings related to getting updates from the api server. This field shoud only be populated when Webhook field is false, otherwise it is ignored.*/
+ /* The settings related to getting updates from the api server. This field shoud only be populated when Webhook field is false, otherwise it is ignored. */
 
  UpdateConfigs *UpdateConfigs
 
- /*This field idicates if webhook should be used for receiving updates or not.*/
+ /* This field idicates if webhook should be used for receiving updates or not. */
 
  Webhook bool
 
- /*This field represents the configs related to webhook.*/
+ /* This field represents the configs related to webhook. */
  WebHookConfigs *WebHookConfigs
 
- /*All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value*/
+ /* All the logs related to bot will be written in this file. You can use configs.DefaultLogFile for default value. */
 
  LogFileAddress string
 
 
- //BlockedUsers is a list of blocked users.
+ // BlockedUsers is a list of blocked users.
 
  BlockedUsers []BlockedUser `json:"blocked_users"`
 ```
@@ -172,8 +172,8 @@ and monitor the poll update via a go channel.
 
 To create bot configs you need an UpdateConfigs to populate related field in BotConfigs. **UpdateConfigs** struct contains following fields :
 
-```
-/*Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.*/
+```go
+/* Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100. */
 
  Limit int
 
@@ -181,7 +181,7 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
 
  Timeout int
 
- /*List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
+ /* List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
  Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
 
  AllowedUpdates []string
@@ -196,9 +196,8 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
 
 To use webhook you need a key file and a certificate file since webhook is based on HTTPS. Telegram bot API supports self-signed certificates. You can create a self-signed certificate using [**OpenSSL**](https://en.wikipedia.org/wiki/OpenSSL). Read [this article](https://linuxize.com/post/creating-a-self-signed-ssl-certificate/) to find out how.
 
-To define the configs for webhook, `WebHookConfig` struct should be used. It contains the following fields :
-```
-
+To define the configs for webhook, `WebHookConfig` struct should be used. It contains the following fields:
+```go
 type WebHookConfigs struct {
 
 	/*The web hook url.*/
@@ -231,7 +230,7 @@ This struct is located in the `configs` package. To use webhook, first you need 
 
 **Note :** *UpdateConfigs* is no longer needed if you're using webhook. So leave this field empty.
 
-```
+```go
 import (
 	bt "github.com/SakoDroid/telego"
 	cfg "github.com/SakoDroid/telego/configs"
@@ -263,7 +262,7 @@ import (
 ### **Loading and saving the configs**
 You can load the bot configs from config file or save it in the file using `Load` and `Dump` methods. Config file's name is `config.json`. These methods are located in configs package. In the example code below first we create a config, then save it and then load it again into a new config :
 
-```
+```go
 bc1 := configs.Default("API key")
 _ := configs.Dump(bc1)
 
@@ -280,7 +279,7 @@ fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
 
  **Note :** Webhook is not used in the example codes. Using webhook only changes the code related to creating the bot and receiving updates or sending data abviously won't be affected.
 
- ```
+ ```go
  import (
 	bt "github.com/SakoDroid/telego"
 	cfg "github.com/SakoDroid/telego/configs"
@@ -304,7 +303,7 @@ fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
 
 Now that the bot is running it will receive updates from api server and passes them into UpdateChannel. So you can use this channel to know if an update is received from api server. You can get the channel via **GetUpdateChannel()** method of the bot :
 
- ```
+ ```go
  import (
 	bt "github.com/SakoDroid/telego"
 	cfg "github.com/SakoDroid/telego/configs"
@@ -410,7 +409,7 @@ if chat channel check fails  |
 
 Handlers and special channels can be used together. For example the below code add a handler for text message "hi". Everytime the bot receives "hi" in a private chat it responds "hi to you too, send a location". Then it rgisters a channel for receiving messages in that chat and waits for the user to send a message. After message is received it sends the exact same location the user has sent back to the user : 
 
-```
+```go
 import (
     "fmt"
     
@@ -495,7 +494,7 @@ Telegram offers three ways for formatting a text. Formatting means adding style 
 
 3. **Message entities** : Message entities can be used to format a text. Telego offers a tool for creating formatted texts called TextFormatter. Call `GetTextFormatter()` method. This method returns a TextFormatter that has a few methods for adding a styled text to the original text. TextFormatter assembles the text and returns it via `GetText()` method. You need to pass this text as the "text" or "caption" arguments and pass the returned value of `GetEntities()` method as the "entities" or "captionEntities" arguments of the `ASend` methods (located in advanced bot). The example below adds anormal text, a bold text, an italic text, a link, a mention and a spoiler to the text and sends it : 
 
-```
+```go
 tf := bot.GetTextFormatter()
 tf.AddNormal("normal text")
 tf.AddMention("@someone_username")
@@ -519,7 +518,7 @@ _, err := bot.AdvancedMode().ASendMessage(
 
  Calling each media sending related method returns a MediaSender. MediaSender has all methods that are needed to send a media. For example lets send photo in our computer :
 
- ```
+ ```go
  photoFile,err := os.Open("photo.jpg")
 
  if err == nil{
@@ -539,7 +538,7 @@ _, err := bot.AdvancedMode().ASendMessage(
 
  To send a group of medias (aka albums) first you need to create a *`MediaGroup`* by calling `CreateAlbum(replyto int)` method of the bot. MediaGroup has several methods for adding photo,video,audio and other media types to the album. Keep in mind that according to [Telegram bot api documentation about media groups](https://core.telegram.org/bots/api#sendmediagroup), documents and audio files can be only grouped in an album with messages of the same type. Also the media group must include 2-10 items. The code below shows how to create a media group, add some photo to it and send it :
 
- ```
+ ```go
  mg := bot.CreateAlbum(messageId)
 
 //Add a file on the computer.
@@ -573,24 +572,23 @@ telego library offers automatic poll management. When you create a poll and send
 
 Let's see an example :
 
-```
-
-//A custom function that creates and sends a poll and listens to its updates.
+```go
+// A custom function that creates and sends a poll and listens to its updates.
 func pollTest(chatId int) {
 
-    //Creates the poll
+    // Creates the poll
 	poll, _ := bot.CreatePoll(chatId, "How are you?", "regular")
 
-    //Adds some options
+    // Adds some options
 	poll.AddOption("good")
 	poll.AddOption("not bad")
 	poll.AddOption("alright")
 	poll.AddOption("bad")
 
-    //Adds an explanation for the poll.
+    // Adds an explanation for the poll.
 	poll.SetExplanation("This is just a test for telego framework", "", nil)
 
-    //Sends the poll
+    // Sends the poll
 	err := poll.Send(false,false, 0)
 
 	if err != nil {
@@ -614,7 +612,7 @@ func pollTest(chatId int) {
 
 You can get information about a file that is stored in telegram servers and download it into your computer by calling **`GetFile`** method. If you want to download the file, pass true for *download* argument of the method. The below example downloads a received sticker from the user and saves it into the given file (read full documentation of the method for more information) :
 
-```
+```go
 //Receives upadate
 update := <- updateChannel
 
@@ -643,7 +641,7 @@ In Telego you can create custom keyboards and inline keyboards easily with an am
 
 You can create this type of keyboard by calling `CreateKeyboard` method of the bot. It has some arguments that are fully documented in the source code. Calling this method will return a keyboard which has several methods for adding buttons to it. After you have added the buttons you can pass the keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. Example :
 
-```
+```go
  import (
     "fmt"
     
@@ -711,7 +709,7 @@ Inline keyboards appear below the message they have been sent with. To create in
 
  Example :
 
-```
+```go
  import (
     "fmt"
     
@@ -792,7 +790,7 @@ To respond to an inline query you need to use `AAnswerInlineQuery` method of the
 
 Let's see an example code. The code below registers a channel for inline queries and regardless of their query, adds an article result. If this result is pressed, a text message is sent which will say *telego is a go library for creating telegram bots*.
 
-```
+```go
 import (
     "fmt"
     
@@ -873,8 +871,9 @@ And when this result is clicked, the message in the photo below is sent :
 
 ### **Stickers**
 
-To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateStickerSet` method should be called. Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has some methods for adding new stickers to it and managing the pack such as `AddPngSticker`,`AddAnimatedSticker` and `AddVideoSticker`. Example :
-```
+To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateStickerSet` method should be called. Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has some methods for adding new stickers to it and managing the pack such as `AddPngSticker`,`AddAnimatedSticker` and `AddVideoSticker`. Example:
+
+```go
 fl1, err := os.Open("Sticker1.png")
 if err != nil {
     fmt.Println(err)
