@@ -28,7 +28,7 @@ func TestLoadAndDump(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	bc2, err := Load()
+	bc2, err := Load("configs.json")
 	if err != nil {
 		t.Error(err)
 	}
