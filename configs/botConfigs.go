@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-//BlockedUser is a struct used for storing a blocked user informations.
+// BlockedUser is a struct used for storing a blocked user informations.
 type BlockedUser struct {
 	UserID   int    `json:"user_id"`
 	UserName string `json:"username"`
 }
 
-//DefaultBotAPI is the telegrams default bot api server.
+// DefaultBotAPI is the telegrams default bot api server.
 const DefaultBotAPI = "https://api.telegram.org/bot"
 
-//DefaultLogFile is a default file for saving the bot logs in it.
+// DefaultLogFile is a default file for saving the bot logs in it.
 const DefaultLogFile = "STDOUT"
 
-//BotConfigs is a struct holding the bots configs.
+// BotConfigs is a struct holding the bots configs.
 type BotConfigs struct {
 	/*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
 	BotAPI string `json:"bot_api"`
@@ -36,9 +36,11 @@ type BotConfigs struct {
 	LogFileAddress string `json:"log_file"`
 	//BlockedUsers is a list of blocked users.
 	BlockedUsers []BlockedUser `json:"blocked_users"`
+
+	ConfigName string `json:"config_name"`
 }
 
-//Check checks the bot configs for any problem.
+// Check checks the bot configs for any problem.
 func (bc *BotConfigs) Check() bool {
 	if bc.BotAPI == "" {
 		return false
@@ -56,7 +58,7 @@ func (bc *BotConfigs) Check() bool {
 	}
 }
 
-//StartCfgUpdateRoutine starts a routine which updates the configs every second.
+// StartCfgUpdateRoutine starts a routine which updates the configs every second.
 func (bc *BotConfigs) StartCfgUpdateRoutine() {
 	for {
 		err := LoadInto(bc)
@@ -68,9 +70,9 @@ func (bc *BotConfigs) StartCfgUpdateRoutine() {
 	}
 }
 
-//Load loads the configs from the config file (configs.json) and returns the BotConfigs pointer.
-func Load() (*BotConfigs, error) {
-	fl, err := os.Open("configs.json")
+// Load loads the configs from the config file (configs.json) and returns the BotConfigs pointer.
+func Load(configName string) (*BotConfigs, error) {
+	fl, err := os.Open(configName)
 	defer fl.Close()
 	if err != nil {
 		return nil, err
@@ -89,9 +91,9 @@ func Load() (*BotConfigs, error) {
 	return bc, err
 }
 
-//LoadInto works the same way as "Load" but it won't return the config, instead it loads the config into the given object.
+// LoadInto works the same way as "Load" but it won't return the config, instead it loads the config into the given object.
 func LoadInto(bc *BotConfigs) error {
-	fl, err := os.Open("configs.json")
+	fl, err := os.Open(bc.ConfigName)
 	defer fl.Close()
 	if err != nil {
 		return err
@@ -109,9 +111,9 @@ func LoadInto(bc *BotConfigs) error {
 	return err
 }
 
-//Dump saves the given BotConfigs struct in a json format in the config file (configs.json).
+// Dump saves the given BotConfigs struct in a json format in the config file (configs.json).
 func Dump(bc *BotConfigs) error {
-	fl, err := os.OpenFile("configs.json", os.O_CREATE|os.O_WRONLY, 0666)
+	fl, err := os.OpenFile(bc.ConfigName, os.O_CREATE|os.O_WRONLY, 0666)
 	defer fl.Close()
 	if err != nil {
 		return err
@@ -124,7 +126,7 @@ func Dump(bc *BotConfigs) error {
 	return err
 }
 
-//WebHookConfigs contains the configs necessary for webhook.
+// WebHookConfigs contains the configs necessary for webhook.
 type WebHookConfigs struct {
 	/*The web hook url.*/
 	URL string `json:"url"`
@@ -171,7 +173,7 @@ func (whc *WebHookConfigs) check(apiKey string) bool {
 	return true
 }
 
-//UpdateConfigs contains the necessary configs for receiving updates.
+// UpdateConfigs contains the necessary configs for receiving updates.
 type UpdateConfigs struct {
 	/*Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.*/
 	Limit int `json:"limit"`
@@ -184,12 +186,31 @@ type UpdateConfigs struct {
 	UpdateFrequency time.Duration `json:"update_freq"`
 }
 
-//DefaultUpdateConfigs returns a default update configs.
+// DefaultUpdateConfigs returns a default update configs.
 func DefaultUpdateConfigs() *UpdateConfigs {
 	return &UpdateConfigs{Limit: 100, Timeout: 0, UpdateFrequency: time.Duration(300 * time.Millisecond), AllowedUpdates: nil}
 }
 
-//Default returns default setting for the bot.
+// Default returns default setting for the bot.
 func Default(apiKey string) *BotConfigs {
-	return &BotConfigs{BotAPI: DefaultBotAPI, APIKey: apiKey, UpdateConfigs: DefaultUpdateConfigs(), Webhook: false, LogFileAddress: DefaultLogFile}
+	return &BotConfigs{
+		BotAPI:         DefaultBotAPI,
+		APIKey:         apiKey,
+		UpdateConfigs:  DefaultUpdateConfigs(),
+		Webhook:        false,
+		LogFileAddress: DefaultLogFile,
+		ConfigName:     "configs.json",
+	}
+}
+
+// Default returns default setting for the bot.
+func DefaultConfigName(apiKey, configName string) *BotConfigs {
+	return &BotConfigs{
+		BotAPI:         DefaultBotAPI,
+		APIKey:         apiKey,
+		UpdateConfigs:  DefaultUpdateConfigs(),
+		Webhook:        false,
+		LogFileAddress: DefaultLogFile,
+		ConfigName:     configName,
+	}
 }
