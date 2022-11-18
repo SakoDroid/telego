@@ -196,6 +196,22 @@ func (bot *Bot) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.
 	return bot.apiInterface.UnpinAllChatMessages(chatIdInt, chatIdString)
 }
 
+func (bot *Bot) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+	return bot.apiInterface.CreateChatInviteLink(chatIdInt, chatIdString, name, expireDate, memberLimit, createsJoinRequest)
+}
+
+func (bot *Bot) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.DefaultResult, error) {
+	return bot.apiInterface.GetChatMember(chatIdInt, chatIdString, userId)
+}
+
+func (bot *Bot) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.LogicalResult, error) {
+	return bot.apiInterface.BanChatMember(chatIdInt, chatIdString, userId, untilDate, revokeMessages)
+}
+
+func (bot *Bot) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.LogicalResult, error) {
+	return bot.apiInterface.UnbanChatMember(chatIdInt, chatIdString, userId, onlyIfBanned)
+}
+
 /*
 ForwardMessage returns a MessageForwarder which has several methods for forwarding a message
 
