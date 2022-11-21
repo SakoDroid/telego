@@ -212,6 +212,10 @@ func (bot *Bot) UnbanChatMember(chatIdInt int, chatIdString string, userId int, 
 	return bot.apiInterface.UnbanChatMember(chatIdInt, chatIdString, userId, onlyIfBanned)
 }
 
+func (bot *Bot) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetMyCommands(commands, scope, languageCode)
+}
+
 /*
 ForwardMessage returns a MessageForwarder which has several methods for forwarding a message
 
