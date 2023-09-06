@@ -29,4 +29,6 @@ type ChatAdministratorRights struct {
 	CanEditMessages bool `json:"can_edit_messages,omitempty"`
 	/*Optional. True, if the user is allowed to pin messages; groups and supergroups only*/
 	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+	/*Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only*/
+	CanManageTopics bool `json:"can_manage_topics"`
 }

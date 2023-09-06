@@ -6,6 +6,8 @@ type Sticker struct {
 	FileId string `json:"file_id"`
 	/*Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.*/
 	FileUniqueId string `json:"file_unique_id"`
+	/*Type of the sticker, currently one of “regular”, “mask”, “custom_emoji”. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.*/
+	Type string `json:"type"`
 	/*Sticker width*/
 	Width int `json:"width"`
 	/*Sticker height*/
@@ -24,6 +26,8 @@ type Sticker struct {
 	PremiumAnimation *File `json:"premium_animation,omitempty"`
 	/*Optional. For mask stickers, the position where the mask should be placed*/
 	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
+	/*Optional. For custom emoji stickers, unique identifier of the custom emoji*/
+	CustomEmojiId string `json:"custom_emoji_id"`
 	/*Optional. File size in bytes*/
 	FileSize int `json:"file_size,omitempty"`
 }
@@ -34,11 +38,15 @@ type StickerSet struct {
 	Name string `json:"name"`
 	/*Sticker set title*/
 	Title string `json:"title"`
+	/*Type of stickers in the set, currently one of “regular”, “mask”, “custom_emoji”*/
+	StickerType string `json:"sticker_type"`
 	/*True, if the sticker set contains animated stickers*/
 	IsAnimated bool `json:"is_animated"`
 	/*True, if the sticker set contains video stickers*/
 	IsVideo bool `json:"is_video"`
-	/*True, if the sticker set contains masks*/
+	/*True, if the sticker set contains masks
+	Caution : The field contains_masks has been removed from the documentation of the class StickerSet. The field is still returned in the object for backward compatibility, but new bots should use the field sticker_type instead.
+	*/
 	ContainsMask bool `json:"contains_mask"`
 	/*List of all set stickers*/
 	Stickers []Sticker `json:"stickers"`

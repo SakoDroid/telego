@@ -790,6 +790,8 @@ CreateNewStickerSet can be used to create a new sticker set owned by a user. The
 png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).
 
 "name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”. <bot_username> is case insensitive. 1-64 characters.
+
+Deprecation : The parameter contains_masks has been removed from the documentation of the method createNewStickerSet. The parameter will still work for backward compatibility, but new bots should use the parameter sticker_type instead.
 */
 func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, webmSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
 	var res *objs.LogicalResult
@@ -1037,6 +1039,15 @@ Use this method to change the bot's menu button in a private chat, or the defaul
 */
 func (bot *Bot) SetWebAppChatMenuButton(chatId int64, text, url string) (*objs.LogicalResult, error) {
 	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "web_app", Text: text, WebApp: &objs.WebAppInfo{URL: url}})
+}
+
+/*
+Official telegram doc  :
+
+Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of Sticker objects.
+*/
+func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.StickersResult, error) {
+	return bot.apiInterface.GetCustomEmojiStickers(IDs)
 }
 
 /*

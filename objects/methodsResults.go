@@ -8,7 +8,7 @@ type UpdateResult struct {
 	Result []*Update `json:"result"`
 }
 
-//FailureResult represents a failure response that has "ok : false" field.
+// FailureResult represents a failure response that has "ok : false" field.
 type FailureResult struct {
 	Ok          bool   `json:"ok"`
 	ErrorCode   int    `json:"error_code"`
@@ -27,91 +27,91 @@ type SendMediaGroupMethodResult struct {
 	Result []Message `json:"result"`
 }
 
-//DefaultResult represents the unparsed response of each method.
+// DefaultResult represents the unparsed response of each method.
 type DefaultResult struct {
 	Ok     bool            `json:"ok"`
 	Result json.RawMessage `json:"result"`
 }
 
-//StringResult represents a response that contains string reponse.
+// StringResult represents a response that contains string reponse.
 type StringResult struct {
 	Ok     bool   `json:"ok"`
 	Result string `json:"result"`
 }
 
-//IntResult represents a response that contains integer reponse.
+// IntResult represents a response that contains integer reponse.
 type IntResult struct {
 	Ok     bool `json:"ok"`
 	Result int  `json:"result"`
 }
 
-//ChatInviteLinkResult represents a response that contains ChatInviteLink object.
+// ChatInviteLinkResult represents a response that contains ChatInviteLink object.
 type ChatInviteLinkResult struct {
 	Ok     bool            `json:"ok"`
 	Result *ChatInviteLink `json:"result"`
 }
 
-//ChatResult represents a response that contains Chat object.
+// ChatResult represents a response that contains Chat object.
 type ChatResult struct {
 	Ok     bool  `json:"ok"`
 	Result *Chat `json:"result"`
 }
 
-//ChatAdministratorsResult represents a response that contains []ChatMemberOwner object.
+// ChatAdministratorsResult represents a response that contains []ChatMemberOwner object.
 type ChatAdministratorsResult struct {
 	Ok     bool              `json:"ok"`
 	Result []ChatMemberOwner `json:"result"`
 }
 
-//LogicalResult represents a response that contains boolean response.
+// LogicalResult represents a response that contains boolean response.
 type LogicalResult struct {
 	Ok     bool `json:"ok"`
 	Result bool `json:"result"`
 }
 
-//ProfilePhototsResult represents a response that contains UserProfilePhotos object.
+// ProfilePhototsResult represents a response that contains UserProfilePhotos object.
 type ProfilePhototsResult struct {
 	Ok     bool               `json:"ok"`
 	Result *UserProfilePhotos `json:"result"`
 }
 
-//GetFileResult represents a response that contains File object.
+// GetFileResult represents a response that contains File object.
 type GetFileResult struct {
 	Ok     bool  `json:"ok"`
 	Result *File `json:"result"`
 }
 
-//GetCommandsResult represents a response that contains []BotCommand object.
+// GetCommandsResult represents a response that contains []BotCommand object.
 type GetCommandsResult struct {
 	Ok     bool         `json:"ok"`
 	Result []BotCommand `json:"result"`
 }
 
-//PollResult represents a response that contains Poll object.
+// PollResult represents a response that contains Poll object.
 type PollResult struct {
 	Ok     bool  `json:"ok"`
 	Result *Poll `json:"result"`
 }
 
-//StickerSetResult represents a response that contains StickerSet object.
+// StickerSetResult represents a response that contains StickerSet object.
 type StickerSetResult struct {
 	Ok     bool        `json:"ok"`
 	Result *StickerSet `json:"result"`
 }
 
-//GameHighScoresResult represents a response that contains GameHighScores object.
+// GameHighScoresResult represents a response that contains GameHighScores object.
 type GameHighScoresResult struct {
 	Ok     bool            `json:"ok"`
 	Result []GameHighScore `json:"result"`
 }
 
-//UserResult represents a response that contains User object.
+// UserResult represents a response that contains User object.
 type UserResult struct {
 	Ok     bool  `json:"ok"`
 	Result *User `json:"result"`
 }
 
-//WebhookInfoResult represents a response that contains WebhookInfo object.
+// WebhookInfoResult represents a response that contains WebhookInfo object.
 type WebhookInfoResult struct {
 	Ok     bool         `json:"ok"`
 	Result *WebhookInfo `json:"result"`
@@ -125,4 +125,14 @@ type ChatAdministratorRightsResult struct {
 type MenuButtonResult struct {
 	Ok     bool        `json:"ok"`
 	Result *MenuButton `json:"result"`
+}
+
+type StickersResult struct {
+	Ok     bool       `json:"ok"`
+	Result []*Sticker `json:"result"`
+}
+
+type ForumTopicResult struct {
+	Ok     bool       `json:"ok"`
+	Result ForumTopic `json:"result"`
 }

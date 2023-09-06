@@ -19,7 +19,7 @@ import (
 
 var interfaceCreated = false
 
-//BotAPIInterface is the interface which connects the telegram bot API to the bot.
+// BotAPIInterface is the interface which connects the telegram bot API to the bot.
 type BotAPIInterface struct {
 	botConfigs           *cfgs.BotConfigs
 	updateRoutineRunning bool
@@ -123,14 +123,16 @@ func (bai *BotAPIInterface) GetMe() (*objs.UserResult, error) {
 	return msg, nil
 }
 
-/*SendMessage sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
-"chatId" and "text" arguments are required. other arguments are optional for bot api.*/
-func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id int, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendMessage sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
+"chatId" and "text" arguments are required. other arguments are optional for bot api.
+*/
+func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id, messageThreadId int, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
-		def := bai.fixTheDefaultArguments(chatIdInt, reply_to_message_id, chatIdString, disable_notification, allow_sending_without_reply, ProtectContent, reply_markup)
+		def := bai.fixTheDefaultArguments(chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification, allow_sending_without_reply, ProtectContent, reply_markup)
 		args := &objs.SendMessageArgs{
 			Text:                        text,
 			DisableWebPagePreview:       disable_web_page_preview,
@@ -154,9 +156,11 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 	}
 }
 
-/*ForwardMessage forwards a message from a user or channel to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
-"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
-func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, disableNotif, ProtectContent bool, messageId int) (*objs.SendMethodsResult, error) {
+/*
+ForwardMessage forwards a message from a user or channel to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
+"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.
+*/
+func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, disableNotif, ProtectContent bool, messageId, messageThreadId int) (*objs.SendMethodsResult, error) {
 	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -165,6 +169,7 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 			DisableNotification: disableNotif,
 			MessageId:           messageId,
 			ProtectContent:      ProtectContent,
+			MessageThreadId:     messageThreadId,
 		}
 		fm.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 		fm.FromChatId = bai.fixChatId(fromChatIdInt, fromChatIdString)
@@ -183,16 +188,18 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 	}
 }
 
-/*SendPhoto sends a photo (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "photo" arguments are required. other arguments are optional for bot api.*/
-func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+/*
+SendPhoto sends a photo (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "photo" arguments are required. other arguments are optional for bot api.
+*/
+func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendPhotoArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Photo:           photo,
@@ -221,16 +228,18 @@ func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string,
 	}
 }
 
-/*SendVideo sends a video (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "video" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendVideo sends a video (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "video" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendVideoArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Video:             video,
@@ -256,16 +265,18 @@ func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string,
 	}
 }
 
-/*SendAudio sends an audio (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "audio" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0,to ignore string arguments pass "")*/
-func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string, audioFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, performer, title string, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendAudio sends an audio (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "audio" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0,to ignore string arguments pass "")
+*/
+func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string, audioFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, performer, title string, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendAudioArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Audio:           audio,
@@ -292,16 +303,18 @@ func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string,
 	}
 }
 
-/*sSendDocument sends a document (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "document" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document string, documentFile *os.File, caption, parseMode string, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, DisableContentTypeDetection bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+sSendDocument sends a document (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "document" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document string, documentFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, DisableContentTypeDetection bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendDocumentArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Document:                    document,
@@ -326,16 +339,18 @@ func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document s
 	}
 }
 
-/*SendAnimation sends an animation (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "animation" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendAnimation sends an animation (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "animation" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendAnimationArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Animation:       animation,
@@ -362,16 +377,18 @@ func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation
 	}
 }
 
-/*sSendVoice sends a voice (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "voice" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string, voiceFile *os.File, caption, parseMode string, duration int, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+sSendVoice sends a voice (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "voice" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string, voiceFile *os.File, caption, parseMode string, duration int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendVoiceArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Voice:           voice,
@@ -395,17 +412,19 @@ func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string,
 	}
 }
 
-/*SendVideoNote sends a video note (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+/*
+SendVideoNote sends a video note (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "videoNote" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
-Note that sending video note by URL is not supported by telegram.*/
-func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote string, videoNoteFile *os.File, caption, parseMode string, length, duration int, reply_to_message_id int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+Note that sending video note by URL is not supported by telegram.
+*/
+func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote string, videoNoteFile *os.File, caption, parseMode string, length, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendVideoNoteArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			VideoNote:       videoNote,
@@ -431,16 +450,18 @@ func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote
 	}
 }
 
-/*SendMediaGroup sends an album of media (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" and "media" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, reply_to_message_id int, media []objs.InputMedia, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, files ...*os.File) (*objs.SendMediaGroupMethodResult, error) {
+/*
+SendMediaGroup sends an album of media (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" and "media" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, reply_to_message_id, messageThreadId int, media []objs.InputMedia, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, files ...*os.File) (*objs.SendMediaGroupMethodResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendMediaGroupArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Media: media,
@@ -460,16 +481,18 @@ func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, r
 	}
 }
 
-/*SendLocation sends a location to a channel (chatIdString) or a chat (chatIdInt)
-"chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendLocation sends a location to a channel (chatIdString) or a chat (chatIdInt)
+"chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendLocationArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Latitude:             latitude,
@@ -494,8 +517,10 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 	}
 }
 
-/*EditMessageLiveLocation edits a live location sent to a channel (chatIdString) or a chat (chatIdInt)
-"chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
+/*
+EditMessageLiveLocation edits a live location sent to a channel (chatIdString) or a chat (chatIdInt)
+"chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
 func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
@@ -527,8 +552,10 @@ func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString,
 	}
 }
 
-/*StopMessageLiveLocation stops a live location sent to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
+/*
+StopMessageLiveLocation stops a live location sent to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
 func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, replyMarkup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
@@ -555,16 +582,18 @@ func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString,
 	}
 }
 
-/*SendVenue sends a venue to a channel (chatIdString) or a chat (chatIdInt)
-"chatId","latitude","longitude","title" and "address" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitude, longitude float32, title, address, fourSquareId, fourSquareType, googlePlaceId, googlePlaceType string, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendVenue sends a venue to a channel (chatIdString) or a chat (chatIdInt)
+"chatId","latitude","longitude","title" and "address" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitude, longitude float32, title, address, fourSquareId, fourSquareType, googlePlaceId, googlePlaceType string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendVenueArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Latitude:        latitude,
@@ -591,16 +620,18 @@ func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitu
 	}
 }
 
-/*SendContact sends a contact to a channel (chatIdString) or a chat (chatIdInt)
-"chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber, firstName, lastName, vCard string, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendContact sends a contact to a channel (chatIdString) or a chat (chatIdInt)
+"chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber, firstName, lastName, vCard string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendContactArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			PhoneNumber: phoneNumber,
@@ -623,16 +654,18 @@ func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber
 	}
 }
 
-/*SendPoll sends a poll to a channel (chatIdString) or a chat (chatIdInt)
-"chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question string, options []string, isClosed, isAnonymous bool, pollType string, allowMultipleAnswers bool, correctOptionIndex int, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendPoll sends a poll to a channel (chatIdString) or a chat (chatIdInt)
+"chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question string, options []string, isClosed, isAnonymous bool, pollType string, allowMultipleAnswers bool, correctOptionIndex int, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendPollArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Question:              question,
@@ -663,16 +696,18 @@ func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question strin
 	}
 }
 
-/*SendDice sends a dice message to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
-func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, reply_to_message_id int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+/*
+SendDice sends a dice message to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
+func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendDiceArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
-				chatIdInt, reply_to_message_id, chatIdString, disable_notification,
+				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
 				allow_sending_without_reply, ProtectContent, reply_markup,
 			),
 			Emoji: emoji,
@@ -692,8 +727,10 @@ func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, 
 	}
 }
 
-/*SendChatAction sends a chat action message to a channel (chatIdString) or a chat (chatIdInt)
-"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)*/
+/*
+SendChatAction sends a chat action message to a channel (chatIdString) or a chat (chatIdInt)
+"chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
+*/
 func (bai *BotAPIInterface) SendChatAction(chatIdInt int, chatIdString, chatAction string) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
@@ -748,9 +785,11 @@ func (bai *BotAPIInterface) GetFile(fileId string) (*objs.GetFileResult, error) 
 	return msg, nil
 }
 
-/*DownloadFile downloads a file from telegram servers and saves it into the given file.
+/*
+DownloadFile downloads a file from telegram servers and saves it into the given file.
 
-This method closes the given file. If the file is nil, this method will create a file based on the name of the file stored in telegram servers.*/
+This method closes the given file. If the file is nil, this method will create a file based on the name of the file stored in telegram servers.
+*/
 func (bai *BotAPIInterface) DownloadFile(fileObject *objs.File, file *os.File) error {
 	url := "https://api.telegram.org/file/bot" + bai.botConfigs.APIKey + "/" + fileObject.FilePath
 	res, err := http.Get(url)
@@ -837,7 +876,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 }
 
 /*PromoteChatMember promotes a chat member*/
-func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages, canManageTopics bool) (*objs.LogicalResult, error) {
 	args := &objs.PromoteChatMemberArgs{
 		UserId:              userId,
 		IsAnonymous:         isAnonymous,
@@ -851,6 +890,7 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 		CanChangeInfo:       canChangeInfo,
 		CanInviteUsers:      canInviteUsers,
 		CanPinMessages:      canPinMessages,
+		CanManageTopics:     canManageTopics,
 	}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("promoteChatMember", args, false, nil)
@@ -1843,8 +1883,10 @@ func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok
 	return msg, nil
 }
 
-/*CopyMessage copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
-"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.*/
+/*
+CopyMessage copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
+"chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.
+*/
 func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply, ProtectContent bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
 	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
 		return nil, &errs.ChatIdProblem{}
@@ -2027,6 +2069,23 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 	return msg, nil
 }
 
+/*GetCustomEmojiStickers returns the information of the speicified stickers by id*/
+func (bai *BotAPIInterface) GetCustomEmojiStickers(customEmojiIds []string) (*objs.StickersResult, error) {
+	args := objs.GetCustomEmojiStickersArgs{
+		CustomEmojiIds: customEmojiIds,
+	}
+	res, err := bai.SendCustom("getCustomEmojiStickers", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.StickersResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*AnswerWebAppQuery answers a web app query*/
 func (bai *BotAPIInterface) AnswerWebAppQuery(webAppQueryId string, result objs.InlineQueryResult) (*objs.SentWebAppMessage, error) {
 	args := objs.AnswerWebAppQueryArgs{
@@ -2080,6 +2139,345 @@ func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.Men
 	return msg, nil
 }
 
+/*GetForumTopicIconStickers returns custom emoji stickers, which can be used as a forum topic icon by any user.*/
+func (bai *BotAPIInterface) GetForumTopicIconStickers() (*objs.StickersResult, error) {
+	res, err := bai.SendCustom("getForumTopicIconStickers", nil, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.StickersResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+/*CreateForumTopic creates a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights*/
+func (bai *BotAPIInterface) CreateForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, iconColor int) (*objs.ForumTopicResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.CreateForumTopicArgs{
+			ChatId:            bai.fixChatId(chatIdInt, chatIdString),
+			Name:              name,
+			IconColor:         iconColor,
+			IconCustomEmojiId: iconCustomEmojiId,
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("createForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.ForumTopicResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "createForumTopic"}
+	}
+}
+
+/*EditForumTopic edits name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights, unless it is the creator of the topic*/
+func (bai *BotAPIInterface) EditForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, messageThreadId int) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.EditForumTopicArgs{
+			ChatId:            bai.fixChatId(chatIdInt, chatIdString),
+			Name:              name,
+			IconCustomEmojiId: iconCustomEmojiId,
+			MessageThreadId:   messageThreadId,
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("editForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "editForumTopic"}
+	}
+}
+
+/*CloseForumTopic closes an open topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic*/
+func (bai *BotAPIInterface) CloseForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.CloseForumTopicArgs{
+			ChatId:          bai.fixChatId(chatIdInt, chatIdString),
+			MessageThreadId: messageThreadId,
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("closeForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "closeForumTopic"}
+	}
+}
+
+/*ReopenForumTopic reopens a closed topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic*/
+func (bai *BotAPIInterface) ReopenForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.ReopenForumTopicArgs{
+			CloseForumTopicArgs: &objs.CloseForumTopicArgs{
+				ChatId:          bai.fixChatId(chatIdInt, chatIdString),
+				MessageThreadId: messageThreadId,
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("reopenForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "reopenForumTopic"}
+	}
+}
+
+/*DeleteForumTopic deletes a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights*/
+func (bai *BotAPIInterface) DeleteForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.DeleteForumTopicArgs{
+			CloseForumTopicArgs: &objs.CloseForumTopicArgs{
+				ChatId:          bai.fixChatId(chatIdInt, chatIdString),
+				MessageThreadId: messageThreadId,
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("deleteForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "deleteForumTopic"}
+	}
+}
+
+/*UnpinAllForumTopicMessages clears the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup*/
+func (bai *BotAPIInterface) UnpinAllForumTopicMessages(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.UnpinAllForumTopicMessages{
+			CloseForumTopicArgs: &objs.CloseForumTopicArgs{
+				ChatId:          bai.fixChatId(chatIdInt, chatIdString),
+				MessageThreadId: messageThreadId,
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("unpinAllForumTopicMessages", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "unpinAllForumTopicMessages"}
+	}
+}
+
+/*EditGeneralForumTopic edits the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights*/
+func (bai *BotAPIInterface) EditGeneralForumTopic(chatIdInt int, chatIdString, name string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.EditGeneralForumTopic{
+			ChatId: bai.fixChatId(chatIdInt, chatIdString),
+			Name:   name,
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("editGeneralForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "editGeneralForumTopic"}
+	}
+}
+
+/*CloseGeneralForumTopic closes an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights*/
+func (bai *BotAPIInterface) CloseGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.CloseGeneralForumTopic{
+			ChatId: bai.fixChatId(chatIdInt, chatIdString),
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("closeGeneralForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "closeGeneralForumTopic"}
+	}
+}
+
+/*ReopenGeneralForumTopic reopens a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically unhidden if it was hidden.*/
+func (bai *BotAPIInterface) ReopenGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.ReopenGeneralForumTopic{
+			CloseGeneralForumTopic: &objs.CloseGeneralForumTopic{
+				ChatId: bai.fixChatId(chatIdInt, chatIdString),
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("reopenGeneralForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "reopenGeneralForumTopic"}
+	}
+}
+
+/*HideGeneralForumTopic hides the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically closed if it was open.*/
+func (bai *BotAPIInterface) HideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.HideGeneralForumTopic{
+			CloseGeneralForumTopic: &objs.CloseGeneralForumTopic{
+				ChatId: bai.fixChatId(chatIdInt, chatIdString),
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("hideGeneralForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "hideGeneralForumTopic"}
+	}
+}
+
+/*UnhideGeneralForumTopic unhides the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights.*/
+func (bai *BotAPIInterface) UnhideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.UnhideGeneralForumTopic{
+			CloseGeneralForumTopic: &objs.CloseGeneralForumTopic{
+				ChatId: bai.fixChatId(chatIdInt, chatIdString),
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("unhideGeneralForumTopic", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "unhideGeneralForumTopic"}
+	}
+}
+
+/*UnpinAllGeneralForumTopicMessages clears the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup.*/
+func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+	if chatIdInt != 0 && chatIdString != "" {
+		return nil, &errs.ChatIdProblem{}
+	}
+	if bai.isChatIdOk(chatIdInt, chatIdString) {
+		args := &objs.UnpinAllGeneralForumTopicMessages{
+			CloseGeneralForumTopic: &objs.CloseGeneralForumTopic{
+				ChatId: bai.fixChatId(chatIdInt, chatIdString),
+			},
+		}
+		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
+		res, err := bai.SendCustom("unpinAllGeneralForumTopicMessages", args, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		msg := &objs.LogicalResult{}
+		err3 := json.Unmarshal(res, msg)
+		if err3 != nil {
+			return nil, err3
+		}
+		return msg, nil
+	} else {
+		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "unpinAllGeneralForumTopicMessages"}
+	}
+}
+
 /*SendCustom calls the given method on api server with the given arguments. "MP" options indicates that the request should be made in multipart/formdata form. If this method sends a file to the api server the "MP" option should be true*/
 func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArguments, MP bool, files ...*os.File) ([]byte, error) {
 	start := time.Now().UnixMicro()
@@ -2100,13 +2498,14 @@ func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArgume
 	return bai.preParseResult(res, methodName)
 }
 
-func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id int, chatIdString string, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
+func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_id, messageThreadId int, chatIdString string, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) objs.DefaultSendMethodsArguments {
 	def := objs.DefaultSendMethodsArguments{
 		DisableNotification:      disable_notification,
 		AllowSendingWithoutReply: allow_sending_without_reply,
 		ProtectContent:           ProtectContent,
 		ReplyToMessageId:         reply_to_message_id,
 		ReplyMarkup:              reply_markup,
+		MessageThreadId:          messageThreadId,
 	}
 	def.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	return def
@@ -2142,8 +2541,10 @@ func (bai *BotAPIInterface) fixChatId(chatIdInt int, chatIdString string) []byte
 	}
 }
 
-/*CreateInterface returns an iterface to communicate with the bot api.
-If the updateFrequency argument is not nil, the update routine begins automtically*/
+/*
+CreateInterface returns an iterface to communicate with the bot api.
+If the updateFrequency argument is not nil, the update routine begins automtically
+*/
 func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	if interfaceCreated {
 		return nil, &errs.BotInterfaceAlreadyCreated{}

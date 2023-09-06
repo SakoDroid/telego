@@ -1,7 +1,9 @@
 package objects
 
-/*This object represents an incoming update.
-At most one of the optional parameters can be present in any given update.*/
+/*
+This object represents an incoming update.
+At most one of the optional parameters can be present in any given update.
+*/
 type Update struct {
 	/*The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using Webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.*/
 	Update_id int `json:"update_id"`
@@ -86,6 +88,8 @@ func (u *Update) GetType() string {
 type Message struct {
 	/*Unique message identifier inside this chat*/
 	MessageId int `json:"message_id"`
+	/*Optional. Unique identifier of a message thread to which the message belongs; for supergroups only*/
+	MessageThreadId int `json:"message_thread_id"`
 	/*Optional. Sender, empty for messages sent to channels*/
 	From *User `json:"from,omitempty"`
 	/*Optional. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group*/
@@ -106,6 +110,8 @@ type Message struct {
 	ForwardSenderName string `json:"forward_sender_name,omitempty"`
 	/*Optional. For forwarded messages, date the original message was sent in Unix time*/
 	ForwardDate int `json:"forward_date,omitempty"`
+	/*Optional. True, if the message is sent to a forum topic*/
+	IsTopicMessage bool `json:"is_topic_message"`
 	/*Optional. True, if the message is a channel post that was automatically forwarded to the connected discussion group*/
 	IsAutomaticForward bool `json:"is_automatic_forward,omitempty"`
 	/*Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.*/
@@ -190,6 +196,18 @@ type Message struct {
 	PassportData *PassportData `json:"passport_data,omitempty"`
 	/*Optional. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.*/
 	ProximityAlertTriggered *ProximityAlertTriggered `json:"proximity_alert_triggered,omitempty"`
+	/*Optional. Service message: forum topic created*/
+	ForumTopicCreated *ForumTopicCreated `json:"forum_topic_created"`
+	/*Optional. Service message: forum topic edited*/
+	ForumTopicEdited *ForumTopicEdited `json:"forum_topic_edited"`
+	/*Optional. Service message: forum topic closed*/
+	ForumTopicClosed *ForumTopicClosed `json:"forum_topic_closed"`
+	/*Optional. Service message: forum topic reopened*/
+	ForumTopicReopened *ForumTopicReopened `json:"forum_topic_reopened"`
+	/*Optional. Service message: the 'General' forum topic hidden*/
+	GeneralForumTopicHidden *GeneralForumTopicHidden `json:"general_forum_topic_hidden"`
+	/*Optional. Service message: the 'General' forum topic unhidden*/
+	GeneralForumTopicUnhidden *GeneralForumTopicUnhidden `json:"general_forum_topic_unhidden"`
 	/*Optional. Service message: voice chat scheduled*/
 	VideoChatScheduled *VideoChatScheduled `json:"video_chat_scheduled,omitempty"`
 	/*Optional. Service message: voice chat started*/

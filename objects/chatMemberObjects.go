@@ -14,8 +14,16 @@ type ChatMemberMember struct {
 
 func (*ChatMemberMember) blah() {}
 
-/*Represents a chat member that has some additional privileges.*/
 type ChatMemberOwner struct {
+	ChatMemberMember
+	/*True, if the user's presence in the chat is hidden*/
+	IsAnonymous bool `json:"is_anonymous"`
+	/*Optional. Custom title for this user*/
+	CustomTitle string `json:"custom_title,omitempty"`
+}
+
+/*Represents a chat member that has some additional privileges.*/
+type ChatMemberAdministrator struct {
 	ChatMemberMember
 	/*True, if the bot is allowed to edit administrator privileges of that user*/
 	CanBeEdited bool `json:"can_be_edited"`
@@ -41,6 +49,8 @@ type ChatMemberOwner struct {
 	CanEditMessages bool `json:"can_edit_messages,omitempty"`
 	/*Optional. True, if the user is allowed to pin messages; groups and supergroups only*/
 	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+	/*Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only*/
+	CanManageTopics bool `json:"can_manage_topics"`
 	/*Optional. Custom title for this user*/
 	CustomTitle string `json:"custom_title,omitempty"`
 }
@@ -57,6 +67,8 @@ type ChatMemberRestricted struct {
 	CanInviteUsers bool `json:"can_invite_users"`
 	/*True, if the user is allowed to pin messages*/
 	CanPinMessages bool `json:"can_pin_messages"`
+	/*Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only*/
+	CanManageTopics bool `json:"can_manage_topics"`
 	/*True, if the user is allowed to send text messages, contacts, locations and venues*/
 	CanSendMessages bool `json:"can_send_messages"`
 	/*True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes*/

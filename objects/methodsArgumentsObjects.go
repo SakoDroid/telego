@@ -32,13 +32,13 @@ type SetWebhookArgs struct {
 	SecretToken string `json:"secret_token,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetWebhookArgs) ToJson() []byte {
 	//Arguments of this method are never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetWebhookArgs) ToMultiPart(wr *mp.Writer) {
 	fr, _ := wr.CreateFormField("url")
 	_, _ = io.Copy(fr, strings.NewReader(args.URL))
@@ -65,7 +65,7 @@ type DeleteWebhookArgs struct {
 	DropPendingUpdates bool `json:"drop_pending_updates"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *DeleteWebhookArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -74,7 +74,7 @@ func (args *DeleteWebhookArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *DeleteWebhookArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -91,7 +91,7 @@ type GetUpdatesArgs struct {
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetUpdatesArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -100,7 +100,7 @@ func (args *GetUpdatesArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetUpdatesArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -118,9 +118,11 @@ type DefaultSendMethodsArguments struct {
 	ProtectContent bool `json:"protect_content"`
 	/*Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.*/
 	ReplyMarkup ReplyMarkup `json:"reply_markup,omitempty"`
+	/*Unique identifier for the target message thread (topic) of the forum; for forum supergroups only*/
+	MessageThreadId int `json:"message_thread_id,omitempty"`
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (df *DefaultSendMethodsArguments) toMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
 	_, _ = io.Copy(fw, strings.NewReader(string(df.ChatId)))
@@ -151,7 +153,7 @@ type SendMessageArgs struct {
 	DisableWebPagePreview bool `json:"disable_web_page_preview,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -160,7 +162,7 @@ func (args *SendMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -176,9 +178,11 @@ type ForwardMessageArgs struct {
 	ProtectContent bool `json:"protect_content"`
 	/*Message identifier in the chat specified in from_chat_id*/
 	MessageId int `json:"message_id"`
+	/*Unique identifier for the target message thread (topic) of the forum; for forum supergroups only*/
+	MessageThreadId int `json:"message_thread_id,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *ForwardMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -187,7 +191,7 @@ func (args *ForwardMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *ForwardMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -208,7 +212,7 @@ type CopyMessageArgs struct {
 	ReplyMarkup ReplyMarkup `json:"reply_markup,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *CopyMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -217,7 +221,7 @@ func (args *CopyMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *CopyMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -234,7 +238,7 @@ type SendPhotoArgs struct {
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendPhotoArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -243,7 +247,7 @@ func (args *SendPhotoArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("photo")
@@ -268,13 +272,13 @@ type SendStickerArgs struct {
 	Sticker string `json:"sticker"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendStickerArgs) ToJson() []byte {
 	//The arguments of this method are never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendStickerArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("sticker")
@@ -285,7 +289,7 @@ type GetStickerSetArgs struct {
 	Name string `json:"name"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetStickerSetArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -294,7 +298,7 @@ func (args *GetStickerSetArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this methods are never passed as multipart.
 }
@@ -304,13 +308,13 @@ type UploadStickerFileArgs struct {
 	PngSticker string `json:"png_sticker"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *UploadStickerFileArgs) ToJson() []byte {
 	//The arguments of this method are neverr passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *UploadStickerFileArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -330,13 +334,13 @@ type CreateNewStickerSetArgs struct {
 	MaskPosition  *MaskPosition `json:"mask_position"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *CreateNewStickerSetArgs) ToJson() []byte {
 	//The arguments of this methos is never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -377,13 +381,13 @@ type AddStickerSetArgs struct {
 	MaskPosition *MaskPosition `json:"mask_position"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AddStickerSetArgs) ToJson() []byte {
 	//The arguments of this methos is never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -415,7 +419,7 @@ type SetStickerPositionInSetArgs struct {
 	Position int    `json:"position"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetStickerPositionInSetArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -424,7 +428,7 @@ func (args *SetStickerPositionInSetArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetStickerPositionInSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -433,7 +437,7 @@ type DeleteStickerFromSetArgs struct {
 	Sticker string `json:"sticker"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *DeleteStickerFromSetArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -442,7 +446,7 @@ func (args *DeleteStickerFromSetArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *DeleteStickerFromSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -453,13 +457,13 @@ type SetStickerSetThumbArgs struct {
 	Thumb  string `json:"thumb"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetStickerSetThumbArgs) ToJson() []byte {
 	//The arguments of this methos is never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetStickerSetThumbArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -485,7 +489,7 @@ type SendAudioArgs struct {
 	Thumb string `json:"thumb,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendAudioArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -494,7 +498,7 @@ func (args *SendAudioArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendAudioArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("audio")
@@ -542,7 +546,7 @@ type SendDocumentArgs struct {
 	DisableContentTypeDetection bool `json:"disable_content_type_detection,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendDocumentArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -551,7 +555,7 @@ func (args *SendDocumentArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendDocumentArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("document")
@@ -591,7 +595,7 @@ type SendVideoArgs struct {
 	SupportsStreaming bool `json:"supports_streaming,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendVideoArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -600,7 +604,7 @@ func (args *SendVideoArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("video")
@@ -644,7 +648,7 @@ type SendAnimationArgs struct {
 	Duration int `json:"duration,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendAnimationArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -653,7 +657,7 @@ func (args *SendAnimationArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendAnimationArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("animation")
@@ -699,7 +703,7 @@ type SendVoiceArgs struct {
 	Duration int `json:"duration,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendVoiceArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -708,7 +712,7 @@ func (args *SendVoiceArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendVoiceArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("voice")
@@ -745,7 +749,7 @@ type SendVideoNoteArgs struct {
 	Duration int `json:"duration,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendVideoNoteArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -754,7 +758,7 @@ func (args *SendVideoNoteArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendVideoNoteArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("video_note")
@@ -791,7 +795,7 @@ type SendMediaGroupArgs struct {
 	Media []InputMedia `json:"media"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendMediaGroupArgs) ToJson() []byte {
 	args.ReplyMarkup = nil
 	bt, err := json.Marshal(args)
@@ -801,7 +805,7 @@ func (args *SendMediaGroupArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendMediaGroupArgs) ToMultiPart(wr *mp.Writer) {
 	args.ReplyMarkup = nil
 	args.toMultiPart(wr)
@@ -826,7 +830,7 @@ type SendLocationArgs struct {
 	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendLocationArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -835,7 +839,7 @@ func (args *SendLocationArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -861,7 +865,7 @@ type EditMessageLiveLocationArgs struct {
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditMessageLiveLocationArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -870,7 +874,7 @@ func (args *EditMessageLiveLocationArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -886,7 +890,7 @@ type StopMessageLiveLocationArgs struct {
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *StopMessageLiveLocationArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -895,7 +899,7 @@ func (args *StopMessageLiveLocationArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *StopMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -916,7 +920,7 @@ type SendVenueArgs struct {
 	GooglePlaceType string `json:"google_place_type,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendVenueArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -925,7 +929,7 @@ func (args *SendVenueArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendVenueArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -938,7 +942,7 @@ type SendContactArgs struct {
 	Vcard       string `json:"vcard,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendContactArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -947,7 +951,7 @@ func (args *SendContactArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendContactArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -980,7 +984,7 @@ type SendPollArgs struct {
 	CloseDate int `json:"close_date,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendPollArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -989,7 +993,7 @@ func (args *SendPollArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1000,7 +1004,7 @@ type SendDiceArgs struct {
 	Emoji string `json:"emoji,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendDiceArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1009,7 +1013,7 @@ func (args *SendDiceArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendDiceArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1020,7 +1024,7 @@ type SendChatActionArgs struct {
 	Action string `json:"action"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendChatActionArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1029,7 +1033,7 @@ func (args *SendChatActionArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendChatActionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1043,7 +1047,7 @@ type GetUserProfilePhototsArgs struct {
 	Limit int `json:"limit,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetUserProfilePhototsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1052,7 +1056,7 @@ func (args *GetUserProfilePhototsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetUserProfilePhototsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1061,7 +1065,7 @@ type GetFileArgs struct {
 	FileId string `json:"file_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetFileArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1070,7 +1074,7 @@ func (args *GetFileArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetFileArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1079,7 +1083,7 @@ type DefaultChatArgs struct {
 	ChatId json.RawMessage `json:"chat_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *DefaultChatArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1088,7 +1092,7 @@ func (args *DefaultChatArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *DefaultChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1102,7 +1106,7 @@ type BanChatMemberArgs struct {
 	RevokeMessages bool `json:"revoke_messages,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *BanChatMemberArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1111,7 +1115,7 @@ func (args *BanChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *BanChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1123,7 +1127,7 @@ type UnbanChatMemberArgsArgs struct {
 	OnlyIfBanned bool `json:"only_if_banned,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *UnbanChatMemberArgsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1132,7 +1136,7 @@ func (args *UnbanChatMemberArgsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *UnbanChatMemberArgsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1144,7 +1148,7 @@ type RestrictChatMemberArgs struct {
 	UntilDate  int             `json:"until_date,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *RestrictChatMemberArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1153,7 +1157,7 @@ func (args *RestrictChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *RestrictChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1172,9 +1176,10 @@ type PromoteChatMemberArgs struct {
 	CanChangeInfo       bool            `json:"can_change_info"`
 	CanInviteUsers      bool            `json:"can_invite_users"`
 	CanPinMessages      bool            `json:"can_pin_messages"`
+	CanManageTopics     bool            `json:"can_manage_topics"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *PromoteChatMemberArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1183,7 +1188,7 @@ func (args *PromoteChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *PromoteChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1194,7 +1199,7 @@ type SetChatAdministratorCustomTitleArgs struct {
 	CustomTitle string          `json:"custom_title"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatAdministratorCustomTitleArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1203,7 +1208,7 @@ func (args *SetChatAdministratorCustomTitleArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatAdministratorCustomTitleArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1213,7 +1218,7 @@ type BanChatSenderChatArgs struct {
 	SenderChatId int             `json:"sender_chat_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *BanChatSenderChatArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1222,7 +1227,7 @@ func (args *BanChatSenderChatArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *BanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1232,7 +1237,7 @@ type UnbanChatSenderChatArgs struct {
 	SenderChatId int             `json:"sender_chat_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *UnbanChatSenderChatArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1241,7 +1246,7 @@ func (args *UnbanChatSenderChatArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *UnbanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1251,7 +1256,7 @@ type SetChatPermissionsArgs struct {
 	Permissions ChatPermissions `json:"permissions"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatPermissionsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1260,7 +1265,7 @@ func (args *SetChatPermissionsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatPermissionsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1273,7 +1278,7 @@ type CreateChatInviteLinkArgs struct {
 	CreatesjoinRequest bool            `json:"creates_join_request,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *CreateChatInviteLinkArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1282,7 +1287,7 @@ func (args *CreateChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *CreateChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1296,7 +1301,7 @@ type EditChatInviteLinkArgs struct {
 	CreatesjoinRequest bool            `json:"creates_join_request,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditChatInviteLinkArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1305,7 +1310,7 @@ func (args *EditChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1315,7 +1320,7 @@ type RevokeChatInviteLinkArgs struct {
 	InviteLink string          `json:"invite_link"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *RevokeChatInviteLinkArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1324,7 +1329,7 @@ func (args *RevokeChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *RevokeChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1334,7 +1339,7 @@ type ApproveChatJoinRequestArgs struct {
 	UserId int             `json:"user_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *ApproveChatJoinRequestArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1343,7 +1348,7 @@ func (args *ApproveChatJoinRequestArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *ApproveChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1353,7 +1358,7 @@ type DeclineChatJoinRequestArgs struct {
 	UserId int             `json:"user_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *DeclineChatJoinRequestArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1362,7 +1367,7 @@ func (args *DeclineChatJoinRequestArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *DeclineChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1372,13 +1377,13 @@ type SetChatPhotoArgs struct {
 	Photo  string          `json:"photo"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatPhotoArgs) ToJson() []byte {
 	//The arguments of this method are never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
 	_, _ = io.Copy(fw, bytes.NewReader(args.ChatId))
@@ -1391,7 +1396,7 @@ type SetChatTitleArgs struct {
 	Title  string          `json:"title"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatTitleArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1400,7 +1405,7 @@ func (args *SetChatTitleArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatTitleArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1410,7 +1415,7 @@ type SetChatDescriptionArgs struct {
 	Description string          `json:"description"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatDescriptionArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1419,7 +1424,7 @@ func (args *SetChatDescriptionArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatDescriptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1430,7 +1435,7 @@ type PinChatMessageArgs struct {
 	DisableNotification bool            `json:"disable_notification"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *PinChatMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1439,7 +1444,7 @@ func (args *PinChatMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *PinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1449,7 +1454,7 @@ type UnpinChatMessageArgs struct {
 	MessageId int             `json:"message_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *UnpinChatMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1458,7 +1463,7 @@ func (args *UnpinChatMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *UnpinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1468,7 +1473,7 @@ type GetChatMemberArgs struct {
 	UserId int             `json:"user_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetChatMemberArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1477,7 +1482,7 @@ func (args *GetChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1487,7 +1492,7 @@ type SetChatStcikerSet struct {
 	StickerSetName string          `json:"sticker_set_name"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetChatStcikerSet) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1496,7 +1501,7 @@ func (args *SetChatStcikerSet) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetChatStcikerSet) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1509,7 +1514,7 @@ type AnswerCallbackQueryArgs struct {
 	CacheTime      int    `json:"cache_time,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AnswerCallbackQueryArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1518,7 +1523,7 @@ func (args *AnswerCallbackQueryArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerCallbackQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1528,7 +1533,7 @@ type MyCommandsDefault struct {
 	LanguageCode string          `json:"language_code,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *MyCommandsDefault) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1537,7 +1542,7 @@ func (args *MyCommandsDefault) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *MyCommandsDefault) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1547,7 +1552,7 @@ type SetMyCommandsArgs struct {
 	MyCommandsDefault
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetMyCommandsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1556,7 +1561,7 @@ func (args *SetMyCommandsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetMyCommandsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1576,7 +1581,7 @@ type EditMessageTextArgs struct {
 	DisablewebpagePreview bool            `json:"disable_web_page_preview"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditMessageTextArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1585,7 +1590,7 @@ func (args *EditMessageTextArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditMessageTextArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1598,7 +1603,7 @@ type EditMessageCaptionArgs struct {
 	DisablewebpagePreview bool            `json:"disable_web_page_preview"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditMessageCaptionArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1607,7 +1612,7 @@ func (args *EditMessageCaptionArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditMessageCaptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1617,13 +1622,13 @@ type EditMessageMediaArgs struct {
 	Media InputMedia
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditMessageMediaArgs) ToJson() []byte {
 	//The arguments of this method are never passed as json.
 	return nil
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditMessageMediaArgs) ToMultiPart(wr *mp.Writer) {
 	if args.ChatId != nil {
 		fw, _ := wr.CreateFormField("chat_id")
@@ -1651,7 +1656,7 @@ type EditMessageReplyMakrupArgs struct {
 	EditMessageDefaultArgs
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *EditMessageReplyMakrupArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1660,7 +1665,7 @@ func (args *EditMessageReplyMakrupArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *EditMessageReplyMakrupArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1670,7 +1675,7 @@ type DeleteMessageArgs struct {
 	MessageId int             `json:"message_id"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *DeleteMessageArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1679,7 +1684,7 @@ func (args *DeleteMessageArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *DeleteMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1690,7 +1695,7 @@ type StopPollArgs struct {
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *StopPollArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1699,7 +1704,7 @@ func (args *StopPollArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *StopPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1714,7 +1719,7 @@ type AnswerInlineQueryArgs struct {
 	SwitchPmParameter string              `json:"switch_pm_parameter,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AnswerInlineQueryArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1723,7 +1728,7 @@ func (args *AnswerInlineQueryArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerInlineQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1753,7 +1758,7 @@ type SendInvoiceArgs struct {
 	IsFlexible                bool           `json:"is_flexible"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendInvoiceArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1762,7 +1767,7 @@ func (args *SendInvoiceArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendInvoiceArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1774,7 +1779,7 @@ type AnswerShippingQueryArgs struct {
 	ErrorMessage    string           `json:"error_message,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AnswerShippingQueryArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1783,7 +1788,7 @@ func (args *AnswerShippingQueryArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerShippingQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1794,7 +1799,7 @@ type AnswerPreCheckoutQueryArgs struct {
 	ErrorMessage       string `json:"error_message,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AnswerPreCheckoutQueryArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1803,7 +1808,7 @@ func (args *AnswerPreCheckoutQueryArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerPreCheckoutQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1813,7 +1818,7 @@ type SetPassportDataErrorsArgs struct {
 	Errors []PassportElementError `json:"errors"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetPassportDataErrorsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1822,7 +1827,7 @@ func (args *SetPassportDataErrorsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetPassportDataErrorsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1832,7 +1837,7 @@ type SendGameArgs struct {
 	GameShortName string `json:"game_short_name"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SendGameArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1841,7 +1846,7 @@ func (args *SendGameArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SendGameArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1856,7 +1861,7 @@ type SetGameScoreArgs struct {
 	InlineMessageId    string `json:"inline_message_id,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *SetGameScoreArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1865,7 +1870,7 @@ func (args *SetGameScoreArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *SetGameScoreArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1877,7 +1882,7 @@ type GetGameHighScoresArgs struct {
 	InlineMessageId string `json:"inline_message_id,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *GetGameHighScoresArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1886,7 +1891,7 @@ func (args *GetGameHighScoresArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *GetGameHighScoresArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1896,7 +1901,7 @@ type AnswerWebAppQueryArgs struct {
 	Result        InlineQueryResult `json:"result"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *AnswerWebAppQueryArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1905,7 +1910,7 @@ func (args *AnswerWebAppQueryArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *AnswerWebAppQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1915,7 +1920,7 @@ type ChatMenuButtonArgs struct {
 	MenuButton *MenuButton `json:"menu_button,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *ChatMenuButtonArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1924,7 +1929,7 @@ func (args *ChatMenuButtonArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *ChatMenuButtonArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1936,7 +1941,7 @@ type MyDefaultAdministratorRightsArgs struct {
 	Rights *ChatAdministratorRights `json:"rights,omitempty"`
 }
 
-//ToJson converts this strcut into json to be sent to the API server.
+// ToJson converts this strcut into json to be sent to the API server.
 func (args *MyDefaultAdministratorRightsArgs) ToJson() []byte {
 	bt, err := json.Marshal(args)
 	if err != nil {
@@ -1945,7 +1950,151 @@ func (args *MyDefaultAdministratorRightsArgs) ToJson() []byte {
 	return bt
 }
 
-//ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *MyDefaultAdministratorRightsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
+}
+
+type GetCustomEmojiStickersArgs struct {
+	CustomEmojiIds []string `json:"custom_emoji_ids"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *GetCustomEmojiStickersArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *GetCustomEmojiStickersArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type CreateForumTopicArgs struct {
+	ChatId            json.RawMessage `json:"chat_id"`
+	Name              string          `json:"name"`
+	IconColor         int             `json:"icon_color,omitempty"`
+	IconCustomEmojiId string          `json:"icon_custom_emoji_id,omitempty"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *CreateForumTopicArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *CreateForumTopicArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type EditForumTopicArgs struct {
+	ChatId            json.RawMessage `json:"chat_id"`
+	MessageThreadId   int             `json:"message_thread_id"`
+	Name              string          `json:"name"`
+	IconCustomEmojiId string          `json:"icon_custom_emoji_id,omitempty"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *EditForumTopicArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *EditForumTopicArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type CloseForumTopicArgs struct {
+	ChatId          json.RawMessage `json:"chat_id"`
+	MessageThreadId int             `json:"message_thread_id"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *CloseForumTopicArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *CloseForumTopicArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type ReopenForumTopicArgs struct {
+	*CloseForumTopicArgs
+}
+
+type DeleteForumTopicArgs struct {
+	*CloseForumTopicArgs
+}
+
+type UnpinAllForumTopicMessages struct {
+	*CloseForumTopicArgs
+}
+
+type EditGeneralForumTopic struct {
+	ChatId json.RawMessage `json:"chat_id"`
+	Name   string          `json:"name"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *EditGeneralForumTopic) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *EditGeneralForumTopic) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type CloseGeneralForumTopic struct {
+	ChatId json.RawMessage `json:"chat_id"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *CloseGeneralForumTopic) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *CloseGeneralForumTopic) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type ReopenGeneralForumTopic struct {
+	*CloseGeneralForumTopic
+}
+
+type HideGeneralForumTopic struct {
+	*CloseGeneralForumTopic
+}
+
+type UnhideGeneralForumTopic struct {
+	*CloseGeneralForumTopic
+}
+
+type UnpinAllGeneralForumTopicMessages struct {
+	*CloseGeneralForumTopic
 }

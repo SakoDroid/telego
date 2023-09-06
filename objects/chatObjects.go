@@ -15,12 +15,22 @@ type Chat struct {
 	FirstName string `json:"first_name,omitempty"`
 	/*Optional. Last name of the other party in a private chat*/
 	LastName string `json:"last_name,omitempty"`
+	/*Optional. True, if the supergroup chat is a forum (has topics enabled)*/
+	IsForum bool `json:"is_forum"`
 	/*Optional. Chat photo. */
 	Photo *ChatPhoto `json:"photo,omitempty"`
+	/*Optional. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels. Returned only in getChat.*/
+	ActiveUsernames []string `json:"active_usernames,omitempty"`
+	/*Optional. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in getChat.*/
+	EmojiStatusCustomEmojiId string `json:"emoji_status_custom_emoji_id,omitempty"`
+	/*Optional. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in getChat.*/
+	EmojiStatusExpirationDate int `json:"emoji_status_expiration_date,omitempty"`
 	/*Optional. Bio of the other party in a private chat.*/
 	Bio string `json:"bio,omitempty"`
 	/*Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user.*/
 	HasPrivateForwards bool `json:"has_private_forwards,omitempty"`
+	/*Optional. True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in getChat.*/
+	HasRestrictedVoiceAndVideoMessage bool `json:"has_restricted_voice_and_video_messages"`
 	/*Optional. True, if users need to join the supergroup before they can send messages. Returned only in GetChat.*/
 	JoinToSendMessages bool `json:"join_to_send_messages,omitempty"`
 	/*Optional. True, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in GetChat.*/
@@ -129,6 +139,8 @@ type ChatPermissions struct {
 	CanInviteUsers bool `json:"can_invite_users,omitempty"`
 	/*Optional. True, if the user is allowed to pin messages. Ignored in public supergroups*/
 	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+	/*Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only*/
+	CanManageTopics bool `json:"can_manage_topics"`
 }
 
 /*Represents a location to which a chat is connected.*/

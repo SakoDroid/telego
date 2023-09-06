@@ -6,14 +6,14 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
-//MessageEditor is a tool for editing messsages.
+// MessageEditor is a tool for editing messsages.
 type MessageEditor struct {
 	bot          *Bot
 	chatIdInt    int
 	chatIdString string
 }
 
-//PhotoEditor is a tool for editing photos.
+// PhotoEditor is a tool for editing photos.
 type PhotoEditor struct {
 	mg                                  *MessageEditor
 	messageId                           int
@@ -42,7 +42,7 @@ func (pi *PhotoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
 	return pi.mg.editMedia(pi.messageId, pi.inlineMessageId, im, pi.replyMarkup, file)
 }
 
-//VideoEditor is a tool for editing videos.
+// VideoEditor is a tool for editing videos.
 type VideoEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -112,7 +112,7 @@ func (vi *VideoEditor) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//AnimationEditor is a tool for editing animations.
+// AnimationEditor is a tool for editing animations.
 type AnimationEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -179,7 +179,7 @@ func (ai *AnimationInserter) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//AudioEditor is a tool for editing audios.
+// AudioEditor is a tool for editing audios.
 type AudioEditor struct {
 	mg                                                           *MessageEditor
 	messageId                                                    int
@@ -238,7 +238,7 @@ func (ai *AudioEditor) EditThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//DocumentEditor is a tool for editing documents.
+// DocumentEditor is a tool for editing documents.
 type DocumentEditor struct {
 	mg                                         *MessageEditor
 	messageId                                  int
@@ -369,7 +369,8 @@ func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, 
 	)
 }
 
-/*DeleteMessage can be used to delete a message, including service messages, with the following limitations:
+/*
+DeleteMessage can be used to delete a message, including service messages, with the following limitations:
 
 - A message can only be deleted if it was sent less than 48 hours ago.
 
@@ -385,7 +386,10 @@ func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, 
 
 - If the bot has can_delete_messages permission in a supergroup or a channel, it can delete any message there.
 
-Returns True on success.*/
+- Note that service messages about forum topic creation can't be deleted with the deleteMessage method.
+
+Returns True on success.
+*/
 func (me *MessageEditor) DeleteMessage(messageId int) (*objs.LogicalResult, error) {
 	return me.bot.apiInterface.DeleteMessage(me.chatIdInt, me.chatIdString, messageId)
 }
