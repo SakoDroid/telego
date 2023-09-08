@@ -71,8 +71,21 @@ type ChatMemberRestricted struct {
 	CanManageTopics bool `json:"can_manage_topics"`
 	/*True, if the user is allowed to send text messages, contacts, locations and venues*/
 	CanSendMessages bool `json:"can_send_messages"`
-	/*True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes*/
-	CanSendMediaMessages bool `json:"can_send_media_messages"`
+	/*True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+	Deprecated, replaced with separate fields can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes for different media types*/
+	CanSendMediaMessages bool `json:"-"`
+	//True, if the user is allowed to send audios
+	CanSendAudios bool `json:"can_send_audios"`
+	//	True, if the user is allowed to send documents
+	CanSendDocumetns bool `json:"can_send_documents"`
+	//True, if the user is allowed to send photos
+	CanSendPhotos bool `json:"can_send_photos"`
+	//True, if the user is allowed to send videos
+	CanSendVideos bool `json:"can_send_videos"`
+	//True, if the user is allowed to send video notes
+	CanSendVideoNotes bool `json:"can_send_video_notes"`
+	//True, if the user is allowed to send voice notes
+	CanSendVoiceNotes bool `json:"can_send_voice_notes"`
 	/*True, if the user is allowed to send polls*/
 	CanSendPolls bool `json:"can_send_polls"`
 	/*True, if the user is allowed to send animations, games, stickers and use inline bots*/

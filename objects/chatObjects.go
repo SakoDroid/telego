@@ -117,6 +117,8 @@ type ChatJoinRequest struct {
 	Chat *Chat `json:"chat"`
 	/*User that sent the join request*/
 	From *User `json:"from"`
+	/*Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.*/
+	UserChatId int64 `json:"user_chat_id"`
 	/*Date the request was sent in Unix time*/
 	Date int `json:"date"`
 	/*Optional. Bio of the user.*/
@@ -129,8 +131,21 @@ type ChatJoinRequest struct {
 type ChatPermissions struct {
 	/*Optional. True, if the user is allowed to send text messages, contacts, locations and venues*/
 	CanSendMessages bool `json:"can_send_messages,omitempty"`
-	/*Optional. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages*/
-	CanSendMediaMessages bool `json:"can_send_media_messages,omitempty"`
+	/*True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+	Deprecated, replaced with separate fields can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes for different media types*/
+	CanSendMediaMessages bool `json:"-"`
+	//True, if the user is allowed to send audios
+	CanSendAudios bool `json:"can_send_audios"`
+	//True, if the user is allowed to send documents
+	CanSendDocumetns bool `json:"can_send_documents"`
+	//True, if the user is allowed to send photos
+	CanSendPhotos bool `json:"can_send_photos"`
+	//True, if the user is allowed to send videos
+	CanSendVideos bool `json:"can_send_videos"`
+	//True, if the user is allowed to send video notes
+	CanSendVideoNotes bool `json:"can_send_video_notes"`
+	//True, if the user is allowed to send voice notes
+	CanSendVoiceNotes bool `json:"can_send_voice_notes"`
 	/*Optional. True, if the user is allowed to send polls, implies can_send_messages*/
 	CanSendPolls bool `json:"can_send_polls,omitempty"`
 	/*Optional. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages*/

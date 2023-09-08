@@ -1150,10 +1150,11 @@ func (args *UnbanChatMemberArgsArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type RestrictChatMemberArgs struct {
-	ChatId     json.RawMessage `json:"chat_id"`
-	UserId     int             `json:"user_id"`
-	Permission ChatPermissions `json:"permissions"`
-	UntilDate  int             `json:"until_date,omitempty"`
+	ChatId                        json.RawMessage `json:"chat_id"`
+	UserId                        int             `json:"user_id"`
+	Permission                    ChatPermissions `json:"permissions"`
+	UseIndependentChatPermissions bool            `json:"use_independent_chat_permissions"`
+	UntilDate                     int             `json:"until_date,omitempty"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -1260,8 +1261,9 @@ func (args *UnbanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type SetChatPermissionsArgs struct {
-	ChatId      json.RawMessage `json:"chat_id"`
-	Permissions ChatPermissions `json:"permissions"`
+	ChatId                        json.RawMessage `json:"chat_id"`
+	Permissions                   ChatPermissions `json:"permissions"`
+	UseIndependentChatPermissions bool            `json:"use_independent_chat_permissions"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.

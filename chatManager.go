@@ -42,12 +42,14 @@ func (cm *ChatManager) UnbanMember(userId int, onlyIfBanned bool) (*objs.Logical
 
 /*
 Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass True for all permissions to lift restrictions from a user. Returns True on success.
+
+useIndependentChatPermissions : Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.
 */
-func (cm *ChatManager) RestrictMember(userId int, untilDate int, canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (cm *ChatManager) RestrictMember(userId int, untilDate int, useIndependentChatPermissions bool, canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
 	return cm.bot.apiInterface.RestrictChatMember(
 		cm.chatIdInt, cm.chatIdString, userId, cm.fixThePerms(
 			canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages,
-		), untilDate,
+		), useIndependentChatPermissions, untilDate,
 	)
 }
 
@@ -81,10 +83,14 @@ func (cm *ChatManager) UnbanChatSender(senderChatId int) (*objs.LogicalResult, e
 	)
 }
 
-/*SetGeneralPermissions sets default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the can_restrict_members administrator rights. Returns True on success.*/
-func (cm *ChatManager) SetGeneralPermissions(canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+/*
+SetGeneralPermissions sets default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the can_restrict_members administrator rights. Returns True on success.
+
+useIndependentChatPermissions : Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.
+*/
+func (cm *ChatManager) SetGeneralPermissions(useIndependentChatPermissions, canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
 	return cm.bot.apiInterface.SetChatPermissions(
-		cm.chatIdInt, cm.chatIdString, cm.fixThePerms(
+		cm.chatIdInt, cm.chatIdString, useIndependentChatPermissions, cm.fixThePerms(
 			canSendMessages, canSendMediaMessages, canSendPolls, canSendOtherMessages, canAddWebPagePreviews, canChangeInfo, canInviteUsers, canPinMessages,
 		),
 	)

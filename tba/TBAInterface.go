@@ -861,10 +861,12 @@ func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, 
 }
 
 /*RestrictChatMember restricts a chat member*/
-func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString string, userId int, permissions objs.ChatPermissions, untilDate int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString string, userId int, permissions objs.ChatPermissions, useIndependentChatPermissions bool, untilDate int) (*objs.LogicalResult, error) {
 	args := &objs.RestrictChatMemberArgs{
-		UserId:     userId,
-		Permission: permissions,
+		UserId:                        userId,
+		Permission:                    permissions,
+		UseIndependentChatPermissions: useIndependentChatPermissions,
+		UntilDate:                     untilDate,
 	}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("restrictChatMember", args, false, nil)
@@ -1000,9 +1002,10 @@ func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString
 }
 
 /*SetChatPermissions sets default permissions for all users in the chat.*/
-func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString string, permissions objs.ChatPermissions) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString string, useIndependentChatPermissions bool, permissions objs.ChatPermissions) (*objs.LogicalResult, error) {
 	args := &objs.SetChatPermissionsArgs{
-		Permissions: permissions,
+		Permissions:                   permissions,
+		UseIndependentChatPermissions: useIndependentChatPermissions,
 	}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("setChatPermissions", args, false, nil)
