@@ -20,13 +20,13 @@ const (
 	STICKER   MediaType = 8
 )
 
-//MediaSender is a tool for sending media messages.
+// MediaSender is a tool for sending media messages.
 type MediaSender struct {
 	bot                                                       *Bot
 	chatIdInt                                                 int
 	mediaType                                                 MediaType
 	chatidString, caption, parseMode, thumb, performer, title string
-	replyTo                                                   int
+	replyTo, messageThreadId                                  int
 	captionEntities                                           []objs.MessageEntity
 	allowSendingWihoutReply                                   bool
 	replyMarkup                                               objs.ReplyMarkup
@@ -41,47 +41,47 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectCont
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl,
-			nil, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			nil, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
 		return ms.bot.apiInterface.SendAudio(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.performer, ms.title, ms.replyMarkup,
 		)
 	case ANIMATION:
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.width, ms.height, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile,
+			ms.width, ms.height, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile,
 			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
 			ms.disableContentTypeDetection, ms.replyMarkup,
 		)
 	case VIDEONOTE:
 		return ms.bot.apiInterface.SendVideoNote(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.length, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile, silent,
+			ms.length, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent,
 			ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case VOICE:
 		return ms.bot.apiInterface.SendVoice(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
+			ms.duration, ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case STICKER:
 		return ms.bot.apiInterface.SendSticker(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, silent, ms.allowSendingWihoutReply, protectContent,
-			ms.replyTo, ms.replyMarkup, nil,
+			ms.replyTo, ms.messageThreadId, ms.replyMarkup, nil,
 		)
 	default:
 		return nil, errors.New("wrong media type")
@@ -99,61 +99,65 @@ func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(),
-			file, ms.caption, ms.parseMode, ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			file, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
 		return ms.bot.apiInterface.SendAudio(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
 			ms.captionEntities, ms.duration, ms.performer, ms.title, ms.replyMarkup,
 		)
 	case ANIMATION:
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.width, ms.height, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile,
+			ms.width, ms.height, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile,
 			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities,
 			ms.disableContentTypeDetection, ms.replyMarkup,
 		)
 	case VIDEONOTE:
 		return ms.bot.apiInterface.SendVideoNote(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.length, ms.duration, ms.replyTo, ms.thumb, ms.thumbFile, silent,
+			ms.length, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent,
 			ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case VOICE:
 		return ms.bot.apiInterface.SendVoice(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.duration, ms.replyTo, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
+			ms.duration, ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
 		)
 	case STICKER:
 		return ms.bot.apiInterface.SendSticker(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), silent, ms.allowSendingWihoutReply, protectContent,
-			ms.replyTo, ms.replyMarkup, file,
+			ms.replyTo, ms.messageThreadId, ms.replyMarkup, file,
 		)
 	default:
 		return nil, errors.New("wrong media type")
 	}
 }
 
-/*SetThumbnail sets the tumbnail of the file. It takes a file id or a url. If you want to send a file use "setThumbnailFile" instead.
-If this media does not support thumbnail, the thumbnail will be ignored.*/
+/*
+SetThumbnail sets the tumbnail of the file. It takes a file id or a url. If you want to send a file use "setThumbnailFile" instead.
+If this media does not support thumbnail, the thumbnail will be ignored.
+*/
 func (ms *MediaSender) SetThumbnail(fileIdOrURL string) {
 	ms.thumb = fileIdOrURL
 }
 
-/*SetThumbnailFile sets the thumbnail of the file. It takes a file existing on the device.
-If this media does not support thumbnail, the thumbnail will be ignored.*/
+/*
+SetThumbnailFile sets the thumbnail of the file. It takes a file existing on the device.
+If this media does not support thumbnail, the thumbnail will be ignored.
+*/
 func (ms *MediaSender) SetThumbnailFile(file *os.File) error {
 	stat, err := file.Stat()
 	if err != nil {

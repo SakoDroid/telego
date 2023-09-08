@@ -1580,12 +1580,13 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 }
 
 /*SendSticker sends an sticker to the given chat id.*/
-func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo, messageThreadId int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
 	args := &objs.SendStickerArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
 			AllowSendingWithoutReply: allowSendingWithoutreply,
 			ReplyToMessageId:         replyTo,
+			MessageThreadId:          messageThreadId,
 			ReplyMarkup:              replyMarkup,
 			ProtectContent:           protectContent,
 		},
@@ -1765,13 +1766,14 @@ func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []ob
 }
 
 /*SendInvoice sends an invoice*/
-func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, disableNotif bool, replyToMessageId int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, disableNotif bool, replyToMessageId, messageThreadId int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
 	args := &objs.SendInvoiceArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
 			AllowSendingWithoutReply: allowSendingWithoutReply,
 			ReplyToMessageId:         replyToMessageId,
 			ReplyMarkup:              &replyMarkup,
+			MessageThreadId:          messageThreadId,
 		},
 		Title:                     title,
 		Description:               description,

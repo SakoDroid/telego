@@ -176,7 +176,7 @@ If "silent" argument is true, the message will be sent without notification.
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
+	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
 }
 
 /*
@@ -188,7 +188,7 @@ If "silent" argument is true, the message will be sent without notification.
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, nil)
+	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
 }
 
 func (bot *Bot) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.LogicalResult, error) {
@@ -452,7 +452,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendVenue(
-		chatId, "", latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, protectContent, nil,
+		chatId, "", latitude, longitude, title, address, "", "", "", "", replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -471,7 +471,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendVenue(
-		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, silent, false, protectContent, nil,
+		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -490,7 +490,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendContact(
-		chatId, "", phoneNumber, firstName, lastName, "", replyTo, silent, false, protectContent, nil,
+		chatId, "", phoneNumber, firstName, lastName, "", replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -509,7 +509,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendContact(
-		0, chatId, phoneNumber, firstName, lastName, "", replyTo, silent, false, protectContent, nil,
+		0, chatId, phoneNumber, firstName, lastName, "", replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -554,7 +554,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendDice(
-		chatId, "", emoji, replyTo, silent, false, protectContent, nil,
+		chatId, "", emoji, replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -575,7 +575,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendDice(
-		0, chatId, emoji, replyTo, silent, false, protectContent, nil,
+		0, chatId, emoji, replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -634,7 +634,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendLocation(
-		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, protectContent, nil,
+		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -655,7 +655,7 @@ If "protectContent" argument is true, the message can't be forwarded or saved.
 */
 func (bot *Bot) SendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
 	return bot.apiInterface.SendLocation(
-		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, silent, false, protectContent, nil,
+		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, 0, silent, false, protectContent, nil,
 	)
 }
 
@@ -1042,12 +1042,89 @@ func (bot *Bot) SetWebAppChatMenuButton(chatId int64, text, url string) (*objs.L
 }
 
 /*
+GetCustomEmojiStickers returns info about custom stickers.
+
+-------------------------
+
 Official telegram doc  :
 
 Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of Sticker objects.
 */
 func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.StickersResult, error) {
 	return bot.apiInterface.GetCustomEmojiStickers(IDs)
+}
+
+/*
+GetForumTopicIconStickers returns a list of stickers to be used in forum topics.
+
+-------------------------
+
+Official telegram doc  :
+
+Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user. Requires no parameters. Returns an Array of Sticker objects.
+*/
+func (bot *Bot) GetForumTopicIconStickers() (*objs.StickersResult, error) {
+	return bot.apiInterface.GetForumTopicIconStickers()
+}
+
+/*
+CreateForumTopic creates a forum topic. To create forum topic by username, use CreateForumTopicUN.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns information about the created topic as a ForumTopic object.
+
+Arguments (as described in telegram bot api):
+
+1. chatId : Unique identifier for the target chat
+
+2. name : Topic name, 1-128 characters
+
+3. iconColor : 	Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)
+
+4. iconCustomEmojiId  : Unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
+*/
+func (bot *Bot) CreateForumTopic(chatId int, name string, iconColor int, iconCustomEmojiId string) (*objs.ForumTopicResult, error) {
+	return bot.apiInterface.CreateForumTopic(chatId, "", name, iconCustomEmojiId, iconColor)
+}
+
+/*
+CreateForumTopicUN creates a forum topic by username. username should start with @.
+
+-------------------------
+
+Official telegram doc :
+
+Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns information about the created topic as a ForumTopic object.
+
+Arguments (as described in telegram bot api):
+
+1. username : username of the target supergroup (in the format @supergroupusername)
+
+2. name : Topic name, 1-128 characters
+
+3. iconColor : 	Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)
+
+4. iconCustomEmojiId  : Unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
+*/
+func (bot *Bot) CreateForumTopicUN(username, name string, iconColor int, iconCustomEmojiId string) (*objs.ForumTopicResult, error) {
+	return bot.apiInterface.CreateForumTopic(0, username, name, iconCustomEmojiId, iconColor)
+}
+
+/*
+GetForumTopicManager returns a forum topic manager which can be used for managing forum topics.
+*/
+func (bot *Bot) GetForumTopicManager(chatId, messageThreadId int) *forumTopicManager {
+	return &forumTopicManager{bot: bot, messageThreadId: messageThreadId, chatId: chatId}
+}
+
+/*
+GetForumTopicManager returns a forum topic manager which can be used for managing forum topics.
+*/
+func (bot *Bot) GetForumTopicManagerUN(username string, messageThreadId int) *forumTopicManager {
+	return &forumTopicManager{bot: bot, messageThreadId: messageThreadId, chatIdString: username}
 }
 
 /*

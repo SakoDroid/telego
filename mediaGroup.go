@@ -8,17 +8,17 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
-//MediaGroup is a media group that can be sent
+// MediaGroup is a media group that can be sent
 type MediaGroup struct {
-	bot                     *Bot
-	replyTo                 int
-	allowSendingWihoutReply bool
-	replyMarkup             objs.ReplyMarkup
-	media                   []objs.InputMedia
-	files                   []*os.File
+	bot                      *Bot
+	replyTo, messageThreadId int
+	allowSendingWihoutReply  bool
+	replyMarkup              objs.ReplyMarkup
+	media                    []objs.InputMedia
+	files                    []*os.File
 }
 
-//PhotoInserter is a tool for inserting photos into the MediaGroup.
+// PhotoInserter is a tool for inserting photos into the MediaGroup.
 type PhotoInserter struct {
 	mg                 *MediaGroup
 	caption, parseMode string
@@ -47,7 +47,7 @@ func (pi *PhotoInserter) AddByFile(file *os.File) error {
 	return nil
 }
 
-//VideoInserter is a tool for inserting videos into the MediaGroup.
+// VideoInserter is a tool for inserting videos into the MediaGroup.
 type VideoInserter struct {
 	mg                        *MediaGroup
 	caption, parseMode, thumb string
@@ -123,7 +123,7 @@ func (vi *VideoInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//AnimationInserter is a tool for inserting animations into the MediaGroup.
+// AnimationInserter is a tool for inserting animations into the MediaGroup.
 type AnimationInserter struct {
 	mg                        *MediaGroup
 	caption, parseMode, thumb string
@@ -196,7 +196,7 @@ func (ai *AnimationInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//AudioInserter is a tool for inserting audios into the MediaGroup.
+// AudioInserter is a tool for inserting audios into the MediaGroup.
 type AudioInserter struct {
 	mg                                          *MediaGroup
 	caption, parseMode, thumb, performer, title string
@@ -261,7 +261,7 @@ func (ai *AudioInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
-//DocumentInserter is a tool for inserting documents into the MediaGroup.
+// DocumentInserter is a tool for inserting documents into the MediaGroup.
 type DocumentInserter struct {
 	mg                          *MediaGroup
 	caption, parseMode, thumb   string
@@ -318,7 +318,8 @@ func (di *DocumentInserter) SetThumbnailFile(file *os.File) error {
 	return nil
 }
 
-/*Send sends this album (to all types of chat but channels, to send to channels use "SendToChannel" method)
+/*
+Send sends this album (to all types of chat but channels, to send to channels use "SendToChannel" method)
 
 --------------------
 
@@ -335,13 +336,13 @@ func (mg *MediaGroup) Send(chatId int, silent, protectContent bool) (*objs.SendM
 		return nil, errors.New("the number os medias should be greater than 1")
 	}
 	return mg.bot.apiInterface.SendMediaGroup(
-		chatId, "", mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
+		chatId, "", mg.replyTo, mg.messageThreadId, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
 		mg.replyMarkup, mg.files...,
 	)
 }
 
-/*Send sends this album to a channel.
-
+/*
+Send sends this album to a channel.
 
 --------------------
 
@@ -358,7 +359,7 @@ func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) 
 		return nil, errors.New("the number os medias should be greater than 1")
 	}
 	return mg.bot.apiInterface.SendMediaGroup(
-		0, chatId, mg.replyTo, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
+		0, chatId, mg.replyTo, mg.messageThreadId, mg.media, silent, mg.allowSendingWihoutReply, protectContent,
 		mg.replyMarkup, mg.files...,
 	)
 }
