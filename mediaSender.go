@@ -28,7 +28,7 @@ type MediaSender struct {
 	chatidString, caption, parseMode, thumb, performer, title string
 	replyTo, messageThreadId                                  int
 	captionEntities                                           []objs.MessageEntity
-	allowSendingWihoutReply                                   bool
+	allowSendingWihoutReply, hasSpoiler                       bool
 	replyMarkup                                               objs.ReplyMarkup
 	duration, length, width, height                           int
 	supportsStreaming, disableContentTypeDetection            bool
@@ -41,12 +41,12 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectCont
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
-			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl,
-			nil, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			nil, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
@@ -59,7 +59,7 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectCont
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, fileIdOrUrl, nil, ms.caption, ms.parseMode,
 			ms.width, ms.height, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile,
-			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
+			silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(
@@ -99,12 +99,12 @@ func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
-			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.replyMarkup, ms.captionEntities,
+			ms.replyTo, ms.messageThreadId, silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler, ms.replyMarkup, ms.captionEntities,
 		)
 	case VIDEO:
 		return ms.bot.apiInterface.SendVideo(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(),
-			file, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent,
+			file, ms.caption, ms.parseMode, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile, silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler,
 			ms.captionEntities, ms.duration, ms.supportsStreaming, ms.replyMarkup,
 		)
 	case AUDIO:
@@ -117,7 +117,7 @@ func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*
 		return ms.bot.apiInterface.SendAnimation(
 			ms.chatIdInt, ms.chatidString, "attach://"+stat.Name(), file, ms.caption, ms.parseMode,
 			ms.width, ms.height, ms.duration, ms.replyTo, ms.messageThreadId, ms.thumb, ms.thumbFile,
-			silent, ms.allowSendingWihoutReply, protectContent, ms.captionEntities, ms.replyMarkup,
+			silent, ms.allowSendingWihoutReply, protectContent, ms.hasSpoiler, ms.captionEntities, ms.replyMarkup,
 		)
 	case DOCUMENT:
 		return ms.bot.apiInterface.SendDocument(

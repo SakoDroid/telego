@@ -192,7 +192,7 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 SendPhoto sends a photo (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "photo" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -200,12 +200,13 @@ func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string,
 		args := &objs.SendPhotoArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
 				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
-				allow_sending_without_reply, ProtectContent, reply_markup,
+				allow_sending_without_reply, protectContent, reply_markup,
 			),
 			Photo:           photo,
 			Caption:         caption,
 			ParseMode:       parseMode,
 			CaptionEntities: captionEntities,
+			HasSpoiler:      hasSpoiler,
 		}
 		var res []byte
 		var err error
@@ -232,7 +233,7 @@ func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string,
 SendVideo sends a video (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "video" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -240,7 +241,7 @@ func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string,
 		args := &objs.SendVideoArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
 				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
-				allow_sending_without_reply, ProtectContent, reply_markup,
+				allow_sending_without_reply, protectContent, reply_markup,
 			),
 			Video:             video,
 			Caption:           caption,
@@ -249,6 +250,7 @@ func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string,
 			CaptionEntities:   captionEntities,
 			Duration:          duration,
 			SupportsStreaming: supportsStreaming,
+			HasSpoiler:        hasSpoiler,
 		}
 		res, err := bai.SendCustom("sendVideo", args, true, videoFile, thumbFile)
 		if err != nil {
@@ -343,7 +345,7 @@ func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document s
 SendAnimation sends an animation (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "animation" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -351,7 +353,7 @@ func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation
 		args := &objs.SendAnimationArgs{
 			DefaultSendMethodsArguments: bai.fixTheDefaultArguments(
 				chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification,
-				allow_sending_without_reply, ProtectContent, reply_markup,
+				allow_sending_without_reply, protectContent, reply_markup,
 			),
 			Animation:       animation,
 			Caption:         caption,
@@ -361,6 +363,7 @@ func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation
 			Width:           width,
 			Height:          height,
 			Duration:        duration,
+			HasSpoiler:      hasSpoiler,
 		}
 		res, err := bai.SendCustom("sendAnimation", args, true, animationFile, thumbFile)
 		if err != nil {
@@ -731,13 +734,14 @@ func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, 
 SendChatAction sends a chat action message to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendChatAction(chatIdInt int, chatIdString, chatAction string) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendChatAction(chatIdInt, messageThreadId int, chatIdString, chatAction string) (*objs.SendMethodsResult, error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
 	if bai.isChatIdOk(chatIdInt, chatIdString) {
 		args := &objs.SendChatActionArgs{
-			Action: chatAction,
+			Action:           chatAction,
+			MessageThreaddId: messageThreadId,
 		}
 		args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 		res, err := bai.SendCustom("sendChatAction", args, false, nil)

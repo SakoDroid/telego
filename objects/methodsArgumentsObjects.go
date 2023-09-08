@@ -236,6 +236,8 @@ type SendPhotoArgs struct {
 	ParseMode string `json:"parse_mode,omitempty"`
 	/*A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	/*Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -589,6 +591,8 @@ type SendVideoArgs struct {
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	/*Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
 	/*Duration of sent video in seconds.*/
 	Duration int `json:"duration,omitempty"`
 	/*Pass True, if the uploaded video is suitable for streaming*/
@@ -642,8 +646,10 @@ type SendAnimationArgs struct {
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
-	Width           int             `json:"width,omitempty"`
-	Height          int             `json:"height,omitempty"`
+	/*Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
+	Width      int  `json:"width,omitempty"`
+	Height     int  `json:"height,omitempty"`
 	/*Duration of sent video in seconds.*/
 	Duration int `json:"duration,omitempty"`
 }
@@ -1022,6 +1028,8 @@ type SendChatActionArgs struct {
 	ChatId json.RawMessage `json:"chat_id"`
 	/*Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.*/
 	Action string `json:"action"`
+	/*Unique identifier for the target message thread; supergroups only*/
+	MessageThreaddId int `json:"message_thread_id"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.

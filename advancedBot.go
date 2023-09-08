@@ -62,24 +62,24 @@ func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo i
 ASendPhoto returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *AdvancedBot) ASendPhoto(chatId, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendPhoto(chatId, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
 ASendPhotoUN returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *AdvancedBot) ASendPhotoUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendPhotoUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -92,12 +92,12 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *AdvancedBot) ASendVideo(chatId int, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendVideo(chatId int, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -110,12 +110,12 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *AdvancedBot) ASendVideoUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendVideoUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntites []objs.MessageEntity, duration int, supportsStreaming, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -204,12 +204,12 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo, messageThreadId int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo, messageThreadId int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -222,12 +222,12 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *AdvancedBot) ASendAnimationUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply bool, keyboard MarkUps) *MediaSender {
+func (bot *AdvancedBot) ASendAnimationUN(chatId string, replyTo, messageThreadId int, caption, parseMode string, captionEntities []objs.MessageEntity, width, height, duration int, allowSendingWihtoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*

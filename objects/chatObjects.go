@@ -47,6 +47,10 @@ type Chat struct {
 	SlowModeDelay int `json:"slow_mode_delay,omitempty"`
 	/*Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds.*/
 	MessageAutoDeletTime int `json:"message_auto_delete_time,omitempty"`
+	/*Optional. True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in getChat.*/
+	HasAggressiveAntiSpamEnabled bool `json:"has_aggressive_anti_spam_enabled"`
+	/*Optional. True, if non-administrators can only get the list of bots and administrators in the chat. Returned only in getChat.*/
+	HasHiddenMembers bool `json:"has_hidden_members"`
 	/*Optional. True, if messages from the chat can't be forwarded to other chats*/
 	HasProtectedContent bool `json:"has_protected_content,omitempty"`
 	/*Optional. For supergroups, name of group sticker set.*/

@@ -23,12 +23,14 @@ type PhotoInserter struct {
 	mg                 *MediaGroup
 	caption, parseMode string
 	captionEntities    []objs.MessageEntity
+	hasSpoiler         bool
 }
 
 /*AddByFileIdOrURL adds this file by file id or url*/
 func (pi *PhotoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaPhoto{
 		InputMediaDefault: fixTheDefault("photo", fileIdOrUrl, pi.caption, pi.parseMode, pi.captionEntities),
+		HasSpoiler:        pi.hasSpoiler,
 	}
 	pi.mg.media = append(pi.mg.media, im)
 }
@@ -41,6 +43,7 @@ func (pi *PhotoInserter) AddByFile(file *os.File) error {
 	}
 	im := &objs.InputMediaPhoto{
 		InputMediaDefault: fixTheDefault("photo", "attach://"+stat.Name(), pi.caption, pi.parseMode, pi.captionEntities),
+		HasSpoiler:        pi.hasSpoiler,
 	}
 	pi.mg.media = append(pi.mg.media, im)
 	pi.mg.files = append(pi.mg.files, file)
@@ -49,12 +52,12 @@ func (pi *PhotoInserter) AddByFile(file *os.File) error {
 
 // VideoInserter is a tool for inserting videos into the MediaGroup.
 type VideoInserter struct {
-	mg                        *MediaGroup
-	caption, parseMode, thumb string
-	captionEntities           []objs.MessageEntity
-	thumbFile                 *os.File
-	width, height, duration   int
-	supportsStreaming         bool
+	mg                            *MediaGroup
+	caption, parseMode, thumb     string
+	captionEntities               []objs.MessageEntity
+	thumbFile                     *os.File
+	width, height, duration       int
+	supportsStreaming, hasSpoiler bool
 }
 
 /*AddByFileIdOrURL adds this file by file id or url*/
@@ -63,6 +66,7 @@ func (vi *VideoInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 		InputMediaDefault: fixTheDefault("video", fileIdOrUrl, vi.caption, vi.parseMode, vi.captionEntities),
 		Thumb:             vi.thumb,
 		SupportsStreaming: vi.supportsStreaming,
+		HasSpoiler:        vi.hasSpoiler,
 	}
 	if vi.width != 0 {
 		im.Width = vi.width
@@ -89,6 +93,7 @@ func (vi *VideoInserter) AddByFile(file *os.File) error {
 		InputMediaDefault: fixTheDefault("video", "attach://"+stat.Name(), vi.caption, vi.parseMode, vi.captionEntities),
 		Thumb:             vi.thumb,
 		SupportsStreaming: vi.supportsStreaming,
+		HasSpoiler:        vi.hasSpoiler,
 	}
 	if vi.width != 0 {
 		im.Width = vi.width
@@ -130,6 +135,7 @@ type AnimationInserter struct {
 	captionEntities           []objs.MessageEntity
 	thumbFile                 *os.File
 	width, height, duration   int
+	hasSpoiler                bool
 }
 
 /*AddByFileIdOrURL adds this file by file id or url*/
@@ -137,6 +143,7 @@ func (ai *AnimationInserter) AddByFileIdOrURL(fileIdOrUrl string) {
 	im := &objs.InputMediaAnimation{
 		InputMediaDefault: fixTheDefault("animation", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
 		Thumb:             ai.thumb,
+		HasSpoiler:        ai.hasSpoiler,
 	}
 	if ai.width != 0 {
 		im.Width = ai.width
@@ -162,6 +169,7 @@ func (ai *AnimationInserter) AddByFile(file *os.File) error {
 	im := &objs.InputMediaAnimation{
 		InputMediaDefault: fixTheDefault("animation", "attach://"+stat.Name(), ai.caption, ai.parseMode, ai.captionEntities),
 		Thumb:             ai.thumb,
+		HasSpoiler:        ai.hasSpoiler,
 	}
 	if ai.width != 0 {
 		im.Width = ai.width
@@ -365,27 +373,27 @@ func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) 
 }
 
 /*AddPhoto returns a PhotoInserter to add a photo to the album*/
-func (mg *MediaGroup) AddPhoto(caption, parseMode string, captionEntitie []objs.MessageEntity) (*PhotoInserter, error) {
+func (mg *MediaGroup) AddPhoto(caption, parseMode string, hasSpoiler bool, captionEntitie []objs.MessageEntity) (*PhotoInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
 	}
-	return &PhotoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie}, nil
+	return &PhotoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, hasSpoiler: hasSpoiler}, nil
 }
 
 /*AddVideo returns a VideoInserter to add a video to the album*/
-func (mg *MediaGroup) AddVideo(caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity) (*VideoInserter, error) {
+func (mg *MediaGroup) AddVideo(caption, parseMode string, width, height, duration int, supportsStreaming, hasSpoiler bool, captionEntitie []objs.MessageEntity) (*VideoInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
 	}
-	return &VideoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming}, nil
+	return &VideoInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, supportsStreaming: supportsStreaming, hasSpoiler: hasSpoiler}, nil
 }
 
 /*AddAnimation returns an AnimationInserter to add an animation to the album*/
-func (mg *MediaGroup) AddAnimation(caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity) (*AnimationInserter, error) {
+func (mg *MediaGroup) AddAnimation(caption, parseMode string, width, height, duration int, hasSpoiler bool, captionEntitie []objs.MessageEntity) (*AnimationInserter, error) {
 	if len(mg.media) == 10 {
 		return nil, &errs.MediaGroupFullError{}
 	}
-	return &AnimationInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration}, nil
+	return &AnimationInserter{mg: mg, caption: caption, parseMode: parseMode, captionEntities: captionEntitie, width: width, height: height, duration: duration, hasSpoiler: hasSpoiler}, nil
 }
 
 /*AddAudio returns an AudioInserter to add an audio to the album*/

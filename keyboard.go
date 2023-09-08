@@ -5,16 +5,16 @@ import (
 	upp "github.com/SakoDroid/telego/parser"
 )
 
-//MarkUps is the interface used for creating normal keyboards and inline keyboards.
+// MarkUps is the interface used for creating normal keyboards and inline keyboards.
 type MarkUps interface {
 	toMarkUp() objs.ReplyMarkup
 }
 
-//keyboard is a normal keyboard.
+// keyboard is a normal keyboard.
 type keyboard struct {
-	keys                                       [][]*objs.KeyboardButton
-	resizeKeyBoard, oneTimeKeyboard, selective bool
-	inputFieldPlaceHolder                      string
+	keys                                                     [][]*objs.KeyboardButton
+	resizeKeyBoard, oneTimeKeyboard, isPersistent, selective bool
+	inputFieldPlaceHolder                                    string
 }
 
 func (kb *keyboard) fixRows(row int) {
@@ -24,53 +24,64 @@ func (kb *keyboard) fixRows(row int) {
 	}
 }
 
-/*AddButton adds a new button holding the given text to the specified row. According to telegram bot api if this button is pressed the text inside the button will be sent to the bot as a message.
+/*
+AddButton adds a new button holding the given text to the specified row. According to telegram bot api if this button is pressed the text inside the button will be sent to the bot as a message.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
+*/
 func (kb *keyboard) AddButton(text string, row int) {
 	kb.addButton(text, row, false, false, nil, nil)
 }
 
-/*AddButtonHandler adds a new button holding the given text to the specified row. This method also adds a handler for that button so everytime this button is pressed the handler will be called. You can read the documentation of "AddHandler" for better understanding on handlers.
+/*
+AddButtonHandler adds a new button holding the given text to the specified row. This method also adds a handler for that button so everytime this button is pressed the handler will be called. You can read the documentation of "AddHandler" for better understanding on handlers.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
+*/
 func (kb *keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
 	kb.addButton(text, row, false, false, nil, nil)
 	upp.AddHandler(text, handler, chatTypes...)
 }
 
-/*AddContactButton adds a new contact button. According to telegram bot api when this button is pressed,the user's phone number will be sent as a contact. Available in private chats only.
+/*
+AddContactButton adds a new contact button. According to telegram bot api when this button is pressed,the user's phone number will be sent as a contact. Available in private chats only.
 
 Note: ContactButtons and LocationButtons will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
+*/
 func (kb *keyboard) AddContactButton(text string, row int) {
 	kb.addButton(text, row, true, false, nil, nil)
 }
 
-/*AddLocationButton adds a new location button. According to telegram bot api when this button is pressed,the user's location will be sent. Available in private chats only.
+/*
+AddLocationButton adds a new location button. According to telegram bot api when this button is pressed,the user's location will be sent. Available in private chats only.
 
 Note: ContactButtons and LocationButtons will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
+*/
 func (kb *keyboard) AddLocationButton(text string, row int) {
 	kb.addButton(text, row, false, true, nil, nil)
 }
 
-/*AddPollButton adds a new poll button. According to telegram bot api, the user will be asked to create a poll and send it to the bot when this button is pressed. Available in private chats only.
+/*
+AddPollButton adds a new poll button. According to telegram bot api, the user will be asked to create a poll and send it to the bot when this button is pressed. Available in private chats only.
 
 Note: PollButton will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 
-Note : poll type can be "regular" or "quiz". Any other value will cause the button not to be added.*/
+Note : poll type can be "regular" or "quiz". Any other value will cause the button not to be added.
+*/
 func (kb *keyboard) AddPollButton(text string, row int, pollType string) {
 	if pollType == "regular" || pollType == "quiz" {
 		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType}, nil)
 	}
 }
 
-/* AddWebAppButton adds a button which opens a web app when it's pressed.
+/*
+	AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
@@ -94,6 +105,7 @@ func (kb *keyboard) addButton(text string, row int, contact, location bool, poll
 func (kb *keyboard) toMarkUp() objs.ReplyMarkup {
 	return &objs.ReplyKeyboardMarkup{
 		Keyboard:              kb.keys,
+		IsPersistent:          kb.isPersistent,
 		ResizeKeyboard:        kb.resizeKeyBoard,
 		OneTimeKeyboard:       kb.oneTimeKeyboard,
 		InputFieldPlaceholder: kb.inputFieldPlaceHolder,
@@ -105,14 +117,17 @@ type inlineKeyboard struct {
 	keys [][]*objs.InlineKeyboardButton
 }
 
-/*AddURLButton adds a button that will open an url when pressed.
+/*
+AddURLButton adds a button that will open an url when pressed.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added*/
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
+*/
 func (in *inlineKeyboard) AddURLButton(text, url string, row int) {
 	in.addButton(text, url, "", "", "", nil, nil, nil, false, row)
 }
 
-/*AddLoginURLButton adds a button that will be used for automatic authorization. According to telegram bot api, login url is an HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
+/*
+AddLoginURLButton adds a button that will be used for automatic authorization. According to telegram bot api, login url is an HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 
@@ -135,7 +150,8 @@ func (in *inlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername 
 	}, nil, nil, false, row)
 }
 
-/*AddCallbackButton adds a button that when its pressed, a call back query with the given data is sen to the bot
+/*
+AddCallbackButton adds a button that when its pressed, a call back query with the given data is sen to the bot
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
@@ -143,7 +159,8 @@ func (in *inlineKeyboard) AddCallbackButton(text, callbackData string, row int) 
 	in.addButton(text, "", callbackData, "", "", nil, nil, nil, false, row)
 }
 
-/*AddCallbackButtonHandler adds a button that when its pressed, a call back query with the given data is sen to the bot. A handler is also added which will be called everytime a call back query is received for this button.
+/*
+AddCallbackButtonHandler adds a button that when its pressed, a call back query with the given data is sen to the bot. A handler is also added which will be called everytime a call back query is received for this button.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
@@ -152,7 +169,8 @@ func (in *inlineKeyboard) AddCallbackButtonHandler(text, callbackData string, ro
 	upp.AddCallbackHandler(callbackData, handler)
 }
 
-/*AddSwitchInlineQueryButton adds a switch inline query button. According to tlegram bot api, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted. Note: This offers an easy way for users to start using your bot in inline mode when they are currently in a private chat with it. Especially useful when combined with switch_pm… actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
+/*
+AddSwitchInlineQueryButton adds a switch inline query button. According to tlegram bot api, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted. Note: This offers an easy way for users to start using your bot in inline mode when they are currently in a private chat with it. Especially useful when combined with switch_pm… actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.
 
 Note : If "currentChat" option is true, the inline query will be inserted in the current chat's input field.
 
@@ -166,13 +184,16 @@ func (in *inlineKeyboard) AddSwitchInlineQueryButton(text, inlineQuery string, r
 	}
 }
 
-/*AddGameButton adds a game button. Everytime a user presses this button a game will be launched. Use botfather to set up a game.
-NOTE: This type of button must always be the first button in the first row.*/
+/*
+AddGameButton adds a game button. Everytime a user presses this button a game will be launched. Use botfather to set up a game.
+NOTE: This type of button must always be the first button in the first row.
+*/
 func (in *inlineKeyboard) AddGameButton(text string, row int) {
 	in.addButton(text, "", "", "", "", nil, &objs.CallbackGame{}, nil, false, row)
 }
 
-/*AddPayButton adds a pay button.
+/*
+AddPayButton adds a pay button.
 
 NOTE: This type of button must always be the first button in the first row.
 
@@ -182,7 +203,8 @@ func (in *inlineKeyboard) AddPayButton(text string, row int) {
 	in.addButton(text, "", "", "", "", nil, nil, nil, true, row)
 }
 
-/* AddWebAppButton adds a button which opens a web app when it's pressed.
+/*
+	AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */

@@ -21,6 +21,8 @@ type InputMediaDefault struct {
 /*Represents a photo to be sent.*/
 type InputMediaPhoto struct {
 	InputMediaDefault
+	/*Optional. Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
 }
 
 func (is *InputMediaPhoto) blah() {}
@@ -38,6 +40,8 @@ type InputMediaVideo struct {
 	Duration int `json:"duration,omitempty"`
 	/*Optional. Pass True, if the uploaded video is suitable for streaming*/
 	SupportsStreaming bool `json:"supports_streaming,omitempty"`
+	/*Optional. Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
 }
 
 func (is *InputMediaVideo) blah() {}
@@ -53,6 +57,8 @@ type InputMediaAnimation struct {
 	Height int `json:"height,omitempty"`
 	/*Optional. Animation duration in seconds*/
 	Duration int `json:"duration,omitempty"`
+	/*Optional. Pass True if the photo needs to be covered with a spoiler animation*/
+	HasSpoiler bool `json:"has_spoiler"`
 }
 
 func (is *InputMediaAnimation) blah() {}

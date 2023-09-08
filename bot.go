@@ -245,16 +245,16 @@ func (bot *Bot) CopyMessage(messageId int, disableNotif, protectContent bool) *M
 SendPhoto returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendPhoto(chatId, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
 SendPhotoUN returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to a channels.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
-func (bot *Bot) SendPhotoUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendPhotoUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -267,8 +267,8 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *Bot) SendVideo(chatId int, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendVideo(chatId int, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -281,8 +281,8 @@ Official telegram doc :
 
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *Bot) SendVideoUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendVideoUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -355,8 +355,8 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *Bot) SendAnimation(chatId int, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendAnimation(chatId int, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -369,8 +369,8 @@ Official telegram doc :
 
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
-func (bot *Bot) SendAnimationUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+func (bot *Bot) SendAnimationUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -581,6 +581,7 @@ func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, pro
 
 /*
 SendChatAction sends a chat action message to all types of chat but channels. To send it to channels use "SendChatActionUN" method.
+Note : messageThreadId is unique identifier for the target message thread (supergroups only) which can be used for sending chat actions to a specific message thread or a forum topic.
 
 ---------------------------------
 
@@ -594,12 +595,13 @@ We only recommend using this method when a response from the bot will take a not
 
 action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.
 */
-func (bot *Bot) SendChatAction(chatId int, action string) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendChatAction(chatId, "", action)
+func (bot *Bot) SendChatAction(chatId, messageThreadId int, action string) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendChatAction(chatId, messageThreadId, "", action)
 }
 
 /*
 SendChatActionUN sends a chat action message to a channel.
+Note : messageThreadId is unique identifier for the target message thread (supergroups only) which can be used for sending chat actions to a specific message thread or a forum topic.
 
 ---------------------------------
 
@@ -613,8 +615,8 @@ We only recommend using this method when a response from the bot will take a not
 
 action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.
 */
-func (bot *Bot) SendChatActionUN(chatId, action string) (*objs.SendMethodsResult, error) {
-	return bot.apiInterface.SendChatAction(0, chatId, action)
+func (bot *Bot) SendChatActionUN(chatId, action string, messageThreadId int) (*objs.SendMethodsResult, error) {
+	return bot.apiInterface.SendChatAction(0, messageThreadId, chatId, action)
 }
 
 /*
@@ -1128,6 +1130,20 @@ func (bot *Bot) GetForumTopicManagerUN(username string, messageThreadId int) *fo
 }
 
 /*
+GetGeneralForumTopicManager returns a general forum topic manager which can be used for managing general forum topics.
+*/
+func (bot *Bot) GetGeneralForumTopicManager(chatId, messageThreadId int) *generalForumTopicManager {
+	return &generalForumTopicManager{bot: bot, chatId: chatId}
+}
+
+/*
+GetGeneralForumTopicManagerUN returns a general forum topic manager which can be used for managing general forum topics.
+*/
+func (bot *Bot) GetGeneralForumTopicManagerUN(username string, messageThreadId int) *generalForumTopicManager {
+	return &generalForumTopicManager{bot: bot, chatIdString: username}
+}
+
+/*
 CreateKeyboard creates a keyboard an returns it. The created keyboard has some methods for adding buttons to it.
 
 You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of the method. The methods that supoort keyboard are mostly located in the advanced mode.
@@ -1142,9 +1158,11 @@ Arguments (as described in telegram bot api):
 
 4. selective : Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
 
+5. isPersistent : Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.
+
 Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
 */
-func (bot *Bot) CreateKeyboard(resizeKeyboard, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *keyboard {
+func (bot *Bot) CreateKeyboard(resizeKeyboard, isPersistent, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *keyboard {
 	return &keyboard{
 		keys:                  make([][]*objs.KeyboardButton, 0),
 		resizeKeyBoard:        resizeKeyboard,

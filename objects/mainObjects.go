@@ -150,6 +150,8 @@ type Message struct {
 	Caption string `json:"caption,omitempty"`
 	/*Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption*/
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
+	/*Optional. True, if the message media is covered by a spoiler animation*/
+	HasMediaSpoiler bool `json:"has_media_spoiler"`
 	/*Optional. Message is a shared contact, information about the contact*/
 	Contact *Contact `json:"contact,omitempty"`
 	/*Optional. Message is a dice with random value*/
@@ -192,6 +194,8 @@ type Message struct {
 	SuccessfulPayment *SuccessfulPayment `json:"successful_payment,omitempty"`
 	/*Optional. The domain name of the website on which the user has logged in.*/
 	ConnectedWebsite string `json:"connected_website,omitempty"`
+	/*Optional. Service message: the user allowed the bot added to the attachment menu to write messages*/
+	WriteAccessAllowed *WriteAccessAllowed `json:"write_access_allowed"`
 	/*Optional. Telegram Passport data*/
 	PassportData *PassportData `json:"passport_data,omitempty"`
 	/*Optional. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.*/
