@@ -28,6 +28,10 @@ func (rm *ReplyKeyboardMarkup) blah() {}
 type KeyboardButton struct {
 	/*Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed*/
 	Text string `json:"text"`
+	/*Optional. If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a “user_shared” service message. Available in private chats only.*/
+	RequestUser *KeyboardButtonRequestUser `json:"request_user"`
+	/*Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.*/
+	RequestChat *KeyboardButtonRequestChat `json:"request_chat"`
 	/*Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only
 	Note: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.*/
 	RequestContact bool `json:"request_contact"`
@@ -45,6 +49,35 @@ type KeyboardButton struct {
 type KeyboardButtonPollType struct {
 	/*Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.*/
 	Type string `json:"type,omitempty"`
+}
+
+/*This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.*/
+type KeyboardButtonRequestUser struct {
+	/*Signed 32-bit identifier of the request, which will be received back in the UserShared object. Must be unique within the message*/
+	RequestId int `json:"request_id"`
+	/*Optional. Pass True to request a bot, pass False to request a regular user. If not specified, no additional restrictions are applied.*/
+	UserIsBot bool `json:"user_is_bot"`
+	/*Optional. Pass True to request a premium user, pass False to request a non-premium user. If not specified, no additional restrictions are applied.*/
+	UserIsPremium bool `json:"user_is_premium"`
+}
+
+type KeyboardButtonRequestChat struct {
+	/*Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message*/
+	RequestId int `json:"request_id"`
+	/*Pass True to request a channel chat, pass False to request a group or a supergroup chat.*/
+	ChatIsChannel bool `json:"chat_is_channel"`
+	/*Optional. Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.*/
+	ChatIsForum bool `json:"chat_is_forum"`
+	/*Optional. Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.*/
+	ChatHasUsername bool `json:"chat_has_username"`
+	/*Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.*/
+	ChatIsCreated bool `json:"chat_is_created"`
+	/*Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.*/
+	UserAdministratorRights *ChatAdministratorRights `json:"user_administrator_rights"`
+	/*Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.*/
+	BotAdministratorRights *ChatAdministratorRights `json:"bot_administrator_rights"`
+	/*Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.*/
+	BotIsMemeber bool `json:"bot_is_member"`
 }
 
 /*Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button */

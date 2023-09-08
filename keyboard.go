@@ -30,7 +30,7 @@ AddButton adds a new button holding the given text to the specified row. Accordi
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
 func (kb *keyboard) AddButton(text string, row int) {
-	kb.addButton(text, row, false, false, nil, nil)
+	kb.addButton(text, row, false, false, nil, nil, nil, nil)
 }
 
 /*
@@ -39,7 +39,7 @@ AddButtonHandler adds a new button holding the given text to the specified row. 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
 func (kb *keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
-	kb.addButton(text, row, false, false, nil, nil)
+	kb.addButton(text, row, false, false, nil, nil, nil, nil)
 	upp.AddHandler(text, handler, chatTypes...)
 }
 
@@ -51,7 +51,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
 func (kb *keyboard) AddContactButton(text string, row int) {
-	kb.addButton(text, row, true, false, nil, nil)
+	kb.addButton(text, row, true, false, nil, nil, nil, nil)
 }
 
 /*
@@ -62,7 +62,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
 func (kb *keyboard) AddLocationButton(text string, row int) {
-	kb.addButton(text, row, false, true, nil, nil)
+	kb.addButton(text, row, false, true, nil, nil, nil, nil)
 }
 
 /*
@@ -76,20 +76,87 @@ Note : poll type can be "regular" or "quiz". Any other value will cause the butt
 */
 func (kb *keyboard) AddPollButton(text string, row int, pollType string) {
 	if pollType == "regular" || pollType == "quiz" {
-		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType}, nil)
+		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType}, nil, nil, nil)
 	}
 }
 
 /*
-	AddWebAppButton adds a button which opens a web app when it's pressed.
+AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (kb *keyboard) AddWebAppButton(text string, row int, url string) {
-	kb.addButton(text, row, false, false, nil, &objs.WebAppInfo{URL: url})
+	kb.addButton(text, row, false, false, nil, nil, nil, &objs.WebAppInfo{URL: url})
 }
 
-func (kb *keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType, webApp *objs.WebAppInfo) {
+/*
+AddRequestUserButton adds a buuton which asks for a users chat when its pressed.
+
+The identifier of the selected user will be shared with the bot in the UserShared object of Message object when the corresponding button is pressed.
+
+Arguments :
+
+1. requestId : Signed 32-bit identifier of the request, which will be received back in the UserShared object. Must be unique within the message.
+
+2. userIsBot : Pass True to request a bot, pass False to request a regular user. If not specified, no additional restrictions are applied.
+
+3. userIsPremimum : True to request a premium user, pass False to request a non-premium user. If not specified, no additional restrictions are applied.
+
+4. handler : A handler that will be executed when the user presses this button. If handler is not nil, bot automatically parses the incoming updates on this request id. Pass nil if you don't want any handler.
+*/
+func (kb *keyboard) AddRequestUserButton(text string, row, requestId int, userIsBot, userIsPremium bool, handler func(*objs.Update)) {
+	kb.addButton(text, row, false, false, nil, &objs.KeyboardButtonRequestUser{
+		RequestId:     requestId,
+		UserIsBot:     userIsBot,
+		UserIsPremium: userIsBot,
+	}, nil, nil)
+	if handler != nil {
+		upp.AddUserSharedHandler(requestId, handler)
+	}
+}
+
+/*
+AddRequestChatButton adds a button that asks for a chat to be selected when its pressed.
+
+The identifier of the selected chat will be shared with the bot in the ChatShared object of Message object when the corresponding button is pressed.
+
+Arguments :
+
+1. requestId : Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message.
+
+2. chatIsChannel : Pass True to request a channel chat, pass False to request a group or a supergroup chat.
+
+3. chatIsForum : Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.
+
+4. chatHasUsername : Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.
+
+5. chatIsCreated : Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
+
+6. botIsMemeber : Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
+
+7. userAdminRights : A ChatAdministratorRights object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.
+
+8. botAdminRights : A ChatAdministratorRights object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.
+
+9. handler : A handler that will be executed when the user presses this button. If handler is not nil, bot automatically parses the incoming updates on this request id. Pass nil if you don't want any handler.
+*/
+func (kb *keyboard) AddRequestChatButton(text string, row, requestId int, chatIsChannel, chatIsForum, chatHasUsername, chatIsCreated, botIsMember bool, userAdminRights, botAdminRights *objs.ChatAdministratorRights, handler func(*objs.Update)) {
+	kb.addButton(text, row, false, false, nil, nil, &objs.KeyboardButtonRequestChat{
+		RequestId:               requestId,
+		ChatIsChannel:           chatIsChannel,
+		ChatIsForum:             chatIsForum,
+		ChatHasUsername:         chatHasUsername,
+		ChatIsCreated:           chatIsCreated,
+		BotIsMemeber:            botIsMember,
+		UserAdministratorRights: userAdminRights,
+		BotAdministratorRights:  botAdminRights,
+	}, nil)
+	if handler != nil {
+		upp.AddChatSharedHandler(requestId, handler)
+	}
+}
+
+func (kb *keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType, requestUser *objs.KeyboardButtonRequestUser, requestChat *objs.KeyboardButtonRequestChat, webApp *objs.WebAppInfo) {
 	if row >= 1 {
 		kb.fixRows(row)
 		kb.keys[row-1] = append(kb.keys[row-1], &objs.KeyboardButton{
@@ -98,6 +165,8 @@ func (kb *keyboard) addButton(text string, row int, contact, location bool, poll
 			RequestLocation: location,
 			RequestPoll:     poll,
 			WebApp:          webApp,
+			RequestUser:     requestUser,
+			RequestChat:     requestChat,
 		})
 	}
 }
@@ -204,7 +273,7 @@ func (in *inlineKeyboard) AddPayButton(text string, row int) {
 }
 
 /*
-	AddWebAppButton adds a button which opens a web app when it's pressed.
+AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */

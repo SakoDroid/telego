@@ -192,6 +192,10 @@ type Message struct {
 	Invoice *Invoice `json:"invoice,omitempty"`
 	/*Optional. Message is a service message about a successful payment, information about the payment.*/
 	SuccessfulPayment *SuccessfulPayment `json:"successful_payment,omitempty"`
+	/*Optional. Service message: a user was shared with the bot*/
+	UserShared *UserShared `json:"user_shared"`
+	/*Optional. Service message: a chat was shared with the bot*/
+	ChatShared *ChatShared `json:"chat_shared"`
 	/*Optional. The domain name of the website on which the user has logged in.*/
 	ConnectedWebsite string `json:"connected_website,omitempty"`
 	/*Optional. Service message: the user allowed the bot added to the attachment menu to write messages*/

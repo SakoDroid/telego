@@ -9,6 +9,8 @@ import (
 
 var handlers = HandlerTree{}
 var callbackHandlers = make(map[string]*callbackHandler)
+var userSharedHandlers = chatRequestHandlerMap{internal: make(map[int]*chatRequestHandler)}
+var chatSharedHandlers = chatRequestHandlerMap{internal: make(map[int]*chatRequestHandler)}
 
 type handler struct {
 	regex    *regexp.Regexp      //The compiled regex.
@@ -37,17 +39,63 @@ func AddCallbackHandler(data string, handlerFun func(*objs.Update)) {
 	callbackHandlers[data] = &hl
 }
 
+func AddUserSharedHandler(requestId int, handler func(*objs.Update)) {
+	userSharedHandlers.Add(
+		requestId,
+		&chatRequestHandler{
+			requestId: requestId,
+			function:  &handler,
+		},
+	)
+}
+
+func AddChatSharedHandler(requestId int, handler func(*objs.Update)) {
+	chatSharedHandlers.Add(
+		requestId,
+		&chatRequestHandler{
+			requestId: requestId,
+			function:  &handler,
+		},
+	)
+}
+
 func checkHandlers(up *objs.Update) bool {
 	if up.CallbackQuery != nil {
 		return checkCallbackHanlders(up)
-	} else {
-		return checkTextMsgHandlers(up)
 	}
+
+	if up.Message.UserShared != nil {
+		return checkUserSharedHandlers(up)
+	}
+
+	if up.Message.ChatShared != nil {
+		return checkChatSharedHandlers(up)
+	}
+
+	return checkTextMsgHandlers(up)
 }
 
 func checkCallbackHanlders(up *objs.Update) bool {
 	hdl := callbackHandlers[up.CallbackQuery.Data]
 	if hdl != nil {
+		go (*hdl.function)(up)
+		return true
+	}
+	return false
+}
+
+func checkUserSharedHandlers(up *objs.Update) bool {
+	hdl, ok := userSharedHandlers.Load(up.Message.UserShared.RequestId)
+	if ok && hdl != nil && hdl.function != nil {
+		go (*hdl.function)(up)
+		return true
+	}
+	return false
+}
+
+func checkChatSharedHandlers(up *objs.Update) bool {
+	hdl, ok := chatSharedHandlers.Load(up.Message.ChatShared.RequestId)
+	if ok && hdl != nil && hdl.function != nil {
 		go (*hdl.function)(up)
 		return true
 	}
