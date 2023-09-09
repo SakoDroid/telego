@@ -23,7 +23,7 @@ type Bot struct {
 }
 
 /*Run starts the bot. If the bot has already been started it returns an error.*/
-func (bot *Bot) Run(pause bool) error {
+func (bot *Bot) Run(autoPause bool) error {
 	logger.InitTheLogger(bot.botCfg)
 	if !bot.checkWebHook() {
 		logger.Logger.Fatalln("Webhook check failed. See the logs for more info.")
@@ -41,8 +41,10 @@ func (bot *Bot) Run(pause bool) error {
 	if err != nil {
 		return err
 	}
-	ch := make(chan bool)
-	<-ch
+	if autoPause {
+		ch := make(chan bool)
+		<-ch
+	}
 	return nil
 }
 
@@ -789,6 +791,15 @@ func (bot *Bot) UploadStickerFile(userId int, stickerFormat string, eomjis, keyw
 		EmojiList: eomjis,
 		KeyWords:  keywords,
 	}, stickerFile)
+}
+
+/*
+GetStickerEditor returns a special object for editing stickers. Setting emoji list, keywords,mask postion and deleting the sticker.
+
+stickerFileId : File identifier of the sticker
+*/
+func (bot *Bot) GetStickerEditor(stickerFileId string) *stickerEditor {
+	return &stickerEditor{bot: bot, stickerId: stickerFileId}
 }
 
 /*

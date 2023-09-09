@@ -33,7 +33,7 @@ func (ss *StickerSet) update() {
 	}
 }
 
-//Create is used for creating this sticker set if it has not been created before.
+// Create is used for creating this sticker set if it has not been created before.
 func (ss *StickerSet) Create() (bool, error) {
 	if ss.created {
 		return false, errors.New("sticker set already created")
@@ -273,4 +273,14 @@ func (ss *StickerSet) SetThumbByFile(userId int, thumb *os.File) (*objs.LogicalR
 		return nil, err
 	}
 	return ss.bot.apiInterface.SetStickerSetThumb(ss.stickerSet.Name, "attach://"+stats.Name(), userId, thumb)
+}
+
+// SetTitle changes this sticker set's title.
+func (ss *StickerSet) SetTitle(title string) (*objs.LogicalResult, error) {
+	return ss.bot.apiInterface.SetStickerSetTitle(ss.name, title)
+}
+
+// Delete deletes a sticker set that was created by this bot.
+func (ss *StickerSet) Delete() (*objs.LogicalResult, error) {
+	return ss.bot.apiInterface.DeleteStickerSet(ss.name)
 }

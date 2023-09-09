@@ -425,6 +425,100 @@ func (args *DeleteStickerFromSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
 
+type SetStickerEmojiListArgs struct {
+	Sticker   string   `json:"sticker"`
+	EmojiList []string `json:"emoji_list"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetStickerEmojiListArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetStickerEmojiListArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type SetStickerKeywordsArgs struct {
+	Sticker   string   `json:"sticker"`
+	Keywoards []string `json:"keywords"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetStickerKeywordsArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetStickerKeywordsArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type SetStickerMaskPositionArgs struct {
+	Sticker      string        `json:"sticker"`
+	MaskPosition *MaskPosition `json:"mask_position"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetStickerMaskPositionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetStickerMaskPositionArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type SetStickerSetTitleArgs struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetStickerSetTitleArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetStickerSetTitleArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
+type DeleteStickerSetArgs struct {
+	Name string `json:"name"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *DeleteStickerSetArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *DeleteStickerSetArgs) ToMultiPart(wr *mp.Writer) {
+	//The arguments of this meethod are never passed as multipart.
+}
+
 type SetStickerSetThumbArgs struct {
 	Name   string `json:"name"`
 	UserId int    `json:"user_id"`

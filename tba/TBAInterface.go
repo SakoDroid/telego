@@ -1745,6 +1745,95 @@ func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, f
 	return msg, nil
 }
 
+// DeleteStickerSet deletes a sticker set that was created by the bot. Returns True on success.
+func (bai *BotAPIInterface) DeleteStickerSet(name string) (*objs.LogicalResult, error) {
+	args := &objs.DeleteStickerSetArgs{
+		Name: name,
+	}
+	res, err := bai.SendCustom("deleteStickerSet", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetStickerSetTitle sets the title of a created sticker set. Returns True on success.
+func (bai *BotAPIInterface) SetStickerSetTitle(name, title string) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerSetTitleArgs{
+		Name:  name,
+		Title: title,
+	}
+	res, err := bai.SendCustom("setStickerSetTitle", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetStickerEmojiList changes the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.
+func (bai *BotAPIInterface) SetStickerEmojiList(sticker string, emojiLst []string) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerEmojiListArgs{
+		Sticker:   sticker,
+		EmojiList: emojiLst,
+	}
+	res, err := bai.SendCustom("setStickerEmojiList", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetStickerKeywords changes search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.
+func (bai *BotAPIInterface) SetStickerKeywords(sticker string, keywords []string) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerKeywordsArgs{
+		Sticker:   sticker,
+		Keywoards: keywords,
+	}
+	res, err := bai.SendCustom("setStickerKeywords", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetStickerMaskPosition changes the mask position of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns True on success.
+func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+	args := &objs.SetStickerMaskPositionArgs{
+		Sticker:      sticker,
+		MaskPosition: maskPosition,
+	}
+	res, err := bai.SendCustom("setStickerMaskPosition", args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
 /*AnswerInlineQuery answers an inline query with the given parameters*/
 func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset, switchPmText, switchPmParameter string) (*objs.LogicalResult, error) {
 	args := &objs.AnswerInlineQueryArgs{
