@@ -4,27 +4,49 @@ import (
 	"errors"
 	"os"
 
+	errs "github.com/SakoDroid/telego/errors"
 	logger "github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
 )
 
-//StickerSet is a set of stickers.
+// StickerSet is a set of stickers.
 type StickerSet struct {
-	bot        *Bot
-	stickerSet *objs.StickerSet
-	userId     int
+	bot                                     *Bot
+	stickerSet                              *objs.StickerSet
+	initStickers                            []*objs.InputSticker
+	initFiles                               []*os.File
+	userId                                  int
+	name, title, stickerFormat, stickerType string
+	needsRepainting                         bool
+	created                                 bool
 }
 
 /*update updates this sticker set*/
 func (ss *StickerSet) update() {
-	if ss != nil {
-		res, err := ss.bot.apiInterface.GetStickerSet(ss.stickerSet.Name)
+	if ss.created && ss != nil {
+		res, err := ss.bot.apiInterface.GetStickerSet(ss.name)
 		if err != nil {
 			logger.Logger.Println("Error while updating sticker set.", err.Error())
 		} else {
 			ss.stickerSet = res.Result
 		}
 	}
+}
+
+//Create is used for creating this sticker set if it has not been created before.
+func (ss *StickerSet) Create() (bool, error) {
+	if ss.created {
+		return false, errors.New("sticker set already created")
+	}
+	res, err := ss.bot.apiInterface.CreateNewStickerSet(
+		ss.userId, ss.name, ss.title, ss.stickerFormat, ss.stickerType, ss.needsRepainting, ss.initStickers, ss.initFiles...,
+	)
+	if err != nil || !res.Ok {
+		return false, err
+	}
+	ss.created = true
+	ss.update()
+	return true, nil
 }
 
 /*GetTitle returns the title of this sticker set*/
@@ -61,95 +83,159 @@ func (ss *StickerSet) GetThumb() *objs.PhotoSize {
 	return ss.stickerSet.Thumb
 }
 
-/*Deprecated: This function should no longer be used for adding stickers to a sticker set. It has been preserved for backward compatibility and will be removed in next versions. Use "AddPngSticker","AddAnimatedSticker" or "AddVideoSticker" methods instead.
+/*
+AddNewSticker adds a new sticker to this set. If the set has been created before then the sticker will be added to sticker set on telegram servers.
 
-Adds a sticker to the current set
-Use this method to add a new sticker to a set created by the bot. You must use exactly one of the fields png_sticker or tgs_sticker. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.
-png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).*/
-func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
-	if ss == nil {
-		return nil, errors.New("sticker set is nil")
+If not created yet, then the sticker is added to an internal array. The "Create" function should be called after all stickers have been added.
+
+userId is the user id of the owner.
+*/
+func (ss *StickerSet) AddNewSticker(fileIdOrURL string, userId int, emojiList, keywords []string, maskPosition *objs.MaskPosition) (bool, error) {
+	inputSticker := &objs.InputSticker{
+		Sticker:      fileIdOrURL,
+		EmojiList:    emojiList,
+		MaskPosition: maskPosition,
+		KeyWords:     keywords,
 	}
-	if tgsSticker == nil {
-		if pngStickerFile == nil {
-			if pngStickerFileIdOrUrl == "" {
-				return nil, errors.New("wrong file id or url")
-			}
-			return ss.bot.apiInterface.AddStickerToSet(
-				ss.userId, ss.stickerSet.Name, pngStickerFileIdOrUrl, "", "", emojies, maskPosition, nil,
-			)
-		} else {
-			stat, er := pngStickerFile.Stat()
-			if er != nil {
-				return nil, er
-			}
-			return ss.bot.apiInterface.AddStickerToSet(
-				ss.userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", "", emojies, maskPosition, pngStickerFile,
-			)
-		}
-	} else {
-		stat, er := tgsSticker.Stat()
-		if er != nil {
-			return nil, er
-		}
-		return ss.bot.apiInterface.AddStickerToSet(
-			ss.userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), "", emojies, maskPosition, tgsSticker,
+	if ss.created {
+		res, err := ss.bot.apiInterface.AddStickerToSet(
+			userId,
+			ss.name,
+			inputSticker,
+			nil,
 		)
+		defer ss.update()
+		return res.Ok, err
 	}
+	ss.initStickers = append(ss.initStickers, inputSticker)
+	return true, nil
 }
 
-//AddPngSticker adds a new PNG picture to the sticker set. This method should be used when the PNG file in stored in telegram servers or it's an HTTP URL. If the file is stored in your computer, use "AddPngStickerByFile" method.
+/*
+AddNewStickerByFile adds a new sticker to this set. If the set has been created before then the sticker will be added to sticker set on telegram servers.
+
+If not created yet, then the sticker is added to an internal array. The "Create" function should be called after all stickers have been added.
+
+userId is the user id of the owner.
+*/
+func (ss *StickerSet) AddNewStickerByFile(file *os.File, userId int, emojiList, keywords []string, maskPosition *objs.MaskPosition) (bool, error) {
+	stat, err := file.Stat()
+	if err != nil {
+		return false, err
+	}
+	inputSticker := &objs.InputSticker{
+		Sticker:      "attach://" + stat.Name(),
+		EmojiList:    emojiList,
+		MaskPosition: maskPosition,
+		KeyWords:     keywords,
+	}
+	if ss.created {
+		res, err := ss.bot.apiInterface.AddStickerToSet(
+			userId,
+			ss.name,
+			inputSticker,
+			nil,
+		)
+		defer ss.update()
+		return res.Ok, err
+	}
+	ss.initStickers = append(ss.initStickers, inputSticker)
+	ss.initFiles = append(ss.initFiles, file)
+	return true, nil
+}
+
+// Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
+func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+	// if ss == nil {
+	// 	return nil, errors.New("sticker set is nil")
+	// }
+	// if tgsSticker == nil {
+	// 	if pngStickerFile == nil {
+	// 		if pngStickerFileIdOrUrl == "" {
+	// 			return nil, errors.New("wrong file id or url")
+	// 		}
+	// 		return ss.bot.apiInterface.AddStickerToSet(
+	// 			ss.userId, ss.stickerSet.Name, pngStickerFileIdOrUrl, "", "", emojies, maskPosition, nil,
+	// 		)
+	// 	} else {
+	// 		stat, er := pngStickerFile.Stat()
+	// 		if er != nil {
+	// 			return nil, er
+	// 		}
+	// 		return ss.bot.apiInterface.AddStickerToSet(
+	// 			ss.userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", "", emojies, maskPosition, pngStickerFile,
+	// 		)
+	// 	}
+	// } else {
+	// 	stat, er := tgsSticker.Stat()
+	// 	if er != nil {
+	// 		return nil, er
+	// 	}
+	// 	return ss.bot.apiInterface.AddStickerToSet(
+	// 		ss.userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), "", emojies, maskPosition, tgsSticker,
+	// 	)
+	// }
+	return nil, &errs.MethodDeprecated{MethodName: "AddSticker", Replacement: "AddNewSticker"}
+}
+
+// Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
 func (ss *StickerSet) AddPngSticker(pngPicFileIdOrUrl, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
-	return ss.bot.apiInterface.AddStickerToSet(
-		ss.userId, ss.stickerSet.Name, pngPicFileIdOrUrl, "", "", emojies, maskPosition, nil,
-	)
+	return nil, &errs.MethodDeprecated{MethodName: "AddPngSticker", Replacement: "AddNewSticker"}
+	// return ss.bot.apiInterface.AddStickerToSet(
+	// 	ss.userId, ss.stickerSet.Name, pngPicFileIdOrUrl, "", "", emojies, maskPosition, nil,
+	// )
 }
 
-//AddPngStickerByFile adds a new PNG picture to the sticker set. This method should be used when the PNG file in stored in your computer.
+// Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
 func (ss *StickerSet) AddPngStickerByFile(pngPicFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
-	if pngPicFile == nil {
-		return nil, errors.New("pngPicFile cannot be nil")
-	}
-	stat, er := pngPicFile.Stat()
-	if er != nil {
-		return nil, er
-	}
-	return ss.bot.apiInterface.AddStickerToSet(
-		ss.userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", "", emojies, maskPosition, pngPicFile,
-	)
+	return nil, &errs.MethodDeprecated{MethodName: "AddPngStickerByFile", Replacement: "AddNewStickerByFile"}
+	// if pngPicFile == nil {
+	// 	return nil, errors.New("pngPicFile cannot be nil")
+	// }
+	// stat, er := pngPicFile.Stat()
+	// if er != nil {
+	// 	return nil, er
+	// }
+	// return ss.bot.apiInterface.AddStickerToSet(
+	// 	ss.userId, ss.stickerSet.Name, "attach://"+stat.Name(), "", "", emojies, maskPosition, pngPicFile,
+	// )
 }
 
-//AddAnimatedSticker adds a new TGS sticker (animated sticker) to the sticker set.
+// Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
 func (ss *StickerSet) AddAnimatedSticker(tgsFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
-	if tgsFile == nil {
-		return nil, errors.New("tgsFile cannot be nil")
-	}
-	stat, er := tgsFile.Stat()
-	if er != nil {
-		return nil, er
-	}
-	return ss.bot.apiInterface.AddStickerToSet(
-		ss.userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), "", emojies, maskPosition, tgsFile,
-	)
+	return nil, &errs.MethodDeprecated{MethodName: "AddAnimatedSticker", Replacement: "AddNewSticker"}
+	// if tgsFile == nil {
+	// 	return nil, errors.New("tgsFile cannot be nil")
+	// }
+	// stat, er := tgsFile.Stat()
+	// if er != nil {
+	// 	return nil, er
+	// }
+	// return ss.bot.apiInterface.AddStickerToSet(
+	// 	ss.userId, ss.stickerSet.Name, "", "attach://"+stat.Name(), "", emojies, maskPosition, tgsFile,
+	// )
 }
 
-//AddVideoSticker adds a new WEBM sticker (video sticker) to the sticker set.
+// Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
 func (ss *StickerSet) AddVideoSticker(webmFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
-	if webmFile == nil {
-		return nil, errors.New("webmFile cannot be nil")
-	}
-	stat, er := webmFile.Stat()
-	if er != nil {
-		return nil, er
-	}
-	return ss.bot.apiInterface.AddStickerToSet(
-		ss.userId, ss.stickerSet.Name, "", "", "attach://"+stat.Name(), emojies, maskPosition, webmFile,
-	)
+	return nil, &errs.MethodDeprecated{MethodName: "AddVideoSticker", Replacement: "AddNewSticker"}
+	// if webmFile == nil {
+	// 	return nil, errors.New("webmFile cannot be nil")
+	// }
+	// stat, er := webmFile.Stat()
+	// if er != nil {
+	// 	return nil, er
+	// }
+	// return ss.bot.apiInterface.AddStickerToSet(
+	// 	ss.userId, ss.stickerSet.Name, "", "", "attach://"+stat.Name(), emojies, maskPosition, webmFile,
+	// )
 }
 
-/*SetStickerPosition can be used to move a sticker in a set created by the bot to a specific position. Returns True on success.
+/*
+SetStickerPosition can be used to move a sticker in a set created by the bot to a specific position. Returns True on success.
 
-"sticker" is file identifier of the sticker and "position" is new sticker position in the set, zero-based*/
+"sticker" is file identifier of the sticker and "position" is new sticker position in the set, zero-based
+*/
 func (ss *StickerSet) SetStickerPosition(sticker string, position int) (*objs.LogicalResult, error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")
@@ -157,9 +243,11 @@ func (ss *StickerSet) SetStickerPosition(sticker string, position int) (*objs.Lo
 	return ss.bot.apiInterface.SetStickerPositionInSet(sticker, position)
 }
 
-/*DeleteStickerFromSet can be used to delete a sticker from a set created by the bot. Returns True on success.
+/*
+DeleteStickerFromSet can be used to delete a sticker from a set created by the bot. Returns True on success.
 
-"sticker" is file identifier of the sticker.*/
+"sticker" is file identifier of the sticker.
+*/
 func (ss *StickerSet) DeleteStickerFromSet(sticker string) (*objs.LogicalResult, error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")

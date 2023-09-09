@@ -28,6 +28,8 @@ type Sticker struct {
 	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
 	/*Optional. For custom emoji stickers, unique identifier of the custom emoji*/
 	CustomEmojiId string `json:"custom_emoji_id"`
+	/*Optional. True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places*/
+	NeedsRepainting bool `json:"needs_repainting"`
 	/*Optional. File size in bytes*/
 	FileSize int `json:"file_size,omitempty"`
 }
@@ -64,4 +66,14 @@ type MaskPosition struct {
 	YShift float32 `json:"y_shift"`
 	/*Mask scaling coefficient. For example, 2.0 means double size.*/
 	Scale float32 `json:"scale"`
+}
+
+type InputSticker struct {
+	Sticker string `json:"sticker"`
+	/*List of 1-20 emoji associated with the sticker*/
+	EmojiList []string `json:"emoji_list"`
+	/*Optional. Position where the mask should be placed on faces. For “mask” stickers only.*/
+	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
+	/*Optional. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.*/
+	KeyWords []string `json:"keywords"`
 }

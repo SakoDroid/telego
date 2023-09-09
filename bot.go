@@ -5,6 +5,7 @@ import (
 	"os"
 
 	cfg "github.com/SakoDroid/telego/configs"
+	errs "github.com/SakoDroid/telego/errors"
 	logger "github.com/SakoDroid/telego/logger"
 	objs "github.com/SakoDroid/telego/objects"
 	upp "github.com/SakoDroid/telego/parser"
@@ -254,7 +255,7 @@ SendPhotoUN returns a MediaSender which has several methods for sending a photo.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
 func (bot *Bot) SendPhotoUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
-	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: PHOTO, bot: bot, chatIdInt: 0, username: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -268,7 +269,7 @@ Official telegram doc :
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendVideo(chatId int, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: chatId, username: "", replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -282,7 +283,7 @@ Official telegram doc :
 Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendVideoUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
-	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: VIDEO, bot: bot, chatIdInt: 0, username: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -298,7 +299,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 For sending voice messages, use the sendVoice method instead.
 */
 func (bot *Bot) SendAudio(chatId, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: chatId, username: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -314,7 +315,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 For sending voice messages, use the sendVoice method instead.
 */
 func (bot *Bot) SendAudioUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: AUDIO, bot: bot, chatIdInt: 0, username: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -328,7 +329,7 @@ Official telegram doc :
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendDocument(chatId, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: chatId, username: "", replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -342,7 +343,7 @@ Official telegram doc :
 Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendDocumentUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot, chatIdInt: 0, username: chatId, replyTo: replyTo, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -356,7 +357,7 @@ Official telegram doc :
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendAnimation(chatId int, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, username: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -370,7 +371,7 @@ Official telegram doc :
 Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendAnimationUN(chatId string, replyTo int, caption, parseMode string, hasSpoiler bool) *MediaSender {
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, username: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -384,7 +385,7 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendVoice(chatId int, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, username: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -398,7 +399,7 @@ Official telegram doc :
 Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 */
 func (bot *Bot) SendVoiceUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: VOICE, chatIdInt: 0, username: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -412,7 +413,7 @@ Official telegram doc :
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.
 */
 func (bot *Bot) SendVideoNote(chatId int, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, username: "", replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -426,7 +427,7 @@ Official telegram doc :
 As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.
 */
 func (bot *Bot) SendVideoNoteUN(chatId string, replyTo int, caption, parseMode string) *MediaSender {
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, username: chatId, replyTo: replyTo, bot: bot, caption: caption, parseMode: parseMode}
 }
 
 /*
@@ -751,8 +752,8 @@ Official telegram doc :
 
 Use this method to send static .WEBP or animated .TGS stickers. On success, the sent Message is returned
 */
-func (bot *Bot) SendSticker(chatId, replyTo int) *MediaSender {
-	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo}
+func (bot *Bot) SendSticker(chatId, replyTo int, eomji string) *MediaSender {
+	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: chatId, username: "", replyTo: replyTo, stickerEmoji: eomji}
 }
 
 /*
@@ -764,8 +765,8 @@ Official telegram doc :
 
 Use this method to send static .WEBP or animated .TGS stickers. On success, the sent Message is returned
 */
-func (bot *Bot) SendStickerWithUn(chatId string, replyTo int) *MediaSender {
-	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo}
+func (bot *Bot) SendStickerWithUn(chatId string, replyTo int, eomji string) *MediaSender {
+	return &MediaSender{mediaType: STICKER, bot: bot, chatIdInt: 0, username: chatId, replyTo: replyTo, stickerEmoji: eomji}
 }
 
 /*GetStickerSet returns an sticker set with the given name*/
@@ -774,77 +775,108 @@ func (bot *Bot) GetStickerSet(name string) (*StickerSet, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &StickerSet{bot: bot, stickerSet: res.Result}, nil
+	return &StickerSet{bot: bot, stickerSet: res.Result, name: name, created: true}, nil
 }
 
 /*UploadStickerFile can be used to upload a .PNG file with a sticker for later use in CreateNewStickerSet and AddStickerToSet methods (can be used multiple times). Returns the uploaded File on success.*/
-func (bot *Bot) UploadStickerFile(userId int, stickerFile *os.File) (*objs.GetFileResult, error) {
+func (bot *Bot) UploadStickerFile(userId int, stickerFormat string, eomjis, keywords []string, stickerFile *os.File) (*objs.GetFileResult, error) {
 	stat, err := stickerFile.Stat()
 	if err != nil {
 		return nil, err
 	}
-	return bot.apiInterface.UploadStickerFile(userId, "attach://"+stat.Name(), stickerFile)
+	return bot.apiInterface.UploadStickerFile(userId, stickerFormat, &objs.InputSticker{
+		Sticker:   "attach://" + stat.Name(),
+		EmojiList: eomjis,
+		KeyWords:  keywords,
+	}, stickerFile)
 }
 
 /*
-CreateNewStickerSet can be used to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields pngSticker or tgsSticker or webmSticker. Returns the created sticker set on success.
-
-png sticker can be passed as an file id or url (pngStickerFileIdOrUrl) or file(pngStickerFile).
-
-"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”. <bot_username> is case insensitive. 1-64 characters.
-
-Deprecation : The parameter contains_masks has been removed from the documentation of the method createNewStickerSet. The parameter will still work for backward compatibility, but new bots should use the parameter sticker_type instead.
+Deprecated : This method has been completely deprecated. Use CreateStickerSet instead.
 */
 func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, webmSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
-	var res *objs.LogicalResult
-	var err error
-	if tgsSticker == nil {
-		if pngStickerFile == nil {
-			if pngStickerFileIdOrUrl == "" {
-				if webmSticker == nil {
-					return nil, errors.New("wrong file id or url")
-				} else {
-					stat, er := webmSticker.Stat()
-					if er != nil {
-						return nil, er
-					}
-					res, err = bot.apiInterface.CreateNewStickerSet(
-						userId, name, title, "", "", "attach://"+stat.Name(), emojies, containsMask, maskPosition, pngStickerFile,
-					)
-				}
-			}
-			res, err = bot.apiInterface.CreateNewStickerSet(
-				userId, name, title, pngStickerFileIdOrUrl, "", "", emojies, containsMask, maskPosition, nil,
-			)
-		} else {
-			stat, er := pngStickerFile.Stat()
-			if er != nil {
-				return nil, er
-			}
-			res, err = bot.apiInterface.CreateNewStickerSet(
-				userId, name, title, "attach://"+stat.Name(), "", "", emojies, containsMask, maskPosition, pngStickerFile,
-			)
-		}
-	} else {
-		stat, er := tgsSticker.Stat()
-		if er != nil {
-			return nil, er
-		}
-		res, err = bot.apiInterface.CreateNewStickerSet(
-			userId, name, title, "", "attach://"+stat.Name(), "", emojies, containsMask, maskPosition, tgsSticker,
-		)
+	// var res *objs.LogicalResult
+	// var err error
+	// if tgsSticker == nil {
+	// 	if pngStickerFile == nil {
+	// 		if pngStickerFileIdOrUrl == "" {
+	// 			if webmSticker == nil {
+	// 				return nil, errors.New("wrong file id or url")
+	// 			} else {
+	// 				stat, er := webmSticker.Stat()
+	// 				if er != nil {
+	// 					return nil, er
+	// 				}
+	// 				res, err = bot.apiInterface.CreateNewStickerSet(
+	// 					userId, name, title, "", "", "attach://"+stat.Name(), emojies, containsMask, maskPosition, pngStickerFile,
+	// 				)
+	// 			}
+	// 		}
+	// 		res, err = bot.apiInterface.CreateNewStickerSet(
+	// 			userId, name, title, pngStickerFileIdOrUrl, "", "", emojies, containsMask, maskPosition, nil,
+	// 		)
+	// 	} else {
+	// 		stat, er := pngStickerFile.Stat()
+	// 		if er != nil {
+	// 			return nil, er
+	// 		}
+	// 		res, err = bot.apiInterface.CreateNewStickerSet(
+	// 			userId, name, title, "attach://"+stat.Name(), "", "", emojies, containsMask, maskPosition, pngStickerFile,
+	// 		)
+	// 	}
+	// } else {
+	// 	stat, er := tgsSticker.Stat()
+	// 	if er != nil {
+	// 		return nil, er
+	// 	}
+	// 	res, err = bot.apiInterface.CreateNewStickerSet(
+	// 		userId, name, title, "", "attach://"+stat.Name(), "", emojies, containsMask, maskPosition, tgsSticker,
+	// 	)
+	// }
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if !res.Result {
+	// 	return nil, errors.New("false returned from server")
+	// }
+	// out := &StickerSet{bot: bot, userId: userId, stickerSet: &objs.StickerSet{
+	// 	Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
+	// }}
+	// out.update()
+	// return out, nil
+	return nil, &errs.MethodDeprecated{MethodName: "CreateNewStickerSet", Replacement: "CreateStickerSet"}
+}
+
+/*
+CreateStickerSet returns an sticker set which can be used for creation and managing sticker sets. In this case, sticker set is locked and can be only used for creating the sticker set.
+
+Arguments :
+
+1. userId : User identifier of created sticker set owner
+
+2. name : Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in "_by_<bot_username>". <bot_username> is case insensitive. 1-64 characters.
+
+3. title : Sticker set title, 1-64 characters.
+
+4. stickerFormat : Format of stickers in the set, must be one of “static”, “animated”, “video”
+
+5. stickerType : Type of stickers in the set, pass “regular”, “mask”, or “custom_emoji”. By default, a regular sticker set is created.
+
+6. needsRepainting : Pass True if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only
+*/
+func (bot *Bot) CreateStickerSet(userId int, name, title, stickerFormat, stickerType string, needsRepainting bool) *StickerSet {
+	return &StickerSet{
+		bot:             bot,
+		initStickers:    make([]*objs.InputSticker, 0),
+		initFiles:       make([]*os.File, 0),
+		userId:          userId,
+		name:            name,
+		title:           title,
+		stickerFormat:   stickerFormat,
+		stickerType:     stickerType,
+		needsRepainting: needsRepainting,
+		created:         false,
 	}
-	if err != nil {
-		return nil, err
-	}
-	if !res.Result {
-		return nil, errors.New("false returned from server")
-	}
-	out := &StickerSet{bot: bot, userId: userId, stickerSet: &objs.StickerSet{
-		Name: name, Title: title, ContainsMask: containsMask, Stickers: make([]objs.Sticker, 0),
-	}}
-	out.update()
-	return out, nil
 }
 
 /*
@@ -1054,6 +1086,46 @@ Use this method to get information about custom emoji stickers by their identifi
 */
 func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.StickersResult, error) {
 	return bot.apiInterface.GetCustomEmojiStickers(IDs)
+}
+
+/*
+SetDescription sets the description of the bot for the specified langauge. Description is shown in the chat with the bot if the chat is empty.
+
+Arguments :
+
+1. description : New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.
+
+2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
+*/
+func (bot *Bot) SetDescription(description, languageCode string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetMyDescription(description, languageCode)
+}
+
+/*
+SetShortDescription sets the short description of the bot for the specified langauge. Short description is shown on the bot's profile page and is sent together with the link when users share the bot.
+
+Arguments :
+
+1. shortDescription : New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.
+
+2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
+*/
+func (bot *Bot) SetShortDescription(shortDescription, languageCode string) (*objs.LogicalResult, error) {
+	return bot.apiInterface.SetMyShortDescription(shortDescription, languageCode)
+}
+
+/*
+GetDescription returns description of the bot based on the specified language.
+*/
+func (bot *Bot) GetDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+	return bot.apiInterface.GetMyDescription(languageCode)
+}
+
+/*
+GetShortDescription returns short description of the bot based on the specified language.
+*/
+func (bot *Bot) GetShortDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+	return bot.apiInterface.GetMyDescription(languageCode)
 }
 
 /*

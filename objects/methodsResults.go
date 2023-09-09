@@ -133,6 +133,16 @@ type StickersResult struct {
 }
 
 type ForumTopicResult struct {
-	Ok     bool       `json:"ok"`
-	Result ForumTopic `json:"result"`
+	Ok     bool        `json:"ok"`
+	Result *ForumTopic `json:"result"`
+}
+
+type BotDescriptionResult struct {
+	Ok     bool            `json:"ok"`
+	Result *BotDescription `json:"result"`
+}
+
+type BotShortDescriptionResult struct {
+	Ok     bool                 `json:"ok"`
+	Result *BotShortDescription `json:"result"`
 }

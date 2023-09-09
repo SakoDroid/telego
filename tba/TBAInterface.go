@@ -1587,7 +1587,7 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 }
 
 /*SendSticker sends an sticker to the given chat id.*/
-func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo, messageThreadId int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker, emoji string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo, messageThreadId int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
 	args := &objs.SendStickerArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
@@ -1598,6 +1598,7 @@ func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker str
 			ProtectContent:           protectContent,
 		},
 		Sticker: sticker,
+		Emoji:   emoji,
 	}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("sendSticker", args, true, file)
@@ -1630,10 +1631,11 @@ func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.StickerSetResult, 
 }
 
 /*UploadStickerFile uploads the given file as an sticker on the telegram servers.*/
-func (bai *BotAPIInterface) UploadStickerFile(userId int, pngSticker string, file *os.File) (*objs.GetFileResult, error) {
+func (bai *BotAPIInterface) UploadStickerFile(userId int, stickerFormat string, sticker *objs.InputSticker, file *os.File) (*objs.GetFileResult, error) {
 	args := &objs.UploadStickerFileArgs{
-		UserId:     userId,
-		PngSticker: pngSticker,
+		UserId:        userId,
+		Sticker:       sticker,
+		StickerFormat: stickerFormat,
 	}
 	res, err := bai.SendCustom("uploadStickerFile", args, true, file)
 	if err != nil {
@@ -1648,19 +1650,17 @@ func (bai *BotAPIInterface) UploadStickerFile(userId int, pngSticker string, fil
 }
 
 /*CreateNewStickerSet creates a new sticker set with the given arguments*/
-func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngSticker, tgsSticker, webmSticker, emojies string, containsMasks bool, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, StickerFormat, StickerType string, needsRepainting bool, stickers []*objs.InputSticker, files ...*os.File) (*objs.LogicalResult, error) {
 	args := &objs.CreateNewStickerSetArgs{
-		UserId:        userId,
-		Name:          name,
-		Title:         title,
-		Emojis:        emojies,
-		PngSticker:    pngSticker,
-		TgsSticker:    tgsSticker,
-		WebmSticker:   webmSticker,
-		ContainsMasks: containsMasks,
-		MaskPosition:  maskPosition,
+		UserId:          userId,
+		Name:            name,
+		Title:           title,
+		Stickers:        stickers,
+		StickerFormat:   StickerFormat,
+		StickerType:     StickerType,
+		NeedsRepainting: needsRepainting,
 	}
-	res, err := bai.SendCustom("createNewStickerSet", args, true, file)
+	res, err := bai.SendCustom("createNewStickerSet", args, true, files...)
 	if err != nil {
 		return nil, err
 	}
@@ -1673,15 +1673,11 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, pngStic
 }
 
 /*AddStickerToSet adds a new sticker to the given set.*/
-func (bai *BotAPIInterface) AddStickerToSet(userId int, name, pngSticker, tgsSticker, webmSticker, emojies string, maskPosition *objs.MaskPosition, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AddStickerToSet(userId int, name string, sticker *objs.InputSticker, file *os.File) (*objs.LogicalResult, error) {
 	args := &objs.AddStickerSetArgs{
-		UserId:       userId,
-		Name:         name,
-		PngSticker:   pngSticker,
-		TgsSticker:   tgsSticker,
-		WebmSticker:  webmSticker,
-		Emojis:       emojies,
-		MaskPosition: maskPosition,
+		UserId:  userId,
+		Name:    name,
+		Sticker: sticker,
 	}
 	res, err := bai.SendCustom("addStickerToSet", args, true, file)
 	if err != nil {
@@ -2485,6 +2481,76 @@ func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, cha
 	} else {
 		return nil, &errs.RequiredArgumentError{ArgName: "chatIdInt or chatIdString", MethodName: "unpinAllGeneralForumTopicMessages"}
 	}
+}
+
+// SetMyDescription changes the bot's description, which is shown in the chat with the bot if the chat is empty. Returns True on success.
+func (bai *BotAPIInterface) SetMyDescription(description, languageCode string) (*objs.LogicalResult, error) {
+	args := objs.SetMyDescriptionArgs{
+		Description:  description,
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("setMyDescription", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetMyShortDescription changes the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns True on success.
+func (bai *BotAPIInterface) SetMyShortDescription(description, languageCode string) (*objs.LogicalResult, error) {
+	args := objs.SetMyShortDescriptionArgs{
+		ShortDescription: description,
+		LanguageCode:     languageCode,
+	}
+	res, err := bai.SendCustom("setMyShortDescription", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// GetMyDescription gets the current bot description for the given user language. Returns BotDescription on success.
+func (bai *BotAPIInterface) GetMyDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+	args := objs.GetMyDescriptionArgs{
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("getMyDescription", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.BotDescriptionResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// GetMyShortDescription gets the current bot short description for the given user language. Returns BotShortDescription on success.
+func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.BotShortDescriptionResult, error) {
+	args := objs.GetMyDescriptionArgs{
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("getMyShortDescription", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.BotShortDescriptionResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
 }
 
 /*SendCustom calls the given method on api server with the given arguments. "MP" options indicates that the request should be made in multipart/formdata form. If this method sends a file to the api server the "MP" option should be true*/

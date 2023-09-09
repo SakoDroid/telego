@@ -272,6 +272,8 @@ func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 type SendStickerArgs struct {
 	DefaultSendMethodsArguments
 	Sticker string `json:"sticker"`
+	//Emoji associated with the sticker; only for just uploaded stickers
+	Emoji string `json:"emoji"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -306,8 +308,9 @@ func (args *GetStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type UploadStickerFileArgs struct {
-	UserId     int    `json:"user_id"`
-	PngSticker string `json:"png_sticker"`
+	UserId        int           `json:"user_id"`
+	Sticker       *InputSticker `json:"sticker"`
+	StickerFormat string        `json:"sticker_format"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -319,21 +322,22 @@ func (args *UploadStickerFileArgs) ToJson() []byte {
 // ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
 func (args *UploadStickerFileArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
-	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
-	fw, _ = wr.CreateFormField("png_sticker")
-	_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
+	io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
+	fw, _ = wr.CreateFormField("sticker")
+	jsn, _ := json.Marshal(args.Sticker)
+	io.Copy(fw, bytes.NewReader(jsn))
+	fw, _ = wr.CreateFormField("sticker_format")
+	io.Copy(fw, strings.NewReader(args.StickerFormat))
 }
 
 type CreateNewStickerSetArgs struct {
-	UserId        int           `json:"user_id"`
-	Name          string        `json:"name"`
-	Title         string        `json:"title"`
-	PngSticker    string        `json:"png_sticker,omitempty"`
-	TgsSticker    string        `json:"tgs_sticker,omitempty"`
-	WebmSticker   string        `json:"webm_sticker,omitempty"`
-	Emojis        string        `json:"emojis"`
-	ContainsMasks bool          `json:"contains_masks"`
-	MaskPosition  *MaskPosition `json:"mask_position"`
+	UserId          int             `json:"user_id"`
+	Name            string          `json:"name"`
+	Title           string          `json:"title"`
+	Stickers        []*InputSticker `json:"stickers"`
+	StickerFormat   string          `json:"sticker_format"`
+	StickerType     string          `json:"sticker_type"`
+	NeedsRepainting bool            `json:"needs_repainting"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -350,37 +354,21 @@ func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
 	fw, _ = wr.CreateFormField("title")
 	_, _ = io.Copy(fw, strings.NewReader(args.Title))
-	fw, _ = wr.CreateFormField("emojis")
-	_, _ = io.Copy(fw, strings.NewReader(args.Emojis))
-	if args.PngSticker != "" {
-		fw, _ = wr.CreateFormField("png_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
-	}
-	if args.TgsSticker != "" {
-		fw, _ = wr.CreateFormField("tgs_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
-	}
-	if args.WebmSticker != "" {
-		fw, _ = wr.CreateFormField("webm_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.WebmSticker))
-	}
-	fw, _ = wr.CreateFormField("contains_masks")
-	_, _ = io.Copy(fw, strings.NewReader(strconv.FormatBool(args.ContainsMasks)))
-	if args.MaskPosition != nil {
-		fw, _ = wr.CreateFormField("mask_position")
-		bt, _ := json.Marshal(args.MaskPosition)
-		_, _ = io.Copy(fw, bytes.NewReader(bt))
-	}
+	fw, _ = wr.CreateFormField("stickers")
+	jsn, _ := json.Marshal(args.Stickers)
+	io.Copy(fw, bytes.NewReader(jsn))
+	fw, _ = wr.CreateFormField("sticker_format")
+	io.Copy(fw, strings.NewReader(args.StickerFormat))
+	fw, _ = wr.CreateFormField("sticker_type")
+	io.Copy(fw, strings.NewReader(args.StickerType))
+	fw, _ = wr.CreateFormField("needs_repainting")
+	io.Copy(fw, strings.NewReader(strconv.FormatBool(args.NeedsRepainting)))
 }
 
 type AddStickerSetArgs struct {
-	UserId       int           `json:"user_id"`
-	Name         string        `json:"name"`
-	PngSticker   string        `json:"png_sticker,omitempty"`
-	TgsSticker   string        `json:"tgs_sticker,omitempty"`
-	WebmSticker  string        `json:"webm_sticker,omitempty"`
-	Emojis       string        `json:"emojis"`
-	MaskPosition *MaskPosition `json:"mask_position"`
+	UserId  int           `json:"user_id"`
+	Name    string        `json:"name"`
+	Sticker *InputSticker `json:"sticker"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -395,25 +383,9 @@ func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
 	fw, _ = wr.CreateFormField("name")
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
-	fw, _ = wr.CreateFormField("emojis")
-	_, _ = io.Copy(fw, strings.NewReader(args.Emojis))
-	if args.PngSticker != "" {
-		fw, _ = wr.CreateFormField("png_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.PngSticker))
-	}
-	if args.TgsSticker != "" {
-		fw, _ = wr.CreateFormField("tgs_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.TgsSticker))
-	}
-	if args.WebmSticker != "" {
-		fw, _ = wr.CreateFormField("webm_sticker")
-		_, _ = io.Copy(fw, strings.NewReader(args.WebmSticker))
-	}
-	if args.MaskPosition != nil {
-		fw, _ = wr.CreateFormField("mask_position")
-		bt, _ := json.Marshal(args.MaskPosition)
-		_, _ = io.Copy(fw, bytes.NewReader(bt))
-	}
+	fw, _ = wr.CreateFormField("sticker")
+	jsn, _ := json.Marshal(args.Sticker)
+	io.Copy(fw, bytes.NewReader(jsn))
 }
 
 type SetStickerPositionInSetArgs struct {
@@ -2107,4 +2079,65 @@ type UnhideGeneralForumTopic struct {
 
 type UnpinAllGeneralForumTopicMessages struct {
 	*CloseGeneralForumTopic
+}
+
+type SetMyDescriptionArgs struct {
+	/*New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.*/
+	Description string `json:"description"`
+	/*A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.*/
+	LanguageCode string `json:"language_code"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetMyDescriptionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetMyDescriptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type GetMyDescriptionArgs struct {
+	//A two-letter ISO 639-1 language code or an empty string
+	LanguageCode string `json:"language_code"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *GetMyDescriptionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *GetMyDescriptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetMyShortDescriptionArgs struct {
+	/*New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.*/
+	ShortDescription string `json:"short_description"`
+	/*A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.*/
+	LanguageCode string `json:"language_code"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetMyShortDescriptionArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+func (args *SetMyShortDescriptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
 }

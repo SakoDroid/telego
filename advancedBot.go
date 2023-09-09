@@ -59,6 +59,30 @@ func (bot *AdvancedBot) ACopyMessage(messageId int, disableNotif bool, replyTo i
 }
 
 /*
+ASendSticker returns a MediaSender which has several methods for sending a sticker. This method is only used for sending a sticker to all types of chat except channels. To send a sticker to a channel use "SendStickerUN" method.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
+*/
+func (bot *AdvancedBot) ASendSticker(chatId, replyTo, messageThreadId int, emoji string, captionEntites []objs.MessageEntity, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: chatId, replyTo: replyTo, messageThreadId: messageThreadId, stickerEmoji: emoji, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+}
+
+/*
+ASendStickerUN returns a MediaSender which has several methods for sending a sticker. This method is only used for sending a sticker to a channels.
+To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
+*/
+func (bot *AdvancedBot) ASendStickerUN(chatId string, replyTo, messageThreadId int, emoji string, captionEntites []objs.MessageEntity, allowSendingWithoutReply, hasSpoiler bool, keyboard MarkUps) *MediaSender {
+	var replyMarkup objs.ReplyMarkup
+	if keyboard != nil {
+		replyMarkup = keyboard.toMarkUp()
+	}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, stickerEmoji: emoji, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+}
+
+/*
 ASendPhoto returns a MediaSender which has several methods for sending a photo. This method is only used for sending a photo to all types of chat except channels. To send a photo to a channel use "SendPhotoUN" method.
 To ignore int arguments pass 0 and to ignore string arguments pass empty string ("")
 */
@@ -79,7 +103,7 @@ func (bot *AdvancedBot) ASendPhotoUN(chatId string, replyTo, messageThreadId int
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: PHOTO, bot: bot.bot, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -97,7 +121,7 @@ func (bot *AdvancedBot) ASendVideo(chatId int, replyTo, messageThreadId int, cap
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -115,7 +139,7 @@ func (bot *AdvancedBot) ASendVideoUN(chatId string, replyTo, messageThreadId int
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: VIDEO, bot: bot.bot, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntites, duration: duration, supportsStreaming: supportsStreaming, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -135,7 +159,7 @@ func (bot *AdvancedBot) ASendAudio(chatId, replyTo, messageThreadId int, caption
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -155,7 +179,7 @@ func (bot *AdvancedBot) ASendAudioUN(chatId string, replyTo, messageThreadId int
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: AUDIO, bot: bot.bot, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, performer: performer, title: title, duration: duration, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -173,7 +197,7 @@ func (bot *AdvancedBot) ASendDocument(chatId, replyTo, messageThreadId int, capt
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -191,7 +215,7 @@ func (bot *AdvancedBot) ASendDocumentUN(chatId string, replyTo, messageThreadId 
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: DOCUMENT, bot: bot.bot, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, caption: caption, parseMode: parseMode, captionEntities: captionEntities, disableContentTypeDetection: disableContentTypeDetection, allowSendingWihoutReply: allowSendingWithoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -209,7 +233,7 @@ func (bot *AdvancedBot) ASendAnimation(chatId int, replyTo, messageThreadId int,
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -227,7 +251,7 @@ func (bot *AdvancedBot) ASendAnimationUN(chatId string, replyTo, messageThreadId
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
+	return &MediaSender{mediaType: ANIMATION, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, width: width, height: height, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, hasSpoiler: hasSpoiler}
 }
 
 /*
@@ -245,7 +269,7 @@ func (bot *AdvancedBot) ASendVoice(chatId int, replyTo, messageThreadId int, cap
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VOICE, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -263,7 +287,7 @@ func (bot *AdvancedBot) ASendVoiceUN(chatId string, replyTo, messageThreadId int
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VOICE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
+	return &MediaSender{mediaType: VOICE, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, duration: duration, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup}
 }
 
 /*
@@ -281,7 +305,7 @@ func (bot *AdvancedBot) ASendVideoNote(chatId int, replyTo, messageThreadId int,
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, chatidString: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: chatId, username: "", replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*
@@ -299,7 +323,7 @@ func (bot *AdvancedBot) ASendVideoNoteUN(chatId string, replyTo, messageThreadId
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, chatidString: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
+	return &MediaSender{mediaType: VIDEONOTE, chatIdInt: 0, username: chatId, replyTo: replyTo, messageThreadId: messageThreadId, bot: bot.bot, caption: caption, parseMode: parseMode, captionEntities: captionEntities, allowSendingWihoutReply: allowSendingWihtoutReply, replyMarkup: replyMarkup, length: length, duration: duration}
 }
 
 /*
