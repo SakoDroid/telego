@@ -140,6 +140,8 @@ type Message struct {
 	Photo []PhotoSize `json:"photo,omitempty"`
 	/*Optional. Message is a sticker, information about the sticker*/
 	Sticker *Sticker `json:"sticker,omitempty"`
+	/*Optional. Message is a forwarded story*/
+	Story *Story `json:"story"`
 	/*Optional. Message is a video, information about the video*/
 	Video *Video `json:"video,omitempty"`
 	/*Optional. Message is a video note, information about the video message*/
@@ -296,6 +298,9 @@ type WebhookInfo struct {
 	/*Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member*/
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 }
+
+// This object represents a message about a forwarded story in the chat. Currently holds no information.
+type Story struct{}
 
 /*Not related to telegram bot api*/
 type ChatUpdate struct {

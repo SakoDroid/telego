@@ -99,9 +99,17 @@ type PollOption struct {
 }
 
 type PollAnswer struct {
-	PollId    string `json:"poll_id"`
-	User      *User  `json:"user"`
-	OptionIds []int  `json:"option_ids"`
+	//Unique poll identifier
+	PollId string `json:"poll_id"`
+	//Optional. The chat that changed the answer to the poll, if the voter is anonymous
+	VoterChat *Chat `json:"voter_chat"`
+	/*Optional. The user that changed the answer to the poll, if the voter isn't anonymous
+
+	For backward compatibility, the field user in such objects will contain the user 136817688.
+	*/
+	User *User `json:"user"`
+	//0-based identifiers of chosen answer options. May be empty if the vote was retracted.
+	OptionIds []int `json:"option_ids"`
 }
 
 type Poll struct {
