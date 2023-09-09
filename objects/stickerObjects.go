@@ -17,7 +17,7 @@ type Sticker struct {
 	/*True, if the sticker is a video sticker*/
 	IsVideo bool `json:"is_video"`
 	/*Optional. Sticker thumbnail in the .WEBP or .JPG format*/
-	Thumb *PhotoSize `json:"thumb,omitempty"`
+	Thumb *PhotoSize `json:"thumbnail,omitempty"`
 	/*Optional. Emoji associated with the sticker*/
 	Emoji string `json:"emoji,omitempty"`
 	/*Optional. Name of the sticker set to which the sticker belongs*/
@@ -53,7 +53,7 @@ type StickerSet struct {
 	/*List of all set stickers*/
 	Stickers []Sticker `json:"stickers"`
 	/*Optional. Sticker set thumbnail in the .WEBP or .TGS format*/
-	Thumb *PhotoSize `json:"thumb,omitempty"`
+	Thumb *PhotoSize `json:"thumbnail,omitempty"`
 }
 
 /*MaskPosition describes the position on faces where a mask should be placed by default.*/

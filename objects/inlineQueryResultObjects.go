@@ -30,7 +30,8 @@ type InlineQueryResultDefault struct {
 	Title string `json:"title"`
 }
 
-/*Returns the type of the result. The returned value is one of the following :
+/*
+Returns the type of the result. The returned value is one of the following :
 CachedAudio
 CachedDocument
 CachedGif
@@ -50,7 +51,8 @@ Mpeg4Gif
 Photo
 Venue
 Video
-Voice*/
+Voice
+*/
 func (i *InlineQueryResultDefault) GetResultType() string {
 	return i.Type
 }
@@ -69,11 +71,11 @@ type InlineQueryResultArticle struct {
 	/*Optional. Short description of the result*/
 	Description string `json:"description,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
-	ThumbURL string `json:"thumb_url,omitempty"`
+	ThumbURL string `json:"thumbnail_url,omitempty"`
 	/*Optional. Thumbnail width*/
-	ThumbWidth int `json:"thumb_width,omitempty"`
+	ThumbWidth int `json:"thumbnail_width,omitempty"`
 	/*Optional. Thumbnail height*/
-	ThumbHeight int `json:"thumb_height,omitempty"`
+	ThumbHeight int `json:"thumbnail_height,omitempty"`
 }
 
 /*Represents a link to a photo. By default, this photo will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.*/
@@ -82,7 +84,7 @@ type InlineQueryResultPhoto struct {
 	/*A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB*/
 	PhotoURL string `json:"photo_url"`
 	/*URL of the thumbnail for the photo*/
-	ThumbURL string `json:"thumb_url"`
+	ThumbURL string `json:"thumbnail_url"`
 	/*Optional. Width of the photo*/
 	PhotoWidth int `json:"photo_width,omitempty"`
 	/*Optional. Height of the photo*/
@@ -113,9 +115,9 @@ type InlineQueryResultGif struct {
 	/*Optional. Duration of the GIF in seconds*/
 	GifDuration int `json:"gif_duration,omitempty"`
 	/*URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result*/
-	ThumbURL string `json:"thumb_url"`
+	ThumbURL string `json:"thumbnail_url"`
 	/*Optional. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”*/
-	ThumbMIMEType string `json:"thumb_mime_type"`
+	ThumbMIMEType string `json:"thumbnail_mime_type"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
 	Caption string `json:"caption,omitempty"`
 	/*Optional. Mode for parsing entities in the caption. See formatting options for more details.*/
@@ -140,9 +142,9 @@ type InlineQueryResultMpeg4Gif struct {
 	/*Optional. Video duration in seconds*/
 	Mpeg4Duration int `json:"mpeg4_duration,omitempty"`
 	/*URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result*/
-	ThumbURL string `json:"thumb_url"`
+	ThumbURL string `json:"thumbnail_url"`
 	/*Optional. MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”. Defaults to “image/jpeg”*/
-	ThumbMIMEType string `json:"thumb_mime_type"`
+	ThumbMIMEType string `json:"thumbnail_mime_type"`
 	/*Optional. Caption of the file to be sent, 0-1024 characters after entities parsing*/
 	Caption string `json:"caption,omitempty"`
 	/*Optional. Mode for parsing entities in the caption. See formatting options for more details.*/
@@ -155,9 +157,11 @@ type InlineQueryResultMpeg4Gif struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the video.
+/*
+Represents a link to a page containing an embedded video player or a video file. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the video.
 
-If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you must replace its content using input_message_content.*/
+If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube), you must replace its content using input_message_content.
+*/
 type InlineQueryResultVideo struct {
 	InlineQueryResultDefault
 	/*A valid URL for the embedded video player or video file*/
@@ -165,7 +169,7 @@ type InlineQueryResultVideo struct {
 	/*Mime type of the content of video url, “text/html” or “video/mp4”*/
 	MIMEType string `json:"mime_type"`
 	/*URL of the thumbnail (JPEG only) for the video*/
-	ThumbURL string `json:"thumb_url"`
+	ThumbURL string `json:"thumbnail_url"`
 	/*Optional. Video width*/
 	VideoWidth int `json:"video_width,omitempty"`
 	/*Optional. Video height*/
@@ -186,7 +190,8 @@ type InlineQueryResultVideo struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.
+/*
+Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 */
 type InlineQueryResultAudio struct {
@@ -209,8 +214,10 @@ type InlineQueryResultAudio struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the the voice message.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the the voice message.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultVocie struct {
 	InlineQueryResultDefault
 	/*A valid URL for the voice recording*/
@@ -229,8 +236,10 @@ type InlineQueryResultVocie struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultDocument struct {
 	InlineQueryResultDefault
 	/*A valid URL for the file*/
@@ -250,15 +259,17 @@ type InlineQueryResultDocument struct {
 	/*Optional. Content of the message to be sent instead of the file*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
-	ThumbURL string `json:"thumb_url,omitempty"`
+	ThumbURL string `json:"thumbnail_url,omitempty"`
 	/*Optional. Thumbnail width*/
-	ThumbWidth int `json:"thumb_width,omitempty"`
+	ThumbWidth int `json:"thumbnail_width,omitempty"`
 	/*Optional. Thumbnail height*/
-	ThumbHeight int `json:"thumb_height,omitempty"`
+	ThumbHeight int `json:"thumbnail_height,omitempty"`
 }
 
-/*Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultLocation struct {
 	InlineQueryResultDefault
 	/*Location latitude in degrees*/
@@ -278,15 +289,17 @@ type InlineQueryResultLocation struct {
 	/*Optional. Content of the message to be sent instead of the location*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
-	ThumbURL string `json:"thumb_url,omitempty"`
+	ThumbURL string `json:"thumbnail_url,omitempty"`
 	/*Optional. Thumbnail width*/
-	ThumbWidth int `json:"thumb_width,omitempty"`
+	ThumbWidth int `json:"thumbnail_width,omitempty"`
 	/*Optional. Thumbnail height*/
-	ThumbHeight int `json:"thumb_height,omitempty"`
+	ThumbHeight int `json:"thumbnail_height,omitempty"`
 }
 
-/*Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the venue.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the venue.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultVenu struct {
 	InlineQueryResultDefault
 	/*Latitude of the venue location in degrees*/
@@ -308,15 +321,17 @@ type InlineQueryResultVenu struct {
 	/*Optional. Content of the message to be sent instead of the venue*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
-	ThumbURL string `json:"thumb_url,omitempty"`
+	ThumbURL string `json:"thumbnail_url,omitempty"`
 	/*Optional. Thumbnail width*/
-	ThumbWidth int `json:"thumb_width,omitempty"`
+	ThumbWidth int `json:"thumbnail_width,omitempty"`
 	/*Optional. Thumbnail height*/
-	ThumbHeight int `json:"thumb_height,omitempty"`
+	ThumbHeight int `json:"thumbnail_height,omitempty"`
 }
 
-/*Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the contact.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the contact.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultContact struct {
 	InlineQueryResultDefault
 	/*Contact's phone number*/
@@ -332,15 +347,17 @@ type InlineQueryResultContact struct {
 	/*Optional. Content of the message to be sent instead of the contact*/
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 	/*Optional. Url of the thumbnail for the result*/
-	ThumbURL string `json:"thumb_url,omitempty"`
+	ThumbURL string `json:"thumbnail_url,omitempty"`
 	/*Optional. Thumbnail width*/
-	ThumbWidth int `json:"thumb_width,omitempty"`
+	ThumbWidth int `json:"thumbnail_width,omitempty"`
 	/*Optional. Thumbnail height*/
-	ThumbHeight int `json:"thumb_height,omitempty"`
+	ThumbHeight int `json:"thumbnail_height,omitempty"`
 }
 
-/*Represents a Game.
-Note: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.*/
+/*
+Represents a Game.
+Note: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.
+*/
 type InlineQueryResultGame struct {
 	/*Type of the result*/
 	Type string `json:"type"`
@@ -409,8 +426,10 @@ type InlineQueryResultCachedMpeg4Gif struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.
-This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.*/
+/*
+Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.
+This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.
+*/
 type InlineQueryResultCachedSticker struct {
 	/*Type of the result*/
 	Type string `json:"type"`
@@ -447,8 +466,10 @@ type InlineQueryResultCachedVideo struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.
-This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.
+This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultCachedAudio struct {
 	InlineQueryResultDefault
 	/*A valid file identifier for the audio*/
@@ -465,8 +486,10 @@ type InlineQueryResultCachedAudio struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the voice message.
-This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the voice message.
+This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultCachedVocie struct {
 	InlineQueryResultDefault
 	/*A valid file identifier for the video*/
@@ -483,8 +506,10 @@ type InlineQueryResultCachedVocie struct {
 	InputMessageContent InputMessageContent `json:"input_message_content,omitempty"`
 }
 
-/*Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file.
-Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.*/
+/*
+Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file.
+Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+*/
 type InlineQueryResultCachedDocument struct {
 	InlineQueryResultDefault
 	/*A valid file identifier for the file*/

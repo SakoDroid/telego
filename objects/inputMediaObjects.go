@@ -31,7 +31,7 @@ func (is *InputMediaPhoto) blah() {}
 type InputMediaVideo struct {
 	InputMediaDefault
 	/*Optional. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb string `json:"thumb,omitempty"`
+	Thumb string `json:"thumbnail,omitempty"`
 	/*Optional. Video width*/
 	Width int `json:"width,omitempty"`
 	/*Optional. Video height*/
@@ -50,7 +50,7 @@ func (is *InputMediaVideo) blah() {}
 type InputMediaAnimation struct {
 	InputMediaDefault
 	/*Optional. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb string `json:"thumb,omitempty"`
+	Thumb string `json:"thumbnail,omitempty"`
 	/*Optional. Animation width*/
 	Width int `json:"width,omitempty"`
 	/*Optional. Animation height*/
@@ -67,7 +67,7 @@ func (is *InputMediaAnimation) blah() {}
 type InputMediaAudio struct {
 	InputMediaDefault
 	/*Optional. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb string `json:"thumb,omitempty"`
+	Thumb string `json:"thumbnail,omitempty"`
 	/*Optional. Animation duration in seconds*/
 	Duration int `json:"duration,omitempty"`
 	/*Optional. Performer of the audio*/
@@ -82,7 +82,7 @@ func (is *InputMediaAudio) blah() {}
 type InputMediaDocument struct {
 	InputMediaDefault
 	/*Optional. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb string `json:"thumb,omitempty"`
+	Thumb string `json:"thumbnail,omitempty"`
 	/*Optional. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always True, if the document is sent as part of an album.*/
 	DisableContentTypeDetection bool `json:"disable_content_type_detection,omitempty"`
 }

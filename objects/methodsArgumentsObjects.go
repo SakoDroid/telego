@@ -38,7 +38,7 @@ func (args *SetWebhookArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetWebhookArgs) ToMultiPart(wr *mp.Writer) {
 	fr, _ := wr.CreateFormField("url")
 	_, _ = io.Copy(fr, strings.NewReader(args.URL))
@@ -74,7 +74,7 @@ func (args *DeleteWebhookArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DeleteWebhookArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -100,7 +100,7 @@ func (args *GetUpdatesArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetUpdatesArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -122,7 +122,7 @@ type DefaultSendMethodsArguments struct {
 	MessageThreadId int `json:"message_thread_id,omitempty"`
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (df *DefaultSendMethodsArguments) toMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
 	_, _ = io.Copy(fw, strings.NewReader(string(df.ChatId)))
@@ -162,7 +162,7 @@ func (args *SendMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -191,7 +191,7 @@ func (args *ForwardMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *ForwardMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -221,7 +221,7 @@ func (args *CopyMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CopyMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this method are never passed as multipart.
 }
@@ -249,7 +249,7 @@ func (args *SendPhotoArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("photo")
@@ -282,7 +282,7 @@ func (args *SendStickerArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendStickerArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("sticker")
@@ -302,7 +302,7 @@ func (args *GetStickerSetArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this methods are never passed as multipart.
 }
@@ -319,7 +319,7 @@ func (args *UploadStickerFileArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *UploadStickerFileArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -346,7 +346,7 @@ func (args *CreateNewStickerSetArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CreateNewStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -377,7 +377,7 @@ func (args *AddStickerSetArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AddStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
@@ -402,7 +402,7 @@ func (args *SetStickerPositionInSetArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetStickerPositionInSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -420,7 +420,7 @@ func (args *DeleteStickerFromSetArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DeleteStickerFromSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -439,7 +439,7 @@ func (args *SetStickerEmojiListArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetStickerEmojiListArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -458,7 +458,7 @@ func (args *SetStickerKeywordsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetStickerKeywordsArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -477,7 +477,7 @@ func (args *SetStickerMaskPositionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetStickerMaskPositionArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -496,7 +496,7 @@ func (args *SetStickerSetTitleArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetStickerSetTitleArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
@@ -514,30 +514,30 @@ func (args *DeleteStickerSetArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DeleteStickerSetArgs) ToMultiPart(wr *mp.Writer) {
 	//The arguments of this meethod are never passed as multipart.
 }
 
-type SetStickerSetThumbArgs struct {
+type SetStickerSetThumbnailArgs struct {
 	Name   string `json:"name"`
 	UserId int    `json:"user_id"`
 	Thumb  string `json:"thumb"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
-func (args *SetStickerSetThumbArgs) ToJson() []byte {
+func (args *SetStickerSetThumbnailArgs) ToJson() []byte {
 	//The arguments of this methos is never passed as json.
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
-func (args *SetStickerSetThumbArgs) ToMultiPart(wr *mp.Writer) {
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
+func (args *SetStickerSetThumbnailArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("user_id")
 	_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.UserId)))
 	fw, _ = wr.CreateFormField("name")
 	_, _ = io.Copy(fw, strings.NewReader(args.Name))
-	fw, _ = wr.CreateFormField("thumb")
+	fw, _ = wr.CreateFormField("thumbnail")
 	_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 }
 
@@ -554,7 +554,7 @@ type SendAudioArgs struct {
 	/*Track name*/
 	Title string `json:"title,omitempty"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb string `json:"thumb,omitempty"`
+	Thumb string `json:"thumbnail,omitempty"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -566,7 +566,7 @@ func (args *SendAudioArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendAudioArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("audio")
@@ -576,7 +576,7 @@ func (args *SendAudioArgs) ToMultiPart(wr *mp.Writer) {
 		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
 	}
 	if args.Thumb != "" {
-		fw, _ = wr.CreateFormField("thumb")
+		fw, _ = wr.CreateFormField("thumbnail")
 		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 	}
 	if args.Caption != "" {
@@ -606,7 +606,7 @@ type SendDocumentArgs struct {
 	DefaultSendMethodsArguments
 	Document string `json:"document"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb           string          `json:"thumb,omitempty"`
+	Thumb           string          `json:"thumbnail,omitempty"`
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
@@ -623,13 +623,13 @@ func (args *SendDocumentArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendDocumentArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("document")
 	_, _ = io.Copy(fw, strings.NewReader(args.Document))
 	if args.Thumb != "" {
-		fw, _ = wr.CreateFormField("thumb")
+		fw, _ = wr.CreateFormField("thumbnail")
 		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 	}
 	if args.Caption != "" {
@@ -653,7 +653,7 @@ type SendVideoArgs struct {
 	DefaultSendMethodsArguments
 	Video string `json:"video"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb           string          `json:"thumb,omitempty"`
+	Thumb           string          `json:"thumbnail,omitempty"`
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
@@ -674,7 +674,7 @@ func (args *SendVideoArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("video")
@@ -686,7 +686,7 @@ func (args *SendVideoArgs) ToMultiPart(wr *mp.Writer) {
 		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
 	}
 	if args.Thumb != "" {
-		fw, _ = wr.CreateFormField("thumb")
+		fw, _ = wr.CreateFormField("thumbnail")
 		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 	}
 	if args.Caption != "" {
@@ -708,7 +708,7 @@ type SendAnimationArgs struct {
 	DefaultSendMethodsArguments
 	Animation string `json:"animation"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb           string          `json:"thumb,omitempty"`
+	Thumb           string          `json:"thumbnail,omitempty"`
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
@@ -729,7 +729,7 @@ func (args *SendAnimationArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendAnimationArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("animation")
@@ -739,7 +739,7 @@ func (args *SendAnimationArgs) ToMultiPart(wr *mp.Writer) {
 		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
 	}
 	if args.Thumb != "" {
-		fw, _ = wr.CreateFormField("thumb")
+		fw, _ = wr.CreateFormField("thumbnail")
 		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 	}
 	if args.Caption != "" {
@@ -784,7 +784,7 @@ func (args *SendVoiceArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendVoiceArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("voice")
@@ -812,7 +812,7 @@ type SendVideoNoteArgs struct {
 	DefaultSendMethodsArguments
 	VideoNote string `json:"video_note"`
 	/*Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.*/
-	Thumb           string          `json:"thumb,omitempty"`
+	Thumb           string          `json:"thumbnail,omitempty"`
 	Caption         string          `json:"caption,omitempty"`
 	ParseMode       string          `json:"parse_mode,omitempty"`
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
@@ -830,7 +830,7 @@ func (args *SendVideoNoteArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendVideoNoteArgs) ToMultiPart(wr *mp.Writer) {
 	args.toMultiPart(wr)
 	fw, _ := wr.CreateFormField("video_note")
@@ -840,7 +840,7 @@ func (args *SendVideoNoteArgs) ToMultiPart(wr *mp.Writer) {
 		_, _ = io.Copy(fw, strings.NewReader(strconv.Itoa(args.Duration)))
 	}
 	if args.Thumb != "" {
-		fw, _ = wr.CreateFormField("thumb")
+		fw, _ = wr.CreateFormField("thumbnail")
 		_, _ = io.Copy(fw, strings.NewReader(args.Thumb))
 	}
 	if args.Caption != "" {
@@ -877,7 +877,7 @@ func (args *SendMediaGroupArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendMediaGroupArgs) ToMultiPart(wr *mp.Writer) {
 	args.ReplyMarkup = nil
 	args.toMultiPart(wr)
@@ -911,7 +911,7 @@ func (args *SendLocationArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -946,7 +946,7 @@ func (args *EditMessageLiveLocationArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -971,7 +971,7 @@ func (args *StopMessageLiveLocationArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *StopMessageLiveLocationArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1001,7 +1001,7 @@ func (args *SendVenueArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendVenueArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1023,7 +1023,7 @@ func (args *SendContactArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendContactArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1065,7 +1065,7 @@ func (args *SendPollArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1085,7 +1085,7 @@ func (args *SendDiceArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendDiceArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1107,7 +1107,7 @@ func (args *SendChatActionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendChatActionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1130,7 +1130,7 @@ func (args *GetUserProfilePhototsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetUserProfilePhototsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1148,7 +1148,7 @@ func (args *GetFileArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetFileArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1166,7 +1166,7 @@ func (args *DefaultChatArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DefaultChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1189,7 +1189,7 @@ func (args *BanChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *BanChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1210,7 +1210,7 @@ func (args *UnbanChatMemberArgsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *UnbanChatMemberArgsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1232,7 +1232,7 @@ func (args *RestrictChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *RestrictChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1263,7 +1263,7 @@ func (args *PromoteChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *PromoteChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1283,7 +1283,7 @@ func (args *SetChatAdministratorCustomTitleArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatAdministratorCustomTitleArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1302,7 +1302,7 @@ func (args *BanChatSenderChatArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *BanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1321,7 +1321,7 @@ func (args *UnbanChatSenderChatArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *UnbanChatSenderChatArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1341,7 +1341,7 @@ func (args *SetChatPermissionsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatPermissionsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1363,7 +1363,7 @@ func (args *CreateChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CreateChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1386,7 +1386,7 @@ func (args *EditChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1405,7 +1405,7 @@ func (args *RevokeChatInviteLinkArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *RevokeChatInviteLinkArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1424,7 +1424,7 @@ func (args *ApproveChatJoinRequestArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *ApproveChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1443,7 +1443,7 @@ func (args *DeclineChatJoinRequestArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DeclineChatJoinRequestArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1459,7 +1459,7 @@ func (args *SetChatPhotoArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatPhotoArgs) ToMultiPart(wr *mp.Writer) {
 	fw, _ := wr.CreateFormField("chat_id")
 	_, _ = io.Copy(fw, bytes.NewReader(args.ChatId))
@@ -1481,7 +1481,7 @@ func (args *SetChatTitleArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatTitleArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1500,7 +1500,7 @@ func (args *SetChatDescriptionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatDescriptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1520,7 +1520,7 @@ func (args *PinChatMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *PinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1539,7 +1539,7 @@ func (args *UnpinChatMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *UnpinChatMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1558,7 +1558,7 @@ func (args *GetChatMemberArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetChatMemberArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1577,7 +1577,7 @@ func (args *SetChatStcikerSet) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetChatStcikerSet) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1599,7 +1599,7 @@ func (args *AnswerCallbackQueryArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AnswerCallbackQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1618,7 +1618,7 @@ func (args *MyCommandsDefault) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *MyCommandsDefault) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1637,7 +1637,7 @@ func (args *SetMyCommandsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetMyCommandsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1666,7 +1666,7 @@ func (args *EditMessageTextArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditMessageTextArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1688,7 +1688,7 @@ func (args *EditMessageCaptionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditMessageCaptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1704,7 +1704,7 @@ func (args *EditMessageMediaArgs) ToJson() []byte {
 	return nil
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditMessageMediaArgs) ToMultiPart(wr *mp.Writer) {
 	if args.ChatId != nil {
 		fw, _ := wr.CreateFormField("chat_id")
@@ -1741,7 +1741,7 @@ func (args *EditMessageReplyMakrupArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditMessageReplyMakrupArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1760,7 +1760,7 @@ func (args *DeleteMessageArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *DeleteMessageArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1780,7 +1780,7 @@ func (args *StopPollArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *StopPollArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1804,7 +1804,7 @@ func (args *AnswerInlineQueryArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AnswerInlineQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1843,7 +1843,7 @@ func (args *SendInvoiceArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendInvoiceArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1864,7 +1864,7 @@ func (args *AnswerShippingQueryArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AnswerShippingQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1884,7 +1884,7 @@ func (args *AnswerPreCheckoutQueryArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AnswerPreCheckoutQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1903,7 +1903,7 @@ func (args *SetPassportDataErrorsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetPassportDataErrorsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1922,7 +1922,7 @@ func (args *SendGameArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SendGameArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1946,7 +1946,7 @@ func (args *SetGameScoreArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetGameScoreArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1967,7 +1967,7 @@ func (args *GetGameHighScoresArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetGameHighScoresArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -1986,7 +1986,7 @@ func (args *AnswerWebAppQueryArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *AnswerWebAppQueryArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2005,7 +2005,7 @@ func (args *ChatMenuButtonArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *ChatMenuButtonArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2026,7 +2026,7 @@ func (args *MyDefaultAdministratorRightsArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *MyDefaultAdministratorRightsArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2044,7 +2044,7 @@ func (args *GetCustomEmojiStickersArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetCustomEmojiStickersArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2065,7 +2065,7 @@ func (args *CreateForumTopicArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CreateForumTopicArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2086,7 +2086,7 @@ func (args *EditForumTopicArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditForumTopicArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2105,7 +2105,7 @@ func (args *CloseForumTopicArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CloseForumTopicArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2136,7 +2136,7 @@ func (args *EditGeneralForumTopic) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *EditGeneralForumTopic) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2154,7 +2154,7 @@ func (args *CloseGeneralForumTopic) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *CloseGeneralForumTopic) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2191,7 +2191,7 @@ func (args *SetMyDescriptionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetMyDescriptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2210,7 +2210,7 @@ func (args *GetMyDescriptionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *GetMyDescriptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }
@@ -2231,7 +2231,7 @@ func (args *SetMyShortDescriptionArgs) ToJson() []byte {
 	return bt
 }
 
-// ToMultiPart converts this strcut into HTTP nultipart form to be sent to the API server.
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetMyShortDescriptionArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }

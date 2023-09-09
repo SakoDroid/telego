@@ -1728,7 +1728,7 @@ func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.LogicalR
 
 /*SetStickerSetThumb sets the thumbnail for the given sticker*/
 func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, file *os.File) (*objs.LogicalResult, error) {
-	args := &objs.SetStickerSetThumbArgs{
+	args := &objs.SetStickerSetThumbnailArgs{
 		Name:   name,
 		Thumb:  thumb,
 		UserId: userId,
