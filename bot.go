@@ -170,6 +170,12 @@ func (bot *Bot) GetMe() (*objs.UserResult, error) {
 	return bot.apiInterface.GetMe()
 }
 
+
+// GetBotManager returns a bot manager, a tool for manging personal information of the bot such as name and description.
+func (bot *Bot) GetBotManager() *botManager {
+	return &botManager{bot: bot}
+}
+
 /*
 SendMessage sens a text message to a chat (not channel, use SendMessageUN method for sending messages to channles) and returns the sent message on success
 If you want to ignore "parseMode" pass empty string. To ignore replyTo pass 0.
@@ -1097,46 +1103,6 @@ Use this method to get information about custom emoji stickers by their identifi
 */
 func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.StickersResult, error) {
 	return bot.apiInterface.GetCustomEmojiStickers(IDs)
-}
-
-/*
-SetDescription sets the description of the bot for the specified langauge. Description is shown in the chat with the bot if the chat is empty.
-
-Arguments :
-
-1. description : New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.
-
-2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
-*/
-func (bot *Bot) SetDescription(description, languageCode string) (*objs.LogicalResult, error) {
-	return bot.apiInterface.SetMyDescription(description, languageCode)
-}
-
-/*
-SetShortDescription sets the short description of the bot for the specified langauge. Short description is shown on the bot's profile page and is sent together with the link when users share the bot.
-
-Arguments :
-
-1. shortDescription : New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.
-
-2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
-*/
-func (bot *Bot) SetShortDescription(shortDescription, languageCode string) (*objs.LogicalResult, error) {
-	return bot.apiInterface.SetMyShortDescription(shortDescription, languageCode)
-}
-
-/*
-GetDescription returns description of the bot based on the specified language.
-*/
-func (bot *Bot) GetDescription(languageCode string) (*objs.BotDescriptionResult, error) {
-	return bot.apiInterface.GetMyDescription(languageCode)
-}
-
-/*
-GetShortDescription returns short description of the bot based on the specified language.
-*/
-func (bot *Bot) GetShortDescription(languageCode string) (*objs.BotDescriptionResult, error) {
-	return bot.apiInterface.GetMyDescription(languageCode)
 }
 
 /*

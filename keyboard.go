@@ -192,7 +192,7 @@ AddURLButton adds a button that will open an url when pressed.
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
 func (in *inlineKeyboard) AddURLButton(text, url string, row int) {
-	in.addButton(text, url, "", "", "", nil, nil, nil, false, row)
+	in.addButton(text, url, "", "", "", nil, nil, nil, nil, false, row)
 }
 
 /*
@@ -211,7 +211,7 @@ Arguments :
 4. requestWriteAccess : Pass True to request the permission for your bot to send messages to the user.
 */
 func (in *inlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername string, requestWriteAccess bool, row int) {
-	in.addButton(text, "", "", "", "", &objs.LoginUrl{
+	in.addButton(text, "", "", "", "", nil, &objs.LoginUrl{
 		URL:                url,
 		ForwardText:        forwardText,
 		BotUsername:        botUsername,
@@ -225,7 +225,7 @@ AddCallbackButton adds a button that when its pressed, a call back query with th
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddCallbackButton(text, callbackData string, row int) {
-	in.addButton(text, "", callbackData, "", "", nil, nil, nil, false, row)
+	in.addButton(text, "", callbackData, "", "", nil, nil, nil, nil, false, row)
 }
 
 /*
@@ -234,7 +234,7 @@ AddCallbackButtonHandler adds a button that when its pressed, a call back query 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddCallbackButtonHandler(text, callbackData string, row int, handler func(*objs.Update)) {
-	in.addButton(text, "", callbackData, "", "", nil, nil, nil, false, row)
+	in.addButton(text, "", callbackData, "", "", nil, nil, nil, nil, false, row)
 	upp.AddCallbackHandler(callbackData, handler)
 }
 
@@ -247,10 +247,35 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 */
 func (in *inlineKeyboard) AddSwitchInlineQueryButton(text, inlineQuery string, row int, currenChat bool) {
 	if currenChat {
-		in.addButton(text, "", "", "", inlineQuery, nil, nil, nil, false, row)
+		in.addButton(text, "", "", "", inlineQuery, nil, nil, nil, nil, false, row)
 	} else {
-		in.addButton(text, "", "", inlineQuery, "", nil, nil, nil, false, row)
+		in.addButton(text, "", "", inlineQuery, "", nil, nil, nil, nil, false, row)
 	}
+}
+
+/*
+AddSwitchInlineQueryChoseChatButton adds a switch inline query button. According to tlegram bot api, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field
+
+Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
+
+Arguemtns :
+
+allowUserChats : True, if private chats with users can be chosen
+
+allowBotChats : True, if private chats with bots can be chosen
+
+allowGroupChats : True, if group and supergroup chats can be chosen
+
+allowChannelChats : True, if channel chats can be chosen
+*/
+func (in *inlineKeyboard) AddSwitchInlineQueryChoseChatButton(text, inlineQuery string, allowUserChats, allowBotChats, allowGroupChats, allowChannelChats bool, row int) {
+	in.addButton(text, "", "", "", "", &objs.SwitchInlineQueryChosenChat{
+		Query:             inlineQuery,
+		AllowUserChats:    allowUserChats,
+		AllowBotChats:     allowBotChats,
+		AllowGroupChats:   allowGroupChats,
+		AllowChannelChats: allowChannelChats,
+	}, nil, nil, nil, false, row)
 }
 
 /*
@@ -258,7 +283,7 @@ AddGameButton adds a game button. Everytime a user presses this button a game wi
 NOTE: This type of button must always be the first button in the first row.
 */
 func (in *inlineKeyboard) AddGameButton(text string, row int) {
-	in.addButton(text, "", "", "", "", nil, &objs.CallbackGame{}, nil, false, row)
+	in.addButton(text, "", "", "", "", nil, nil, &objs.CallbackGame{}, nil, false, row)
 }
 
 /*
@@ -269,7 +294,7 @@ NOTE: This type of button must always be the first button in the first row.
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddPayButton(text string, row int) {
-	in.addButton(text, "", "", "", "", nil, nil, nil, true, row)
+	in.addButton(text, "", "", "", "", nil, nil, nil, nil, true, row)
 }
 
 /*
@@ -278,10 +303,10 @@ AddWebAppButton adds a button which opens a web app when it's pressed.
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
 func (in *inlineKeyboard) AddWebAppButton(text string, row int, url string) {
-	in.addButton(text, "", "", "", "", nil, nil, &objs.WebAppInfo{URL: url}, false, row)
+	in.addButton(text, "", "", "", "", nil, nil, nil, &objs.WebAppInfo{URL: url}, false, row)
 }
 
-func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, webApp *objs.WebAppInfo, pay bool, row int) {
+func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, switchInlineQueryChosenChat *objs.SwitchInlineQueryChosenChat, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, webApp *objs.WebAppInfo, pay bool, row int) {
 	if row >= 1 {
 		in.fixRows(row)
 		in.keys[row-1] = append(in.keys[row-1], &objs.InlineKeyboardButton{
@@ -291,6 +316,7 @@ func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, 
 			CallbackData:                 callbackData,
 			SwitchInlineQuery:            switchInlineQuery,
 			SwitchInlineQueryCurrentChat: switchInlineQueryCurrentChat,
+			SwitchInlineQueryChosenChat:  switchInlineQueryChosenChat,
 			CallbackGame:                 callbackGame,
 			Pay:                          pay,
 			WebApp:                       webApp,

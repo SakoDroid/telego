@@ -146,3 +146,8 @@ type BotShortDescriptionResult struct {
 	Ok     bool                 `json:"ok"`
 	Result *BotShortDescription `json:"result"`
 }
+
+type BotNameResult struct {
+	Ok     bool     `json:"ok"`
+	Result *BotName `json:"result"`
+}

@@ -1786,13 +1786,12 @@ func (args *StopPollArgs) ToMultiPart(wr *mp.Writer) {
 }
 
 type AnswerInlineQueryArgs struct {
-	InlineQueryId     string              `json:"inline_query_id"`
-	Results           []InlineQueryResult `json:"results"`
-	CacheTime         int                 `json:"cache_time,omitempty"`
-	IsPersonal        bool                `json:"is_personal"`
-	NextOffset        string              `json:"next_offset,omitempty"`
-	SwitchPmText      string              `json:"switch_pm_text,omitempty"`
-	SwitchPmParameter string              `json:"switch_pm_parameter,omitempty"`
+	InlineQueryId string                    `json:"inline_query_id"`
+	Results       []InlineQueryResult       `json:"results"`
+	CacheTime     int                       `json:"cache_time,omitempty"`
+	IsPersonal    bool                      `json:"is_personal"`
+	NextOffset    string                    `json:"next_offset,omitempty"`
+	Button        *InlineQueryResultsButton `json:"button,omitempty"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.
@@ -2233,5 +2232,42 @@ func (args *SetMyShortDescriptionArgs) ToJson() []byte {
 
 // ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
 func (args *SetMyShortDescriptionArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type SetMyNameArgs struct {
+	Name         string `json:"name"`
+	LanguageCode string `json:"language_code"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *SetMyNameArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
+func (args *SetMyNameArgs) ToMultiPart(wr *mp.Writer) {
+	//This method arguments are never passed as multipart
+}
+
+type GetMyNameArgs struct {
+	LanguageCode string `json:"language_code"`
+}
+
+// ToJson converts this strcut into json to be sent to the API server.
+func (args *GetMyNameArgs) ToJson() []byte {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return nil
+	}
+	return bt
+}
+
+// ToMultiPart converts this strcut into HTTP multipart form to be sent to the API server.
+func (args *GetMyNameArgs) ToMultiPart(wr *mp.Writer) {
 	//This method arguments are never passed as multipart
 }

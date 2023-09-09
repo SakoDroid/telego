@@ -118,6 +118,8 @@ type InlineKeyboardButton struct {
 
 	This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.*/
 	SwitchInlineQueryCurrentChat string `json:"switch_inline_query_current_chat,omitempty"`
+	//Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field
+	SwitchInlineQueryChosenChat *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat"`
 	/*Optional. Description of the game that will be launched when the user presses the button.
 
 	NOTE: This type of button must always be the first button in the first row.*/
@@ -162,4 +164,18 @@ type CallbackQuery struct {
 	Data string `json:"data,omitempty"`
 	/*Optional. Short name of a Game to be returned, serves as the unique identifier for the game*/
 	GameShortName string `json:"game_short_name,omitempty"`
+}
+
+// This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.
+type SwitchInlineQueryChosenChat struct {
+	//Optional. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
+	Query string `json:"query,omitempty"`
+	//Optional. True, if private chats with users can be chosen
+	AllowUserChats bool `json:"allow_user_chats"`
+	//Optional. True, if private chats with bots can be chosen
+	AllowBotChats bool `json:"allow_bot_chats"`
+	//Optional. True, if group and supergroup chats can be chosen
+	AllowGroupChats bool `json:"allow_group_chats"`
+	//Optional. True, if channel chats can be chosen
+	AllowChannelChats bool `json:"allow_channel_chats"`
 }

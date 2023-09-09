@@ -47,6 +47,11 @@ type ChatShared struct {
 	ChatId int64 `json:"chat_id"`
 }
 
+type BotName struct {
+	//The bot's name
+	Name string `json:"name"`
+}
+
 type BotDescription struct {
 	/*The bot's description*/
 	Description string `json:"description"`

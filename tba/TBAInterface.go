@@ -1835,15 +1835,14 @@ func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition 
 }
 
 /*AnswerInlineQuery answers an inline query with the given parameters*/
-func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset, switchPmText, switchPmParameter string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset string, button *objs.InlineQueryResultsButton) (*objs.LogicalResult, error) {
 	args := &objs.AnswerInlineQueryArgs{
-		InlineQueryId:     inlineQueryId,
-		Results:           results,
-		CacheTime:         cacheTime,
-		IsPersonal:        isPersonal,
-		NextOffset:        nextOffset,
-		SwitchPmText:      switchPmText,
-		SwitchPmParameter: switchPmParameter,
+		InlineQueryId: inlineQueryId,
+		Results:       results,
+		CacheTime:     cacheTime,
+		IsPersonal:    isPersonal,
+		NextOffset:    nextOffset,
+		Button:        button,
 	}
 	res, err := bai.SendCustom("answerInlineQuery", args, false, nil)
 	if err != nil {
@@ -2635,6 +2634,41 @@ func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.Bo
 		return nil, err
 	}
 	msg := &objs.BotShortDescriptionResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// SetMyName changes the bot's name. Returns True on success.
+func (bai *BotAPIInterface) SetMyName(name, languageCode string) (*objs.LogicalResult, error) {
+	args := objs.SetMyNameArgs{
+		Name:         name,
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("setMyName", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.LogicalResult{}
+	err3 := json.Unmarshal(res, msg)
+	if err3 != nil {
+		return nil, err3
+	}
+	return msg, nil
+}
+
+// GetMyName gets the current bot name for the given user language. Returns BotName on success.
+func (bai *BotAPIInterface) GetMyName(languageCode string) (*objs.BotNameResult, error) {
+	args := objs.GetMyNameArgs{
+		LanguageCode: languageCode,
+	}
+	res, err := bai.SendCustom("getMyName", &args, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	msg := &objs.BotNameResult{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
