@@ -36,8 +36,10 @@ type BotConfigs struct {
 	LogFileAddress string `json:"log_file"`
 	//BlockedUsers is a list of blocked users.
 	BlockedUsers []BlockedUser `json:"blocked_users"`
-
-	ConfigName string `json:"config_name"`
+	/*Config name is the address of the config file. This filed has been added on PULL REQUEST #13 by https://github.com/felipeflores
+	Fixing ISSUE #13
+	*/
+	ConfigFile string `json:"config_name"`
 }
 
 // Check checks the bot configs for any problem.
@@ -93,7 +95,7 @@ func Load(configName string) (*BotConfigs, error) {
 
 // LoadInto works the same way as "Load" but it won't return the config, instead it loads the config into the given object.
 func LoadInto(bc *BotConfigs) error {
-	fl, err := os.Open(bc.ConfigName)
+	fl, err := os.Open(bc.ConfigFile)
 	defer fl.Close()
 	if err != nil {
 		return err
@@ -113,7 +115,7 @@ func LoadInto(bc *BotConfigs) error {
 
 // Dump saves the given BotConfigs struct in a json format in the config file (configs.json).
 func Dump(bc *BotConfigs) error {
-	fl, err := os.OpenFile(bc.ConfigName, os.O_CREATE|os.O_WRONLY, 0666)
+	fl, err := os.OpenFile(bc.ConfigFile, os.O_CREATE|os.O_WRONLY, 0666)
 	defer fl.Close()
 	if err != nil {
 		return err
@@ -199,7 +201,7 @@ func Default(apiKey string) *BotConfigs {
 		UpdateConfigs:  DefaultUpdateConfigs(),
 		Webhook:        false,
 		LogFileAddress: DefaultLogFile,
-		ConfigName:     "configs.json",
+		ConfigFile:     "configs.json",
 	}
 }
 
@@ -211,6 +213,6 @@ func DefaultConfigName(apiKey, configName string) *BotConfigs {
 		UpdateConfigs:  DefaultUpdateConfigs(),
 		Webhook:        false,
 		LogFileAddress: DefaultLogFile,
-		ConfigName:     configName,
+		ConfigFile:     configName,
 	}
 }

@@ -569,9 +569,12 @@ ACreateInvoice returns an InvoiceSender which has several methods for creating a
 
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "ACreateInvoiceUN" method.
 */
-func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) *Invoice {
+func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) (*Invoice, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
+		if !keyboard.keys[0][0].Pay {
+			return nil, errors.New("first button in the keyboard should be a pay button")
+		}
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
 	}
 	return &Invoice{
@@ -579,13 +582,16 @@ func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, 
 		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
-	}
+	}, nil
 }
 
 /*ACreateInvoiceUN returns an InvoiceSender which has several methods for creating and sending an invoice.*/
-func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) *Invoice {
+func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) (*Invoice, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
+		if !keyboard.keys[0][0].Pay {
+			return nil, errors.New("first button in the keyboard should be a pay button")
+		}
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
 	}
 	return &Invoice{
@@ -593,7 +599,7 @@ func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payl
 		bot: bot.bot, replyMarkup: replyMarkup, suggestedTipAmounts: suggestedTipAmounts, photoURL: photoURL, startParameter: startParameter, providerData: providerData, payload: payload,
 		photoSize: photoSize, photoWidth: photoWidth, photoHeight: photoHeight, maxTipAmount: maxTipAmount, allowSendingWithoutReply: allowSendingWithoutReply, needName: needName, needPhoneNumber: needPhoneNumber,
 		needEmail: needEmail, needShippingAddress: needSippingAddress, sendPhoneNumberToProvider: sendPhoneNumberToProvider, sendEmailToProvider: sendEmailToProvider, isFlexible: isFlexible,
-	}
+	}, nil
 }
 
 /*

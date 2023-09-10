@@ -289,12 +289,28 @@ func (in *inlineKeyboard) AddGameButton(text string, row int) {
 /*
 AddPayButton adds a pay button.
 
-NOTE: This type of button must always be the first button in the first row.
+NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
 
-Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
+Note : This method does not accept row number. This button is automatically added to row 1.
 */
-func (in *inlineKeyboard) AddPayButton(text string, row int) {
-	in.addButton(text, "", "", "", "", nil, nil, nil, nil, true, row)
+func (in *inlineKeyboard) AddPayButton(text string) {
+	btn := &objs.InlineKeyboardButton{
+		Text:                         text,
+		URL:                          "",
+		LoginURL:                     nil,
+		CallbackData:                 "",
+		SwitchInlineQuery:            "",
+		SwitchInlineQueryCurrentChat: "",
+		SwitchInlineQueryChosenChat:  nil,
+		CallbackGame:                 nil,
+		Pay:                          true,
+		WebApp:                       nil,
+	}
+	if len(in.keys) == 0 {
+		in.keys[0] = make([]*objs.InlineKeyboardButton, 0)
+	}
+
+	in.keys[0] = append([]*objs.InlineKeyboardButton{btn}, in.keys[0]...)
 }
 
 /*
