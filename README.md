@@ -36,6 +36,8 @@ A Go library for creating telegram bots.
             * [Inline keyboards](#inline-keyboards)
         * [Inline queries](#inline-queries)
         * [Stickers](#stickers)
+            * [Sticker Sets](#sticker-sets)
+            * [Editing stickers](#editing-stickers)
         * [Blocking users](#blocking-users)
 * [License](#license)
 
@@ -871,7 +873,9 @@ And when this result is clicked, the message in the photo below is sent :
 
 ### **Stickers**
 
-To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateStickerSet` method should be called. Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has some methods for adding new stickers to it and managing the pack such as `AddPngSticker`,`AddAnimatedSticker` and `AddVideoSticker`. Example:
+#### **Sticker Sets**
+
+To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateNewStickerSet` method should be called (old `CreateStickerSet` method has been deprecated). Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has two methods for adding new stickers to it and managing the pack `AddNewSticker` and`AddNewStickerByFile`. Example:
 
 ```go
 fl1, err := os.Open("Sticker1.png")
@@ -884,20 +888,36 @@ if err != nil {
     fmt.Println(err)
 }
 
-//Create the sticker set
-st, er := bot.CreateNewStickerSet("owner_user_id", "stickerset_by_TestBot", "stickersettest", "", fl1, nil, "✌", false, nil)
-if er != nil {
-    fmt.Println(er, st)
+// Create the sticker set
+st := bot.CreateStickerSet(123456789, "test_by_awesomebot", "test", "static", "regular", false)
+
+// Add a new sticker to the set
+ok, err := st.AddNewStickerByFile(fl1, 123456789, []string{"😀"}, []string{"happy"}, nil)
+if !ok || err != nil {
+	fmt.Println(err)
+}
+// Add a new sticker to the set
+ok, err = st.AddNewStickerByFile(fl2, 123456789, []string{"😀"}, []string{"happy"}, nil)
+if !ok || err != nil {
+	fmt.Println(err)
+}
+//Create the new sticker set
+ok, err = st.Create()
+if !ok || err != nil {
+	fmt.Println(err)
 }
 
-//Add a new sticker to the set
-_, _ = st.AddPngStickerByFile(fl2, "✌", nil)
-ms := bot.SendSticker(msg.Message.Chat.Id, msg.Message.MessageId)
+//Send a sticker
+ms := bot.SendSticker(msg.Message.Chat.Id, msg.Message.MessageId, "")
 _, err = ms.SendByFileIdOrUrl(st.GetStickers()[0].FileId, false, false)
 if err != nil {
-    fmt.Println(err)
+	fmt.Println(err)
 }
 ```
+
+#### **Editing Stickers**
+
+As of telego v2.0.0 a new *sticker editor* has been added to the bot. This tool offers some methods for editing an existing sticker. These methods can be used for editing emoji list, keyworads, mask postion or deleting the sticker. The sticker editor can be retreived by `GetStickerEditor` method of the bot.
 
 ### **Blocking users**
 Telego gives you the ability to block a user. You can also implement a mechanism to block the user more customized or you can use builtin blocking option. To block a user you can simply call `Block` method of the bot and pass the **User** object to the method. When a user is blocked, received updates from the user will be ignored.
