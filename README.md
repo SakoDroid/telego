@@ -938,6 +938,32 @@ telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 
 ## Change logs
 
+### v2.0.0
+**Improvements** :
+* Added full support for Telegram bot API 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8 .
+* Run method of the bot now has an auto pause option. If true is passed, the Run method will lock the go routine.
+* Many many classes have been upgraded to newest version and many fields have been added. (Naming all of them is not possible due to the huge amount of change)
+* Implemented a thread safe map in callback handlers to avoid race condition.
+* Golang version (in go.mod) has been upgraded to **1.18**.
+* Bug fixes.
+
+**New features** :
+* Added a new `stickerEditor` which has several methods for editing a sticker. Such as editing the emoji list, keywordas and etc. Accessible via `GetStickerEditor` method.
+* Added `forumTopicManager` and `generalForumTopicManager` for managing topics. They both provide a set of tools that can be leveraged for manaing topics.
+* Added spoiler support for media (photo,video,animation) messages.
+* Added two new keys to the keyboard. `RequestUser` and `ReqestChat`.
+* Added a set of new handlers used for handling messages triggered by `RequestUser` and `ReqestChat` buttons.
+* Added `SetButton` methods to `inlineQueryResponder` for setting a button that will be shown above inline query results.
+* Added `AddSwitchInlineQueryChoseChatButton` method to the inline keyboard to support the new `SwitchInlineQueryChosenChat` option in inline keyboards.
+* Introduced bot manager tool, a tool for managing bot's personal information such as name and description.
+* Removed row argument from `AddPayButton` of inline keybpard and prechecking invoice message keyboard. (Regarding ISSUE #15).
+* Methods `ACreateInvoice` and `ACreateInvoiceUN` now return error along side with the invoiceSender.
+
+**Deprecations** : 
+
+1. CreateNewStickerSet method of the bot. Use CreateStickerSet instead.
+2. AddSticker, AddPngSticker, AddPngStickerByFile, AddAnimatedSticker,AddVideoSticker methods of stickerSet. Use AddNewSticker and AddNewStickerByFile instead.
+
 ### v1.8.0
 * Added full support for telegram bot API 6.0 and 6.1
 * Added support for web apps
