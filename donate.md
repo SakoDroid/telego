@@ -1,7 +1,8 @@
 # Donate to telego project
 
-If you are interested in telego or like telego to build your telegram bots with, you can donate to this project by crypto.</br>
-Thanks!
+If you are from Iran you can use the link below to donate as much as you want :)
+
+And if you are from any other lovely place on globe, you can donate through crypto currency and use addresses below  :)
 
 -----
 

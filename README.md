@@ -8,7 +8,7 @@
 
 A Go library for creating telegram bots.
 
-![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)
+![telego logo inspired by Golang logo](https://i.ibb.co/zr9tNJQ/telego-logo-removebg.png)
 
 * [Features](#features)
 * [Requirements](#requirements)
@@ -42,8 +42,11 @@ A Go library for creating telegram bots.
 * [License](#license)
 
 ---------------------------------
-## Donate to telego
-If you want to donate to telego project and keep it running, you can donate using crypto. [More info](https://github.com/SakoDroid/telego/blob/master/donate.md)
+## Supporintg Telego
+If you like Telego and it has helped you to build your telegram bot easily 🫶🏼, then you can support it to get even better!
+You can support Telego by donating to the project or even giving it a star! Any kind of support is appreciated ❤️
+
+If you want to donate to telego project and keep it running, [click here](https://github.com/SakoDroid/telego/blob/master/donate.md)
 
 ---------------------------------
 
@@ -62,7 +65,7 @@ and monitor the poll update via a go channel.
 ---------------------------------
 
 ## Requirements
-  * Go 1.17 or higher.
+  * Go 1.18 or higher.
   * Small and basic knowledge about telegram bots.
 ---------------------------------
 
@@ -95,7 +98,7 @@ and monitor the poll update via a go channel.
     bot, err := bt.NewBot(cfg.Default("your API key"))
 
     if err == nil{
-        err == bot.Run()
+        err == bot.Run(false)
         if err == nil{
             go start(bot)
         }
@@ -136,7 +139,7 @@ and monitor the poll update via a go channel.
  )
  ```
 
- Then you need to create bot configs. You can use default configs by using `Default(apiKey string)` method of the *configs* pckage. This method generates a **BotConfig** that does not use webhook and queries the updates from the server every 300 milli seconds. You can create a *BotConfig* struct to access more options (including webhook).
+ Then you need to create bot configs. You can use default configs by using `Default(apiKey string)` method of the *configs* package. This method generates a **BotConfig** that does not use webhook and queries the updates from the server every 300 mili seconds. You can create a *BotConfig* struct to access more options (including webhook).
 
  **BotConfigs** struct is located in configs package and contains these fields :
 
@@ -168,6 +171,9 @@ and monitor the poll update via a go channel.
  // BlockedUsers is a list of blocked users.
 
  BlockedUsers []BlockedUser `json:"blocked_users"`
+ 
+ /*Config name is the address of the config file. */
+ ConfigFile string `json:"config_name"`
 ```
 
 ### **Not using webhook**
@@ -184,7 +190,7 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
  Timeout int
 
  /* List of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.
- Please note that this parameter doesnt affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
+ Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.*/
 
  AllowedUpdates []string
 
@@ -198,7 +204,7 @@ To create bot configs you need an UpdateConfigs to populate related field in Bot
 
 To use webhook you need a key file and a certificate file since webhook is based on HTTPS. Telegram bot API supports self-signed certificates. You can create a self-signed certificate using [**OpenSSL**](https://en.wikipedia.org/wiki/OpenSSL). Read [this article](https://linuxize.com/post/creating-a-self-signed-ssl-certificate/) to find out how.
 
-To define the configs for webhook, `WebHookConfig` struct should be used. It contains the following fields:
+To define the configs for webhook, `WebHookConfigs` struct should be used. It contains the following fields:
 ```go
 type WebHookConfigs struct {
 
@@ -228,7 +234,7 @@ type WebHookConfigs struct {
 	DropPendingUpdates bool
 }
 ```
-This struct is located in the `configs` package. To use webhook, first you need to create a `WebHooConfigs` and populate it's fields. Then populate `WebHookConfigs` field of the `BotConfigs` with it. Thats all! We recommend using port *8443* for webhook, using 80 or 443 needs root permession which means your bot will have root permissions which is not safe. You can see an example code below :
+This struct is located in the `configs` package. To use webhook, first you need to create a `WebHooKConfigs` and populate it's fields. Then populate `WebHookConfigs` field of the `BotConfigs` with it. Thats all! We recommend using port *8443* for webhook, using 80 or 443 needs root permission which means your bot will have root permissions which is not safe. You can see an example code below :
 
 **Note :** *UpdateConfigs* is no longer needed if you're using webhook. So leave this field empty.
 
@@ -254,7 +260,7 @@ import (
 
     bot, err := bt.NewBot(&cf)
     if err == nil{
-        err == bot.Run()
+        err == bot.Run(false)
         if err == nil{
             //Do anything you want with the bot.
         }
@@ -273,13 +279,13 @@ bc2, _ := configs.Load()
 fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
 ```
 
-**Note:** Since telego 1.7.0 an option has been added which updates the bot configs every second. This option works while the bot is running and reads the configs from the `configs.json` file. This file is created automatically when the bot starts. With the help of this option you can change the bot configs even when the bot is up and running only by changing the `config.json` file, this means you don't need to stop the bot to change the configs or to remove a user from the block list.
+**Note:** Since Telego 1.7.0 an option has been added which updates the bot configs every second. This option works while the bot is running and reads the configs from the `configs.json` file. This file is created automatically when the bot starts. With the help of this option you can change the bot configs even when the bot is up and running only by changing the `config.json` file, this means you don't need to stop the bot to change the configs or to remove a user from the block list.
 
 ### **Creating and starting the bot**
 
  After you have created BotConfigs you can create the bot by passing the `BotConfigs` struct you've created to **NewBot** method located in **telego** package. After bot is created call **Run()** method and your bot will start working and will receive updates from the api server: 
 
- **Note :** Webhook is not used in the example codes. Using webhook only changes the code related to creating the bot and receiving updates or sending data abviously won't be affected.
+ **Note :** Webhook is not used in the example codes. Using webhook only changes the code related to creating the bot and receiving updates or sending data obviously won't be affected.
 
  ```go
  import (
@@ -295,7 +301,7 @@ fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
 
     bot, err := bt.NewBot(&cf)
     if err == nil{
-        err == bot.Run()
+        err == bot.Run(false)
         if err == nil{
             //Do anything you want with the bot.
         }
@@ -319,7 +325,7 @@ Now that the bot is running it will receive updates from api server and passes t
 
     bot, err := bt.NewBot(&cf)
     if err == nil{
-        err == bot.Run()
+        err == bot.Run(false)
         if err == nil{
             go start(bot)
         }
@@ -338,7 +344,7 @@ Now that the bot is running it will receive updates from api server and passes t
 ### **Receiving updates**
 #### **Handlers**
 
-You can use handlers for routing text messages. You specify a function and everytime a text message is received which the handler's regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you sipmly call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
+You can use handlers for routing text messages. You specify a function and every time a text message is received which the handler's regex matches with the text, the specified function will be called. Function format should be like this `exampleFunction(*objs.Update)`. To add a handler you simply call `AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string)`. Arguments :
 1. "Pattern" is the regex pattern which will be matched against the received text message.
 2. "chatType" : is a string array containing chat types which the handler will act on. It can be "private","group","supergroup","channel" and "all".
 3. "handler" : is the function that will be called.
@@ -347,7 +353,7 @@ Handlers are super easy to use; You can see an example in [Quick start](#quick-s
 
 #### **Special channels**
 
-In telego you can register special channels. Special channels are channels for a specific update type. Meaning this channels will be updated when the specified update type is received from api server, giving the developers a lot more felxibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
+In Telego you can register special channels. Special channels are channels for a specific update type. Meaning this channels will be updated when the specified update type is received from api server, giving the developers a lot more flexibility. To use special channels you need to call `RegisterChannel(chatId string, mediaType string)` method of the **advanced bot** (so for using this method, first you should call `AdvancedMode()` method of the bot). This method is fully documented in the source code but we will describe it here too. This method takes two arguments : 
 1. chatId : This is a string representing a certain chat which this channel will be dedicated to. This argument can be chat identification of a chat or username of a channel or supergroup. You can pass an empty string for this argument.
 2. mediaType : This argument specifies an update type which the channel will be dedicated to. For example if you pass "message", the returned channel will only be updated when an update containing message field [for a specified chat] is received. You can pass an empty string for this argument.
 
@@ -358,13 +364,13 @@ Examples :
 This method can be used in four ways :
 1. RegisterChannel("123456","message") : The returned channel will be updated when a message (text,photo,video ...) is received from a chat with "123456" as it's chat id.
 
-2. RegisterChannel("","message") : The returned channel will be updated everytime a message is received from any chat.
+2. RegisterChannel("","message") : The returned channel will be updated every time a message is received from any chat.
 
-3. RegisterChannel("123456","") : The returned channel will be updated everytime an update of any kind is received for the specified chat.
+3. RegisterChannel("123456","") : The returned channel will be updated every time an update of any kind is received for the specified chat.
 
-4. RegisterChannel("","") : The returned is the global update channel which will be updated everytime an update is received. You can get this channel by calling `getUpdateChannel()` method too.
+4. RegisterChannel("","") : The returned is the global update channel which will be updated every time an update is received. You can get this channel by calling `getUpdateChannel()` method too.
 
-**Note :** When a channel is registered it is not editable. Meaning that calling the `RegisterChannel` method with the same arugments won't create a new channel and the previously created channel will be returned.
+**Note :** When a channel is registered it is not editable. Meaning that calling the `RegisterChannel` method with the same arguments won't create a new channel and the previously created channel will be returned.
 
 Once a channel is created it cannot be edited, But it can be deleted. To delete a channel (unregister it) call `UnRegisterChannel(chatId string,mediaType string)` method of the **AdvancedBot**. **If** a channel has been registered for the given arguments it will be cleared.
 
@@ -380,9 +386,9 @@ Since different types of channels and handlers may get involved it's important t
     1. Update types
     2. General channel
 
-When an update is received, first it is compared against all the handlers. If a handler's regex matching is successful the handler will be executed. If not handler is successfull then channels are checked. (Hanlders don't have priority and every successful regex match is executed.)
+When an update is received, first it is compared against all the handlers. If a handler's regex matching is successful the handler will be executed. If not handler is successful then channels are checked. (Handlers don't have priority and every successful regex match is executed.)
 
-After none of the handlers are executed, the update is checked to see if it contains chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you haved called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
+After none of the handlers are executed, the update is checked to see if it contains chat information and if it does, channels registered for that chat are checked. If a channel is registered for the field that the update contains it will be passed into the channel. If no channel is registered for the field then it will be passed into the general channel for the chat.( For example lets assume you have called `RegisterChannel("123456","message")` method, in this case if an update for a chat that it's chat id is "123456" is received that contains `message` field, it will be passed into this channel. ) If this step fails (does not have chat information or no channel is registered for the chat) then the *update type channels* are checked and if the update contains a field that does have a channel registered for it the related field will be passed into the channel.(For example if the update contains message field and you have called `RegisterChannel("","message")` method, the update will be passed into the channel). If this step fails too then the update will be passed into general update channel. 
 
 To summarize :
 
@@ -390,7 +396,7 @@ To summarize :
 Update is received -> Handlers
                           |
                           |
-If no hanlder is executed |
+If no handler is executed |
                           |
                           |                                                / Specified update type channel
                      Chat channels (if update is relevant to a chat) ----- 
@@ -409,7 +415,7 @@ if chat channel check fails  |
 
 **Note :** 
 
-Handlers and special channels can be used together. For example the below code add a handler for text message "hi". Everytime the bot receives "hi" in a private chat it responds "hi to you too, send a location". Then it rgisters a channel for receiving messages in that chat and waits for the user to send a message. After message is received it sends the exact same location the user has sent back to the user : 
+Handlers and special channels can be used together. For example the below code add a handler for text message "hi". Every time the bot receives "hi" in a private chat it responds "hi to you too, send a location". Then it registers a channel for receiving messages in that chat and waits for the user to send a message. After message is received it sends the exact same location the user has sent back to the user : 
 
 ```go
 import (
@@ -423,13 +429,13 @@ import (
  func main(){
     up := cfg.DefaultUpdateConfigs()
     
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
 
     bot, err := bt.NewBot(&cf)
 
     if err == nil{
 
-        err == bot.Run()
+        err == bot.Run(false)
 
         if err == nil{
             go start(bot)
@@ -478,7 +484,7 @@ import (
 
 ### **Methods**
 
- To send back text or media (such as photo, video, gif, ...) you can use *Send methods*. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat identificator end with `UN`.
+ To send back text or media (such as photo, video, gif, ...) you can use *Send methods*. There are several send methods such as **SendMessage** and **SendPhoto**. There is two ways to send back data to the client. First way is using unique chat ids (which are integers that are unique for each chat) to send data to private chats, groups and supergroups. Second way is using chat username which can be used to send back data to supergroups (with username) and channels. Methods that use username as chat id end with `UN`.
  
  We will cover some methods below. All these methods are fully documented in the source code and will be described here briefly. In all methods you can ignore `number` arguments (int or float) by passing 0 and ignore `string` arguments by passing empty string ("").
   * **Note** : All bot methods are simplified to avoid unnecessary arguments. To access more options for each method you can call `AdvancedMode()` method of the bot that will return an advanced version of bot which will give you full access.
@@ -494,7 +500,7 @@ Telegram offers three ways for formatting a text. Formatting means adding style 
 
 2. **Markdown style formatting** : You can use markdown also to format your text or media caption. Write the text in markdown format and pass "MarkdownV2" or "Markdown" (according to the markdown syntax you've used) as the `parseMode` or `captionParseMode` arguements. See [telegram documentation for Markdown style formatting](https://core.telegram.org/bots/api#markdownv2-style).
 
-3. **Message entities** : Message entities can be used to format a text. Telego offers a tool for creating formatted texts called TextFormatter. Call `GetTextFormatter()` method. This method returns a TextFormatter that has a few methods for adding a styled text to the original text. TextFormatter assembles the text and returns it via `GetText()` method. You need to pass this text as the "text" or "caption" arguments and pass the returned value of `GetEntities()` method as the "entities" or "captionEntities" arguments of the `ASend` methods (located in advanced bot). The example below adds anormal text, a bold text, an italic text, a link, a mention and a spoiler to the text and sends it : 
+3. **Message entities** : Message entities can be used to format a text. Telego offers a tool for creating formatted texts called TextFormatter. Call `GetTextFormatter()` method. This method returns a TextFormatter that has a few methods for adding a styled text to the original text. TextFormatter assembles the text and returns it via `GetText()` method. You need to pass this text as the "text" or "caption" arguments and pass the returned value of `GetEntities()` method as the "entities" or "captionEntities" arguments of the `ASend` methods (located in advanced bot). The example below adds a normal text, a bold text, an italic text, a link, a mention and a spoiler to the text and sends it : 
 
 ```go
 tf := bot.GetTextFormatter()
@@ -568,7 +574,7 @@ if err != nil {
 
 #### **Polls**
 
-telego library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because everytime an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
+Telego library offers automatic poll management. When you create a poll and send the poll bot will receive updates about the poll. Whene you create a poll by **`CreatePoll`** method, it will return a Poll which has methods for managing the poll. You should keep the returned pointer (to Poll) somewhere because every time an update about a poll is received the bot will process the update and update the related poll and notifies user through a [bool]channel (which you can get by calling `GetUpdateChannel` method of the poll). 
 
 * **Note** : If an update is received that contains update about a poll and the poll is not registered with the Polls map, the given update is passed into *UpdateChannel* of the bot. Otherwise, as described above, the related poll will be updated.
 
@@ -655,13 +661,13 @@ You can create this type of keyboard by calling `CreateKeyboard` method of the b
  func main(){
     up := cfg.DefaultUpdateConfigs()
     
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
 
     bot, err := bt.NewBot(&cf)
 
     if err == nil{
 
-        err == bot.Run()
+        err == bot.Run(false)
 
         if err == nil{
             go start(bot)
@@ -707,7 +713,7 @@ The result of the above code will be like this :
 
 #### **Inline keyboards**
 
-Inline keyboards appear below the message they have been sent with. To create inline keyboards call `CreateInlineKeyboard()` method of the bot. Calling this method will return an inline keyboard which has several methods for adding buttons to it. After buttons have been added you can pass the inline keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. A special button is callback button. When this button is pressed a callback query is sent to the bot that contains a data (callback data). The callback data is set when you add a callback button. Also you can define a handler for the button which will be executed everytime this button is pressed. You can answer callback queries with `AAsnwerCallbackQuery` method of the advanced bot.
+Inline keyboards appear below the message they have been sent with. To create inline keyboards call `CreateInlineKeyboard()` method of the bot. Calling this method will return an inline keyboard which has several methods for adding buttons to it. After buttons have been added you can pass the inline keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. A special button is callback button. When this button is pressed a callback query is sent to the bot that contains a data (callback data). The callback data is set when you add a callback button. Also you can define a handler for the button which will be executed every time this button is pressed. You can answer callback queries with `AAsnwerCallbackQuery` method of the advanced bot.
 
  Example :
 
@@ -723,13 +729,13 @@ Inline keyboards appear below the message they have been sent with. To create in
  func main(){
     up := cfg.DefaultUpdateConfigs()
     
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
 
     bot, err := bt.NewBot(&cf)
 
     if err == nil{
 
-        err == bot.Run()
+        err == bot.Run(false)
 
         if err == nil{
             go start(bot)
@@ -804,13 +810,13 @@ import (
 func main(){
     up := cfg.DefaultUpdateConfigs()
     
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
+    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
 
     bot, err := bt.NewBot(&cf)
 
     if err == nil{
 
-        err == bot.Run()
+        err == bot.Run(false)
 
         if err == nil{
             go start(bot)
@@ -875,7 +881,7 @@ And when this result is clicked, the message in the photo below is sent :
 
 #### **Sticker Sets**
 
-To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateNewStickerSet` method should be called (old `CreateStickerSet` method has been deprecated). Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method wil return an sticker set which has two methods for adding new stickers to it and managing the pack `AddNewSticker` and`AddNewStickerByFile`. Example:
+To create stickers first you need to create an sticker set. An sticker set should have an owner, a name, a title and a sticker to begin with. According to telegram bot API,"name" is the short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in “_by_bot username”. <bot_username> is case insensitive. 1-64 characters. To create an sticker set, `CreateNewStickerSet` method should be called (old `CreateStickerSet` method has been deprecated). Pass the userId of the owner,name,title and the information of the first sticker of the set to this method to create the sticker set. Calling this method will return an sticker set which has two methods for adding new stickers to it and managing the pack `AddNewSticker` and`AddNewStickerByFile`. Example:
 
 ```go
 fl1, err := os.Open("Sticker1.png")
@@ -917,7 +923,7 @@ if err != nil {
 
 #### **Editing Stickers**
 
-As of telego v2.0.0 a new *sticker editor* has been added to the bot. This tool offers some methods for editing an existing sticker. These methods can be used for editing emoji list, keyworads, mask postion or deleting the sticker. The sticker editor can be retreived by `GetStickerEditor` method of the bot.
+As of Telego v2.0.0 a new *sticker editor* has been added to the bot. This tool offers some methods for editing an existing sticker. These methods can be used for editing emoji list, keywords, mask position or deleting the sticker. The sticker editor can be retrieved by `GetStickerEditor` method of the bot.
 
 ### **Blocking users**
 Telego gives you the ability to block a user. You can also implement a mechanism to block the user more customized or you can use builtin blocking option. To block a user you can simply call `Block` method of the bot and pass the **User** object to the method. When a user is blocked, received updates from the user will be ignored.
@@ -930,7 +936,7 @@ telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 
 ---------------------------
 
-## Chnage logs
+## Change logs
 
 ### v1.8.0
 * Added full support for telegram bot API 6.0 and 6.1
@@ -977,4 +983,4 @@ telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 * keyboard creation tool
 
 ---------------------------
-![telego logo inspired by Golang logo](https://github.com/SakoDroid/telego/blob/master/telego-logo.jpg?raw=true)
+![telego logo inspired by Golang logo](https://i.ibb.co/zr9tNJQ/telego-logo-removebg.png)
