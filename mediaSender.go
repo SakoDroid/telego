@@ -36,7 +36,7 @@ type MediaSender struct {
 }
 
 /*SendByFileIdOrUrl sends a file that already exists on telegram servers (file id) or a url on the web.*/
-func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	switch ms.mediaType {
 	case PHOTO:
 		return ms.bot.apiInterface.SendPhoto(
@@ -90,7 +90,7 @@ func (ms *MediaSender) SendByFileIdOrUrl(fileIdOrUrl string, silent, protectCont
 }
 
 /*SendByFile sends a file that is located in this device.*/
-func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (ms *MediaSender) SendByFile(file *os.File, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err

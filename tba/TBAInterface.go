@@ -110,12 +110,12 @@ func (bai *BotAPIInterface) isChatIdOk(chatIdInt int, chatIdString string) bool 
 }
 
 /*GetMe gets the bot info*/
-func (bai *BotAPIInterface) GetMe() (*objs.UserResult, error) {
+func (bai *BotAPIInterface) GetMe() (*objs.Result[*objs.User], error) {
 	res, err := bai.SendCustom("getMe", nil, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.UserResult{}
+	msg := &objs.Result[*objs.User]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -127,7 +127,7 @@ func (bai *BotAPIInterface) GetMe() (*objs.UserResult, error) {
 SendMessage sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
 "chatId" and "text" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id, messageThreadId int, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id, messageThreadId int, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -145,7 +145,7 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -160,7 +160,7 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 ForwardMessage forwards a message from a user or channel to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, disableNotif, ProtectContent bool, messageId, messageThreadId int) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, disableNotif, ProtectContent bool, messageId, messageThreadId int) (*objs.Result[*objs.Message], error) {
 	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -177,7 +177,7 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -192,7 +192,7 @@ func (bai *BotAPIInterface) ForwardMessage(chatIdInt, fromChatIdInt int, chatIdS
 SendPhoto sends a photo (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "photo" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string, photoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, reply_markup objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -218,7 +218,7 @@ func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -233,7 +233,7 @@ func (bai *BotAPIInterface) SendPhoto(chatIdInt int, chatIdString, photo string,
 SendVideo sends a video (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "video" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string, videoFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, duration int, supportsStreaming bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -256,7 +256,7 @@ func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -271,7 +271,7 @@ func (bai *BotAPIInterface) SendVideo(chatIdInt int, chatIdString, video string,
 SendAudio sends an audio (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "audio" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0,to ignore string arguments pass "")
 */
-func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string, audioFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, performer, title string, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string, audioFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, duration int, performer, title string, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -294,7 +294,7 @@ func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -309,7 +309,7 @@ func (bai *BotAPIInterface) SendAudio(chatIdInt int, chatIdString, audio string,
 sSendDocument sends a document (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "document" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document string, documentFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, DisableContentTypeDetection bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document string, documentFile *os.File, caption, parseMode string, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, DisableContentTypeDetection bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -330,7 +330,7 @@ func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document s
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -345,7 +345,7 @@ func (bai *BotAPIInterface) SendDocument(chatIdInt int, chatIdString, document s
 SendAnimation sends an animation (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "animation" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation string, animationFile *os.File, caption, parseMode string, width, height, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, protectContent, hasSpoiler bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -369,7 +369,7 @@ func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -384,7 +384,7 @@ func (bai *BotAPIInterface) SendAnimation(chatIdInt int, chatIdString, animation
 sSendVoice sends a voice (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "voice" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string, voiceFile *os.File, caption, parseMode string, duration int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string, voiceFile *os.File, caption, parseMode string, duration int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -404,7 +404,7 @@ func (bai *BotAPIInterface) SendVoice(chatIdInt int, chatIdString, voice string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -420,7 +420,7 @@ SendVideoNote sends a video note (file,url,telegramId) to a channel (chatIdStrin
 "chatId" and "videoNote" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 Note that sending video note by URL is not supported by telegram.
 */
-func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote string, videoNoteFile *os.File, caption, parseMode string, length, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote string, videoNoteFile *os.File, caption, parseMode string, length, duration int, reply_to_message_id, messageThreadId int, thumb string, thumbFile *os.File, disable_notification, allow_sending_without_reply, ProtectContent bool, captionEntities []objs.MessageEntity, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -442,7 +442,7 @@ func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -457,7 +457,7 @@ func (bai *BotAPIInterface) SendVideoNote(chatIdInt int, chatIdString, videoNote
 SendMediaGroup sends an album of media (file,url,telegramId) to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" and "media" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, reply_to_message_id, messageThreadId int, media []objs.InputMedia, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, files ...*os.File) (*objs.SendMediaGroupMethodResult, error) {
+func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, reply_to_message_id, messageThreadId int, media []objs.InputMedia, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup, files ...*os.File) (*objs.Result[[]objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -473,7 +473,7 @@ func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, r
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMediaGroupMethodResult{}
+		msg := &objs.Result[[]objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -488,7 +488,7 @@ func (bai *BotAPIInterface) SendMediaGroup(chatIdInt int, chatIdString string, r
 SendLocation sends a location to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -509,7 +509,7 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -524,7 +524,7 @@ func (bai *BotAPIInterface) SendLocation(chatIdInt int, chatIdString string, lat
 EditMessageLiveLocation edits a live location sent to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude" and "longitude" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, latitude, longitude, horizontalAccuracy float32, heading, proximityAlertRadius int, reply_markup *objs.InlineKeyboardMarkup) (*objs.Result[json.RawMessage], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -544,7 +544,7 @@ func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.DefaultResult{}
+		msg := &objs.Result[json.RawMessage]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -559,7 +559,7 @@ func (bai *BotAPIInterface) EditMessageLiveLocation(chatIdInt int, chatIdString,
 StopMessageLiveLocation stops a live location sent to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, replyMarkup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString, inlineMessageId string, messageId int, replyMarkup *objs.InlineKeyboardMarkup) (*objs.Result[json.RawMessage], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -574,7 +574,7 @@ func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.DefaultResult{}
+		msg := &objs.Result[json.RawMessage]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -589,7 +589,7 @@ func (bai *BotAPIInterface) StopMessageLiveLocation(chatIdInt int, chatIdString,
 SendVenue sends a venue to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","latitude","longitude","title" and "address" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitude, longitude float32, title, address, fourSquareId, fourSquareType, googlePlaceId, googlePlaceType string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitude, longitude float32, title, address, fourSquareId, fourSquareType, googlePlaceId, googlePlaceType string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -612,7 +612,7 @@ func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitu
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -627,7 +627,7 @@ func (bai *BotAPIInterface) SendVenue(chatIdInt int, chatIdString string, latitu
 SendContact sends a contact to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber, firstName, lastName, vCard string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber, firstName, lastName, vCard string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -646,7 +646,7 @@ func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -661,7 +661,7 @@ func (bai *BotAPIInterface) SendContact(chatIdInt int, chatIdString, phoneNumber
 SendPoll sends a poll to a channel (chatIdString) or a chat (chatIdInt)
 "chatId","phoneNumber" and "firstName" arguments are required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question string, options []string, isClosed, isAnonymous bool, pollType string, allowMultipleAnswers bool, correctOptionIndex int, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question string, options []string, isClosed, isAnonymous bool, pollType string, allowMultipleAnswers bool, correctOptionIndex int, explanation, explanationParseMode string, explanationEntities []objs.MessageEntity, openPeriod, closeDate int, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -688,7 +688,7 @@ func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question strin
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -703,7 +703,7 @@ func (bai *BotAPIInterface) SendPoll(chatIdInt int, chatIdString, question strin
 SendDice sends a dice message to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, reply_to_message_id, messageThreadId int, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -719,7 +719,7 @@ func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, 
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -734,7 +734,7 @@ func (bai *BotAPIInterface) SendDice(chatIdInt int, chatIdString, emoji string, 
 SendChatAction sends a chat action message to a channel (chatIdString) or a chat (chatIdInt)
 "chatId" argument is required. other arguments are optional for bot api. (to ignore int arguments, pass 0)
 */
-func (bai *BotAPIInterface) SendChatAction(chatIdInt, messageThreadId int, chatIdString, chatAction string) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendChatAction(chatIdInt, messageThreadId int, chatIdString, chatAction string) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -748,7 +748,7 @@ func (bai *BotAPIInterface) SendChatAction(chatIdInt, messageThreadId int, chatI
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -760,13 +760,13 @@ func (bai *BotAPIInterface) SendChatAction(chatIdInt, messageThreadId int, chatI
 }
 
 /*GetUserProfilePhotos gets the user profile photos*/
-func (bai *BotAPIInterface) GetUserProfilePhotos(userId, offset, limit int) (*objs.ProfilePhototsResult, error) {
+func (bai *BotAPIInterface) GetUserProfilePhotos(userId, offset, limit int) (*objs.Result[*objs.UserProfilePhotos], error) {
 	args := &objs.GetUserProfilePhototsArgs{UserId: userId, Offset: offset, Limit: limit}
 	res, err := bai.SendCustom("getUserProfilePhotos", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ProfilePhototsResult{}
+	msg := &objs.Result[*objs.UserProfilePhotos]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -775,13 +775,13 @@ func (bai *BotAPIInterface) GetUserProfilePhotos(userId, offset, limit int) (*ob
 }
 
 /*GetFile gets the file based on the given file id and returns the file object. */
-func (bai *BotAPIInterface) GetFile(fileId string) (*objs.GetFileResult, error) {
+func (bai *BotAPIInterface) GetFile(fileId string) (*objs.Result[*objs.File], error) {
 	args := &objs.GetFileArgs{FileId: fileId}
 	res, err := bai.SendCustom("getFile", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.GetFileResult{}
+	msg := &objs.Result[*objs.File]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -822,7 +822,7 @@ func (bai *BotAPIInterface) DownloadFile(fileObject *objs.File, file *os.File) e
 }
 
 /*BanChatMember bans a chat member*/
-func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.Result[bool], error) {
 	args := &objs.BanChatMemberArgs{
 		UserId:         userId,
 		UntilDate:      untilDate,
@@ -833,7 +833,7 @@ func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, us
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -842,7 +842,7 @@ func (bai *BotAPIInterface) BanChatMember(chatIdInt int, chatIdString string, us
 }
 
 /*UnbanChatMember unbans a chat member*/
-func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.Result[bool], error) {
 	args := &objs.UnbanChatMemberArgsArgs{
 		UserId:       userId,
 		OnlyIfBanned: onlyIfBanned,
@@ -852,7 +852,7 @@ func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -861,7 +861,7 @@ func (bai *BotAPIInterface) UnbanChatMember(chatIdInt int, chatIdString string, 
 }
 
 /*RestrictChatMember restricts a chat member*/
-func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString string, userId int, permissions objs.ChatPermissions, useIndependentChatPermissions bool, untilDate int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString string, userId int, permissions objs.ChatPermissions, useIndependentChatPermissions bool, untilDate int) (*objs.Result[bool], error) {
 	args := &objs.RestrictChatMemberArgs{
 		UserId:                        userId,
 		Permission:                    permissions,
@@ -873,7 +873,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -882,7 +882,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 }
 
 /*PromoteChatMember promotes a chat member*/
-func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages, canManageTopics bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages, canManageTopics bool) (*objs.Result[bool], error) {
 	args := &objs.PromoteChatMemberArgs{
 		UserId:              userId,
 		IsAnonymous:         isAnonymous,
@@ -903,7 +903,7 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -912,7 +912,7 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 }
 
 /*SetMyDefaultAdministratorRights sets the admin rights*/
-func (bai *BotAPIInterface) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.Result[bool], error) {
 	args := &objs.MyDefaultAdministratorRightsArgs{
 		Rights: &objs.ChatAdministratorRights{
 			IsAnonymous:         isAnonymous,
@@ -933,7 +933,7 @@ func (bai *BotAPIInterface) SetMyDefaultAdministratorRights(forChannels, isAnony
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -942,7 +942,7 @@ func (bai *BotAPIInterface) SetMyDefaultAdministratorRights(forChannels, isAnony
 }
 
 /*GetMyDefaultAdministratorRights gets the admin rights*/
-func (bai *BotAPIInterface) GetMyDefaultAdministratorRights(forChannels bool) (*objs.ChatAdministratorRightsResult, error) {
+func (bai *BotAPIInterface) GetMyDefaultAdministratorRights(forChannels bool) (*objs.Result[*objs.ChatAdministratorRights], error) {
 	args := &objs.MyDefaultAdministratorRightsArgs{
 		ForChannels: forChannels,
 	}
@@ -950,7 +950,7 @@ func (bai *BotAPIInterface) GetMyDefaultAdministratorRights(forChannels bool) (*
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatAdministratorRightsResult{}
+	msg := &objs.Result[*objs.ChatAdministratorRights]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -959,7 +959,7 @@ func (bai *BotAPIInterface) GetMyDefaultAdministratorRights(forChannels bool) (*
 }
 
 /*SetChatAdministratorCustomTitle sets a custom title for the administrator.*/
-func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatIdString string, userId int, customTitle string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatIdString string, userId int, customTitle string) (*objs.Result[bool], error) {
 	args := &objs.SetChatAdministratorCustomTitleArgs{
 		UserId:      userId,
 		CustomTitle: customTitle,
@@ -969,7 +969,7 @@ func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatI
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -978,7 +978,7 @@ func (bai *BotAPIInterface) SetChatAdministratorCustomTitle(chatIdInt int, chatI
 }
 
 /*BanOrUnbanChatSenderChat bans or unbans a channel in the group..*/
-func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString string, senderChatId int, ban bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString string, senderChatId int, ban bool) (*objs.Result[bool], error) {
 	args := &objs.BanChatSenderChatArgs{
 		SenderChatId: senderChatId,
 	}
@@ -993,7 +993,7 @@ func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1002,7 +1002,7 @@ func (bai *BotAPIInterface) BanOrUnbanChatSenderChat(chatIdInt int, chatIdString
 }
 
 /*SetChatPermissions sets default permissions for all users in the chat.*/
-func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString string, useIndependentChatPermissions bool, permissions objs.ChatPermissions) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString string, useIndependentChatPermissions bool, permissions objs.ChatPermissions) (*objs.Result[bool], error) {
 	args := &objs.SetChatPermissionsArgs{
 		Permissions:                   permissions,
 		UseIndependentChatPermissions: useIndependentChatPermissions,
@@ -1012,7 +1012,7 @@ func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString strin
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1021,14 +1021,14 @@ func (bai *BotAPIInterface) SetChatPermissions(chatIdInt int, chatIdString strin
 }
 
 /*ExportChatInviteLink exports the chat invite link and returns the new invite link as string.*/
-func (bai *BotAPIInterface) ExportChatInviteLink(chatIdInt int, chatIdString string) (*objs.StringResult, error) {
+func (bai *BotAPIInterface) ExportChatInviteLink(chatIdInt int, chatIdString string) (*objs.Result[string], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("exprotChatInviteLink", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.StringResult{}
+	msg := &objs.Result[string]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1037,7 +1037,7 @@ func (bai *BotAPIInterface) ExportChatInviteLink(chatIdInt int, chatIdString str
 }
 
 /*CreateChatInviteLink creates a new invite link for the chat.*/
-func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.Result[*objs.ChatInviteLink], error) {
 	args := &objs.CreateChatInviteLinkArgs{
 		Name:               name,
 		ExpireDate:         expireDate,
@@ -1049,7 +1049,7 @@ func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, na
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatInviteLinkResult{}
+	msg := &objs.Result[*objs.ChatInviteLink]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1058,7 +1058,7 @@ func (bai *BotAPIInterface) CreateChatInviteLink(chatIdInt int, chatIdString, na
 }
 
 /*EditChatInviteLink edits an existing invite link for the chat.*/
-func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, inviteLink, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, inviteLink, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.Result[*objs.ChatInviteLink], error) {
 	args := &objs.EditChatInviteLinkArgs{
 		InviteLink:         inviteLink,
 		Name:               name,
@@ -1071,7 +1071,7 @@ func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, invi
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatInviteLinkResult{}
+	msg := &objs.Result[*objs.ChatInviteLink]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1080,7 +1080,7 @@ func (bai *BotAPIInterface) EditChatInviteLink(chatIdInt int, chatIdString, invi
 }
 
 /*RevokeChatInviteLink revokes the given invite link.*/
-func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, inviteLink string) (*objs.ChatInviteLinkResult, error) {
+func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, inviteLink string) (*objs.Result[*objs.ChatInviteLink], error) {
 	args := &objs.RevokeChatInviteLinkArgs{
 		InviteLink: inviteLink,
 	}
@@ -1089,7 +1089,7 @@ func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, in
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatInviteLinkResult{}
+	msg := &objs.Result[*objs.ChatInviteLink]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1098,7 +1098,7 @@ func (bai *BotAPIInterface) RevokeChatInviteLink(chatIdInt int, chatIdString, in
 }
 
 /*ApproveChatJoinRequest approves a request from the given user to join the chat.*/
-func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.Result[bool], error) {
 	args := &objs.ApproveChatJoinRequestArgs{
 		UserId: userId,
 	}
@@ -1107,7 +1107,7 @@ func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString s
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1116,7 +1116,7 @@ func (bai *BotAPIInterface) ApproveChatJoinRequest(chatIdInt int, chatIdString s
 }
 
 /*DeclineChatJoinRequest declines a request from the given user to join the chat.*/
-func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString string, userId int) (*objs.Result[bool], error) {
 	args := &objs.DeclineChatJoinRequestArgs{
 		UserId: userId,
 	}
@@ -1125,7 +1125,7 @@ func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString s
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1134,7 +1134,7 @@ func (bai *BotAPIInterface) DeclineChatJoinRequest(chatIdInt int, chatIdString s
 }
 
 /*SetChatPhoto sets the chat photo to given file.*/
-func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, file *os.File) (*objs.Result[bool], error) {
 	args := &objs.SetChatPhotoArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	stats, er := file.Stat()
@@ -1146,7 +1146,7 @@ func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, fil
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1155,14 +1155,14 @@ func (bai *BotAPIInterface) SetChatPhoto(chatIdInt int, chatIdString string, fil
 }
 
 /*DeleteChatPhoto deletes chat photo.*/
-func (bai *BotAPIInterface) DeleteChatPhoto(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteChatPhoto(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("deleteChatPhoto", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1171,7 +1171,7 @@ func (bai *BotAPIInterface) DeleteChatPhoto(chatIdInt int, chatIdString string) 
 }
 
 /*SetChatTitle sets the chat title.*/
-func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title string) (*objs.Result[bool], error) {
 	args := &objs.SetChatTitleArgs{
 		Title: title,
 	}
@@ -1180,7 +1180,7 @@ func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title stri
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1189,7 +1189,7 @@ func (bai *BotAPIInterface) SetChatTitle(chatIdInt int, chatIdString, title stri
 }
 
 /*SetChatDescription sets the chat description.*/
-func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, descriptions string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, descriptions string) (*objs.Result[bool], error) {
 	args := &objs.SetChatDescriptionArgs{
 		Description: descriptions,
 	}
@@ -1198,7 +1198,7 @@ func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, desc
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1207,7 +1207,7 @@ func (bai *BotAPIInterface) SetChatDescription(chatIdInt int, chatIdString, desc
 }
 
 /*PinChatMessage pins the message in the chat.*/
-func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.Result[bool], error) {
 	args := &objs.PinChatMessageArgs{
 		MessageId:           messageId,
 		DisableNotification: disableNotification,
@@ -1217,7 +1217,7 @@ func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, m
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1226,7 +1226,7 @@ func (bai *BotAPIInterface) PinChatMessage(chatIdInt int, chatIdString string, m
 }
 
 /*UnpinChatMessage unpins the pinned message in the chat.*/
-func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string, messageId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string, messageId int) (*objs.Result[bool], error) {
 	args := &objs.UnpinChatMessageArgs{
 		MessageId: messageId,
 	}
@@ -1235,7 +1235,7 @@ func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string,
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1244,14 +1244,14 @@ func (bai *BotAPIInterface) UnpinChatMessage(chatIdInt int, chatIdString string,
 }
 
 /*UnpinAllChatMessages unpins all the pinned messages in the chat.*/
-func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("unpinAllChatMessages", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1260,14 +1260,14 @@ func (bai *BotAPIInterface) UnpinAllChatMessages(chatIdInt int, chatIdString str
 }
 
 /*LeaveChat, the bot will leave the chat if this method is called.*/
-func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("leaveChat", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1276,14 +1276,14 @@ func (bai *BotAPIInterface) LeaveChat(chatIdInt int, chatIdString string) (*objs
 }
 
 /*GetChat : a Chat object containing the information of the chat will be returned*/
-func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.ChatResult, error) {
+func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.Result[*objs.Chat], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChat", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatResult{}
+	msg := &objs.Result[*objs.Chat]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1292,14 +1292,14 @@ func (bai *BotAPIInterface) GetChat(chatIdInt int, chatIdString string) (*objs.C
 }
 
 /*GetChatAdministrators returns an array of ChatMember containing the informations of the chat administrators.*/
-func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString string) (*objs.ChatAdministratorsResult, error) {
+func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString string) (*objs.Result[[]objs.ChatMemberOwner], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChatAdministrators", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.ChatAdministratorsResult{}
+	msg := &objs.Result[[]objs.ChatMemberOwner]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1308,14 +1308,14 @@ func (bai *BotAPIInterface) GetChatAdministrators(chatIdInt int, chatIdString st
 }
 
 /* GetChatMemberCount returns the number of the memebrs of the chat.*/
-func (bai *BotAPIInterface) GetChatMemberCount(chatIdInt int, chatIdString string) (*objs.IntResult, error) {
+func (bai *BotAPIInterface) GetChatMemberCount(chatIdInt int, chatIdString string) (*objs.Result[int], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("getChatMemberCount", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.IntResult{}
+	msg := &objs.Result[int]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1324,7 +1324,7 @@ func (bai *BotAPIInterface) GetChatMemberCount(chatIdInt int, chatIdString strin
 }
 
 /*GetChatMember returns the information of the member in a ChatMember object.*/
-func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.Result[json.RawMessage], error) {
 	args := &objs.GetChatMemberArgs{
 		UserId: userId,
 	}
@@ -1333,7 +1333,7 @@ func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, us
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1342,7 +1342,7 @@ func (bai *BotAPIInterface) GetChatMember(chatIdInt int, chatIdString string, us
 }
 
 /*SetChatStickerSet sets the sticker set of the chat.*/
-func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stickerSetName string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stickerSetName string) (*objs.Result[bool], error) {
 	args := &objs.SetChatStcikerSet{
 		StickerSetName: stickerSetName,
 	}
@@ -1351,7 +1351,7 @@ func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stick
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1360,14 +1360,14 @@ func (bai *BotAPIInterface) SetChatStickerSet(chatIdInt int, chatIdString, stick
 }
 
 /*DeleteChatStickerSet deletes the sticker set of the chat..*/
-func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	args := &objs.DefaultChatArgs{}
 	args.ChatId = bai.fixChatId(chatIdInt, chatIdString)
 	res, err := bai.SendCustom("deleteChatStickerSet", args, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1376,7 +1376,7 @@ func (bai *BotAPIInterface) DeleteChatStickerSet(chatIdInt int, chatIdString str
 }
 
 /*AnswerCallbackQuery answers a callback query*/
-func (bai *BotAPIInterface) AnswerCallbackQuery(callbackQueryId, text, url string, showAlert bool, CacheTime int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AnswerCallbackQuery(callbackQueryId, text, url string, showAlert bool, CacheTime int) (*objs.Result[bool], error) {
 	args := &objs.AnswerCallbackQueryArgs{
 		CallbackQueyId: callbackQueryId,
 		Text:           text,
@@ -1388,7 +1388,7 @@ func (bai *BotAPIInterface) AnswerCallbackQuery(callbackQueryId, text, url strin
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1397,7 +1397,7 @@ func (bai *BotAPIInterface) AnswerCallbackQuery(callbackQueryId, text, url strin
 }
 
 /*SetMyCommands sets the commands of the bot*/
-func (bai *BotAPIInterface) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.Result[bool], error) {
 	args := &objs.SetMyCommandsArgs{
 		Commands: commands,
 		MyCommandsDefault: objs.MyCommandsDefault{
@@ -1409,7 +1409,7 @@ func (bai *BotAPIInterface) SetMyCommands(commands []objs.BotCommand, scope objs
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1418,7 +1418,7 @@ func (bai *BotAPIInterface) SetMyCommands(commands []objs.BotCommand, scope objs
 }
 
 /*DeleteMyCommands deletes the commands of the bot*/
-func (bai *BotAPIInterface) DeleteMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.Result[bool], error) {
 	args := &objs.MyCommandsDefault{
 		Scope:        scope,
 		LanguageCode: languageCode,
@@ -1427,7 +1427,7 @@ func (bai *BotAPIInterface) DeleteMyCommands(scope objs.BotCommandScope, languag
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1436,7 +1436,7 @@ func (bai *BotAPIInterface) DeleteMyCommands(scope objs.BotCommandScope, languag
 }
 
 /*GetMyCommands gets the commands of the bot*/
-func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.GetCommandsResult, error) {
+func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCode string) (*objs.Result[[]objs.BotCommand], error) {
 	args := &objs.MyCommandsDefault{
 		Scope:        scope,
 		LanguageCode: languageCode,
@@ -1445,7 +1445,7 @@ func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCo
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.GetCommandsResult{}
+	msg := &objs.Result[[]objs.BotCommand]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1454,7 +1454,7 @@ func (bai *BotAPIInterface) GetMyCommands(scope objs.BotCommandScope, languageCo
 }
 
 /*EditMessageText edits the text of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, messageId int, inlineMessageId, text, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, messageId int, inlineMessageId, text, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, replyMakrup *objs.InlineKeyboardMarkup) (*objs.Result[json.RawMessage], error) {
 	args := &objs.EditMessageTextArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1471,7 +1471,7 @@ func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1480,7 +1480,7 @@ func (bai *BotAPIInterface) EditMessageText(chatIdInt int, chatIdString string, 
 }
 
 /*EditMessageCaption edits the caption of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString string, messageId int, inlineMessageId, caption, parseMode string, captionEntities []objs.MessageEntity, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString string, messageId int, inlineMessageId, caption, parseMode string, captionEntities []objs.MessageEntity, replyMakrup *objs.InlineKeyboardMarkup) (*objs.Result[json.RawMessage], error) {
 	args := &objs.EditMessageCaptionArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1496,7 +1496,7 @@ func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString strin
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1505,7 +1505,7 @@ func (bai *BotAPIInterface) EditMessageCaption(chatIdInt int, chatIdString strin
 }
 
 /*EditMessageMedia edits the media of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, media objs.InputMedia, replyMakrup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.Result[json.RawMessage], error) {
 	args := &objs.EditMessageMediaArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1519,7 +1519,7 @@ func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string,
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1528,7 +1528,7 @@ func (bai *BotAPIInterface) EditMessageMedia(chatIdInt int, chatIdString string,
 }
 
 /*EditMessagereplyMarkup edits the reply makrup of the given message in the given chat.*/
-func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, replyMakrup *objs.InlineKeyboardMarkup) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString string, messageId int, inlineMessageId string, replyMakrup *objs.InlineKeyboardMarkup) (*objs.Result[json.RawMessage], error) {
 	args := &objs.EditMessageReplyMakrupArgs{
 		EditMessageDefaultArgs: objs.EditMessageDefaultArgs{
 			MessageId:       messageId,
@@ -1541,7 +1541,7 @@ func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString s
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1550,7 +1550,7 @@ func (bai *BotAPIInterface) EditMessagereplyMarkup(chatIdInt int, chatIdString s
 }
 
 /*StopPoll stops the poll.*/
-func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, messageId int, replyMakrup *objs.InlineKeyboardMarkup) (*objs.PollResult, error) {
+func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, messageId int, replyMakrup *objs.InlineKeyboardMarkup) (*objs.Result[*objs.Poll], error) {
 	args := &objs.StopPollArgs{
 		MessageId:   messageId,
 		ReplyMarkup: replyMakrup,
@@ -1560,7 +1560,7 @@ func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, message
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.PollResult{}
+	msg := &objs.Result[*objs.Poll]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1569,7 +1569,7 @@ func (bai *BotAPIInterface) StopPoll(chatIdInt int, chatIdString string, message
 }
 
 /*DeleteMessage deletes the given message int the given chat.*/
-func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, messageId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, messageId int) (*objs.Result[bool], error) {
 	args := &objs.DeleteMessageArgs{
 		MessageId: messageId,
 	}
@@ -1578,7 +1578,7 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1587,7 +1587,7 @@ func (bai *BotAPIInterface) DeleteMessage(chatIdInt int, chatIdString string, me
 }
 
 /*SendSticker sends an sticker to the given chat id.*/
-func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker, emoji string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo, messageThreadId int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker, emoji string, disableNotif, allowSendingWithoutreply, protectContent bool, replyTo, messageThreadId int, replyMarkup objs.ReplyMarkup, file *os.File) (*objs.Result[*objs.Message], error) {
 	args := &objs.SendStickerArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
@@ -1605,7 +1605,7 @@ func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker, em
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.SendMethodsResult{}
+	msg := &objs.Result[*objs.Message]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1614,7 +1614,7 @@ func (bai *BotAPIInterface) SendSticker(chatIdInt int, chatIdString, sticker, em
 }
 
 /*GetStickerSet gets the sticker set by the given name*/
-func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.StickerSetResult, error) {
+func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.Result[*objs.StickerSet], error) {
 	args := &objs.GetStickerSetArgs{
 		Name: name,
 	}
@@ -1622,7 +1622,7 @@ func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.StickerSetResult, 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.StickerSetResult{}
+	msg := &objs.Result[*objs.StickerSet]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1631,7 +1631,7 @@ func (bai *BotAPIInterface) GetStickerSet(name string) (*objs.StickerSetResult, 
 }
 
 /*UploadStickerFile uploads the given file as an sticker on the telegram servers.*/
-func (bai *BotAPIInterface) UploadStickerFile(userId int, stickerFormat string, sticker *objs.InputSticker, file *os.File) (*objs.GetFileResult, error) {
+func (bai *BotAPIInterface) UploadStickerFile(userId int, stickerFormat string, sticker *objs.InputSticker, file *os.File) (*objs.Result[*objs.File], error) {
 	args := &objs.UploadStickerFileArgs{
 		UserId:        userId,
 		Sticker:       sticker,
@@ -1641,7 +1641,7 @@ func (bai *BotAPIInterface) UploadStickerFile(userId int, stickerFormat string, 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.GetFileResult{}
+	msg := &objs.Result[*objs.File]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1650,7 +1650,7 @@ func (bai *BotAPIInterface) UploadStickerFile(userId int, stickerFormat string, 
 }
 
 /*CreateNewStickerSet creates a new sticker set with the given arguments*/
-func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, StickerFormat, StickerType string, needsRepainting bool, stickers []*objs.InputSticker, files ...*os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, StickerFormat, StickerType string, needsRepainting bool, stickers []*objs.InputSticker, files ...*os.File) (*objs.Result[bool], error) {
 	args := &objs.CreateNewStickerSetArgs{
 		UserId:          userId,
 		Name:            name,
@@ -1664,7 +1664,7 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, Sticker
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1673,7 +1673,7 @@ func (bai *BotAPIInterface) CreateNewStickerSet(userId int, name, title, Sticker
 }
 
 /*AddStickerToSet adds a new sticker to the given set.*/
-func (bai *BotAPIInterface) AddStickerToSet(userId int, name string, sticker *objs.InputSticker, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AddStickerToSet(userId int, name string, sticker *objs.InputSticker, file *os.File) (*objs.Result[bool], error) {
 	args := &objs.AddStickerSetArgs{
 		UserId:  userId,
 		Name:    name,
@@ -1683,7 +1683,7 @@ func (bai *BotAPIInterface) AddStickerToSet(userId int, name string, sticker *ob
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1692,7 +1692,7 @@ func (bai *BotAPIInterface) AddStickerToSet(userId int, name string, sticker *ob
 }
 
 /*SetStickerPositionInSet sets the position of a sticker in an sticker set*/
-func (bai *BotAPIInterface) SetStickerPositionInSet(sticker string, position int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerPositionInSet(sticker string, position int) (*objs.Result[bool], error) {
 	args := &objs.SetStickerPositionInSetArgs{
 		Sticker:  sticker,
 		Position: position,
@@ -1701,7 +1701,7 @@ func (bai *BotAPIInterface) SetStickerPositionInSet(sticker string, position int
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1710,7 +1710,7 @@ func (bai *BotAPIInterface) SetStickerPositionInSet(sticker string, position int
 }
 
 /*DeleteStickerFromSet deletes the given sticker from a set created by the bot*/
-func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.Result[bool], error) {
 	args := &objs.DeleteStickerFromSetArgs{
 		Sticker: sticker,
 	}
@@ -1718,7 +1718,7 @@ func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.LogicalR
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1727,7 +1727,7 @@ func (bai *BotAPIInterface) DeleteStickerFromSet(sticker string) (*objs.LogicalR
 }
 
 /*SetStickerSetThumb sets the thumbnail for the given sticker*/
-func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, file *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, file *os.File) (*objs.Result[bool], error) {
 	args := &objs.SetStickerSetThumbnailArgs{
 		Name:   name,
 		Thumb:  thumb,
@@ -1737,7 +1737,7 @@ func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, f
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1746,7 +1746,7 @@ func (bai *BotAPIInterface) SetStickerSetThumb(name, thumb string, userId int, f
 }
 
 // DeleteStickerSet deletes a sticker set that was created by the bot. Returns True on success.
-func (bai *BotAPIInterface) DeleteStickerSet(name string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteStickerSet(name string) (*objs.Result[bool], error) {
 	args := &objs.DeleteStickerSetArgs{
 		Name: name,
 	}
@@ -1754,7 +1754,7 @@ func (bai *BotAPIInterface) DeleteStickerSet(name string) (*objs.LogicalResult, 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1763,7 +1763,7 @@ func (bai *BotAPIInterface) DeleteStickerSet(name string) (*objs.LogicalResult, 
 }
 
 // SetStickerSetTitle sets the title of a created sticker set. Returns True on success.
-func (bai *BotAPIInterface) SetStickerSetTitle(name, title string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerSetTitle(name, title string) (*objs.Result[bool], error) {
 	args := &objs.SetStickerSetTitleArgs{
 		Name:  name,
 		Title: title,
@@ -1772,7 +1772,7 @@ func (bai *BotAPIInterface) SetStickerSetTitle(name, title string) (*objs.Logica
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1781,7 +1781,7 @@ func (bai *BotAPIInterface) SetStickerSetTitle(name, title string) (*objs.Logica
 }
 
 // SetStickerEmojiList changes the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.
-func (bai *BotAPIInterface) SetStickerEmojiList(sticker string, emojiLst []string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerEmojiList(sticker string, emojiLst []string) (*objs.Result[bool], error) {
 	args := &objs.SetStickerEmojiListArgs{
 		Sticker:   sticker,
 		EmojiList: emojiLst,
@@ -1790,7 +1790,7 @@ func (bai *BotAPIInterface) SetStickerEmojiList(sticker string, emojiLst []strin
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1799,7 +1799,7 @@ func (bai *BotAPIInterface) SetStickerEmojiList(sticker string, emojiLst []strin
 }
 
 // SetStickerKeywords changes search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.
-func (bai *BotAPIInterface) SetStickerKeywords(sticker string, keywords []string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerKeywords(sticker string, keywords []string) (*objs.Result[bool], error) {
 	args := &objs.SetStickerKeywordsArgs{
 		Sticker:   sticker,
 		Keywoards: keywords,
@@ -1808,7 +1808,7 @@ func (bai *BotAPIInterface) SetStickerKeywords(sticker string, keywords []string
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1817,7 +1817,7 @@ func (bai *BotAPIInterface) SetStickerKeywords(sticker string, keywords []string
 }
 
 // SetStickerMaskPosition changes the mask position of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns True on success.
-func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	args := &objs.SetStickerMaskPositionArgs{
 		Sticker:      sticker,
 		MaskPosition: maskPosition,
@@ -1826,7 +1826,7 @@ func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition 
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1835,7 +1835,7 @@ func (bai *BotAPIInterface) SetStickerMaskPosition(sticker string, maskPosition 
 }
 
 /*AnswerInlineQuery answers an inline query with the given parameters*/
-func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset string, button *objs.InlineQueryResultsButton) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []objs.InlineQueryResult, cacheTime int, isPersonal bool, nextOffset string, button *objs.InlineQueryResultsButton) (*objs.Result[bool], error) {
 	args := &objs.AnswerInlineQueryArgs{
 		InlineQueryId: inlineQueryId,
 		Results:       results,
@@ -1848,7 +1848,7 @@ func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []ob
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1857,7 +1857,7 @@ func (bai *BotAPIInterface) AnswerInlineQuery(inlineQueryId string, results []ob
 }
 
 /*SendInvoice sends an invoice*/
-func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, disableNotif bool, replyToMessageId, messageThreadId int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, disableNotif bool, replyToMessageId, messageThreadId int, allowSendingWithoutReply bool, replyMarkup objs.InlineKeyboardMarkup) (*objs.Result[*objs.Message], error) {
 	args := &objs.SendInvoiceArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			DisableNotification:      disableNotif,
@@ -1893,7 +1893,7 @@ func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, desc
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.SendMethodsResult{}
+	msg := &objs.Result[*objs.Message]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1902,7 +1902,7 @@ func (bai *BotAPIInterface) SendInvoice(chatIdInt int, chatIdString, title, desc
 }
 
 /*CreateInvoiceLink sends an invoice*/
-func (bai *BotAPIInterface) CreateInvoiceLink(title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible bool) (*objs.StringResult, error) {
+func (bai *BotAPIInterface) CreateInvoiceLink(title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible bool) (*objs.Result[string], error) {
 	args := &objs.SendInvoiceArgs{
 		Title:                     title,
 		Description:               description,
@@ -1929,7 +1929,7 @@ func (bai *BotAPIInterface) CreateInvoiceLink(title, description, payload, provi
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.StringResult{}
+	msg := &objs.Result[string]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1938,7 +1938,7 @@ func (bai *BotAPIInterface) CreateInvoiceLink(title, description, payload, provi
 }
 
 /*AnswerShippingQuery answers a shipping query*/
-func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.Result[bool], error) {
 	args := &objs.AnswerShippingQueryArgs{
 		ShippingQueryId: shippingQueryId,
 		OK:              ok,
@@ -1949,7 +1949,7 @@ func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool,
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1958,7 +1958,7 @@ func (bai *BotAPIInterface) AnswerShippingQuery(shippingQueryId string, ok bool,
 }
 
 /*AnswerPreCheckoutQuery answers a pre checkout query*/
-func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok bool, errorMessage string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok bool, errorMessage string) (*objs.Result[bool], error) {
 	args := &objs.AnswerPreCheckoutQueryArgs{
 		PreCheckoutQueryId: preCheckoutQueryId,
 		Ok:                 ok,
@@ -1968,7 +1968,7 @@ func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -1980,7 +1980,7 @@ func (bai *BotAPIInterface) AnswerPreCheckoutQuery(preCheckoutQueryId string, ok
 CopyMessage copies a message from a user or channel and sends it to a user or channel. If the source or destination (or both) of the forwarded message is a channel, only string chat ids should be given to the function, and if it is user only int chat ids should be given.
 "chatId", "fromChatId" and "messageId" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply, ProtectContent bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdString, fromChatIdString string, messageId int, disableNotif bool, caption, parseMode string, replyTo int, allowSendingWihtoutReply, ProtectContent bool, replyMarkUp objs.ReplyMarkup, captionEntities []objs.MessageEntity) (*objs.Result[*objs.Message], error) {
 	if (chatIdInt != 0 && chatIdString != "") && (fromChatIdInt != 0 && fromChatIdString != "") {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2007,7 +2007,7 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.SendMethodsResult{}
+		msg := &objs.Result[*objs.Message]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2019,7 +2019,7 @@ func (bai *BotAPIInterface) CopyMessage(chatIdInt, fromChatIdInt int, chatIdStri
 }
 
 /*SetPassportDataErrors sets passport data errors*/
-func (bai *BotAPIInterface) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.Result[bool], error) {
 	args := &objs.SetPassportDataErrorsArgs{
 		UserId: userId, Errors: errors,
 	}
@@ -2027,7 +2027,7 @@ func (bai *BotAPIInterface) SetPassportDataErrors(userId int, errors []objs.Pass
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2036,7 +2036,7 @@ func (bai *BotAPIInterface) SetPassportDataErrors(userId int, errors []objs.Pass
 }
 
 /*SendGame sends a game*/
-func (bai *BotAPIInterface) SendGame(chatId int, gameShortName string, disableNotif bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.SendMethodsResult, error) {
+func (bai *BotAPIInterface) SendGame(chatId int, gameShortName string, disableNotif bool, replyTo int, allowSendingWithoutReply bool, replyMarkup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	args := &objs.SendGameArgs{
 		DefaultSendMethodsArguments: objs.DefaultSendMethodsArguments{
 			ReplyToMessageId:         replyTo,
@@ -2052,7 +2052,7 @@ func (bai *BotAPIInterface) SendGame(chatId int, gameShortName string, disableNo
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.SendMethodsResult{}
+	msg := &objs.Result[*objs.Message]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2061,7 +2061,7 @@ func (bai *BotAPIInterface) SendGame(chatId int, gameShortName string, disableNo
 }
 
 /*SetGameScore sets the game high score*/
-func (bai *BotAPIInterface) SetGameScore(userId, score int, force, disableEditMessage bool, chatId, messageId int, inlineMessageId string) (*objs.DefaultResult, error) {
+func (bai *BotAPIInterface) SetGameScore(userId, score int, force, disableEditMessage bool, chatId, messageId int, inlineMessageId string) (*objs.Result[json.RawMessage], error) {
 	args := &objs.SetGameScoreArgs{
 		UserId:             userId,
 		Score:              score,
@@ -2075,7 +2075,7 @@ func (bai *BotAPIInterface) SetGameScore(userId, score int, force, disableEditMe
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.DefaultResult{}
+	msg := &objs.Result[json.RawMessage]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2084,7 +2084,7 @@ func (bai *BotAPIInterface) SetGameScore(userId, score int, force, disableEditMe
 }
 
 /*GetGameHighScores gets the high scores of the user*/
-func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.GameHighScoresResult, error) {
+func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.Result[[]*objs.GameHighScore], error) {
 	args := &objs.GetGameHighScoresArgs{
 		UserId:          userId,
 		ChatId:          chatId,
@@ -2095,7 +2095,7 @@ func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inl
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.GameHighScoresResult{}
+	msg := &objs.Result[[]*objs.GameHighScore]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2104,12 +2104,12 @@ func (bai *BotAPIInterface) GetGameHighScores(userId, chatId, messageId int, inl
 }
 
 /*GetWebhookInfo returns the web hook info of the bot.*/
-func (bai *BotAPIInterface) GetWebhookInfo() (*objs.WebhookInfoResult, error) {
+func (bai *BotAPIInterface) GetWebhookInfo() (*objs.Result[*objs.WebhookInfo], error) {
 	res, err := bai.SendCustom("getWebhookInfo", nil, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.WebhookInfoResult{}
+	msg := &objs.Result[*objs.WebhookInfo]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2118,7 +2118,7 @@ func (bai *BotAPIInterface) GetWebhookInfo() (*objs.WebhookInfoResult, error) {
 }
 
 /*SetWebhook sets a webhook for the bot.*/
-func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdates []string, dropPendingUpdates bool, keyFile *os.File) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdates []string, dropPendingUpdates bool, keyFile *os.File) (*objs.Result[bool], error) {
 	args := objs.SetWebhookArgs{
 		URL:                url,
 		IPAddress:          ip,
@@ -2137,7 +2137,7 @@ func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdate
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2146,7 +2146,7 @@ func (bai *BotAPIInterface) SetWebhook(url, ip string, maxCnc int, allowedUpdate
 }
 
 /*DeleteWebhook deletes the webhook for this bot*/
-func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Result[bool], error) {
 	args := objs.DeleteWebhookArgs{
 		DropPendingUpdates: dropPendingUpdates,
 	}
@@ -2154,7 +2154,7 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2163,7 +2163,7 @@ func (bai *BotAPIInterface) DeleteWebhook(dropPendingUpdates bool) (*objs.Logica
 }
 
 /*GetCustomEmojiStickers returns the information of the speicified stickers by id*/
-func (bai *BotAPIInterface) GetCustomEmojiStickers(customEmojiIds []string) (*objs.StickersResult, error) {
+func (bai *BotAPIInterface) GetCustomEmojiStickers(customEmojiIds []string) (*objs.Result[[]*objs.Sticker], error) {
 	args := objs.GetCustomEmojiStickersArgs{
 		CustomEmojiIds: customEmojiIds,
 	}
@@ -2171,7 +2171,7 @@ func (bai *BotAPIInterface) GetCustomEmojiStickers(customEmojiIds []string) (*ob
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.StickersResult{}
+	msg := &objs.Result[[]*objs.Sticker]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2198,7 +2198,7 @@ func (bai *BotAPIInterface) AnswerWebAppQuery(webAppQueryId string, result objs.
 }
 
 /*GetChatMenuButton gets the menu button for the given chat*/
-func (bai *BotAPIInterface) GetChatMenuButton(chatId int64) (*objs.MenuButtonResult, error) {
+func (bai *BotAPIInterface) GetChatMenuButton(chatId int64) (*objs.Result[*objs.MenuButton], error) {
 	args := objs.ChatMenuButtonArgs{
 		ChatId: chatId,
 	}
@@ -2206,7 +2206,7 @@ func (bai *BotAPIInterface) GetChatMenuButton(chatId int64) (*objs.MenuButtonRes
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.MenuButtonResult{}
+	msg := &objs.Result[*objs.MenuButton]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2215,7 +2215,7 @@ func (bai *BotAPIInterface) GetChatMenuButton(chatId int64) (*objs.MenuButtonRes
 }
 
 /*SetChatMenuButton sets the menu button for the given chat*/
-func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.MenuButton) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.MenuButton) (*objs.Result[bool], error) {
 	args := objs.ChatMenuButtonArgs{
 		ChatId:     chatId,
 		MenuButton: menuButton,
@@ -2224,7 +2224,7 @@ func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.Men
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2233,12 +2233,12 @@ func (bai *BotAPIInterface) SetChatMenuButton(chatId int64, menuButton *objs.Men
 }
 
 /*GetForumTopicIconStickers returns custom emoji stickers, which can be used as a forum topic icon by any user.*/
-func (bai *BotAPIInterface) GetForumTopicIconStickers() (*objs.StickersResult, error) {
+func (bai *BotAPIInterface) GetForumTopicIconStickers() (*objs.Result[[]*objs.Sticker], error) {
 	res, err := bai.SendCustom("getForumTopicIconStickers", nil, false, nil)
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.StickersResult{}
+	msg := &objs.Result[[]*objs.Sticker]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2247,7 +2247,7 @@ func (bai *BotAPIInterface) GetForumTopicIconStickers() (*objs.StickersResult, e
 }
 
 /*CreateForumTopic creates a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights*/
-func (bai *BotAPIInterface) CreateForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, iconColor int) (*objs.ForumTopicResult, error) {
+func (bai *BotAPIInterface) CreateForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, iconColor int) (*objs.Result[*objs.ForumTopic], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2263,7 +2263,7 @@ func (bai *BotAPIInterface) CreateForumTopic(chatIdInt int, chatIdString, name, 
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.ForumTopicResult{}
+		msg := &objs.Result[*objs.ForumTopic]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2275,7 +2275,7 @@ func (bai *BotAPIInterface) CreateForumTopic(chatIdInt int, chatIdString, name, 
 }
 
 /*EditForumTopic edits name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights, unless it is the creator of the topic*/
-func (bai *BotAPIInterface) EditForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, messageThreadId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) EditForumTopic(chatIdInt int, chatIdString, name, iconCustomEmojiId string, messageThreadId int) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2291,7 +2291,7 @@ func (bai *BotAPIInterface) EditForumTopic(chatIdInt int, chatIdString, name, ic
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2303,7 +2303,7 @@ func (bai *BotAPIInterface) EditForumTopic(chatIdInt int, chatIdString, name, ic
 }
 
 /*CloseForumTopic closes an open topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic*/
-func (bai *BotAPIInterface) CloseForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CloseForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2317,7 +2317,7 @@ func (bai *BotAPIInterface) CloseForumTopic(chatIdInt int, chatIdString string, 
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2329,7 +2329,7 @@ func (bai *BotAPIInterface) CloseForumTopic(chatIdInt int, chatIdString string, 
 }
 
 /*ReopenForumTopic reopens a closed topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic*/
-func (bai *BotAPIInterface) ReopenForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) ReopenForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2345,7 +2345,7 @@ func (bai *BotAPIInterface) ReopenForumTopic(chatIdInt int, chatIdString string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2357,7 +2357,7 @@ func (bai *BotAPIInterface) ReopenForumTopic(chatIdInt int, chatIdString string,
 }
 
 /*DeleteForumTopic deletes a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights*/
-func (bai *BotAPIInterface) DeleteForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) DeleteForumTopic(chatIdInt int, chatIdString string, messageThreadId int) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2373,7 +2373,7 @@ func (bai *BotAPIInterface) DeleteForumTopic(chatIdInt int, chatIdString string,
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2385,7 +2385,7 @@ func (bai *BotAPIInterface) DeleteForumTopic(chatIdInt int, chatIdString string,
 }
 
 /*UnpinAllForumTopicMessages clears the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup*/
-func (bai *BotAPIInterface) UnpinAllForumTopicMessages(chatIdInt int, chatIdString string, messageThreadId int) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnpinAllForumTopicMessages(chatIdInt int, chatIdString string, messageThreadId int) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2401,7 +2401,7 @@ func (bai *BotAPIInterface) UnpinAllForumTopicMessages(chatIdInt int, chatIdStri
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2413,7 +2413,7 @@ func (bai *BotAPIInterface) UnpinAllForumTopicMessages(chatIdInt int, chatIdStri
 }
 
 /*EditGeneralForumTopic edits the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights*/
-func (bai *BotAPIInterface) EditGeneralForumTopic(chatIdInt int, chatIdString, name string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) EditGeneralForumTopic(chatIdInt int, chatIdString, name string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2427,7 +2427,7 @@ func (bai *BotAPIInterface) EditGeneralForumTopic(chatIdInt int, chatIdString, n
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2439,7 +2439,7 @@ func (bai *BotAPIInterface) EditGeneralForumTopic(chatIdInt int, chatIdString, n
 }
 
 /*CloseGeneralForumTopic closes an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights*/
-func (bai *BotAPIInterface) CloseGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) CloseGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2452,7 +2452,7 @@ func (bai *BotAPIInterface) CloseGeneralForumTopic(chatIdInt int, chatIdString s
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2464,7 +2464,7 @@ func (bai *BotAPIInterface) CloseGeneralForumTopic(chatIdInt int, chatIdString s
 }
 
 /*ReopenGeneralForumTopic reopens a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically unhidden if it was hidden.*/
-func (bai *BotAPIInterface) ReopenGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) ReopenGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2479,7 +2479,7 @@ func (bai *BotAPIInterface) ReopenGeneralForumTopic(chatIdInt int, chatIdString 
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2491,7 +2491,7 @@ func (bai *BotAPIInterface) ReopenGeneralForumTopic(chatIdInt int, chatIdString 
 }
 
 /*HideGeneralForumTopic hides the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically closed if it was open.*/
-func (bai *BotAPIInterface) HideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) HideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2506,7 +2506,7 @@ func (bai *BotAPIInterface) HideGeneralForumTopic(chatIdInt int, chatIdString st
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2518,7 +2518,7 @@ func (bai *BotAPIInterface) HideGeneralForumTopic(chatIdInt int, chatIdString st
 }
 
 /*UnhideGeneralForumTopic unhides the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights.*/
-func (bai *BotAPIInterface) UnhideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnhideGeneralForumTopic(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2533,7 +2533,7 @@ func (bai *BotAPIInterface) UnhideGeneralForumTopic(chatIdInt int, chatIdString 
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2545,7 +2545,7 @@ func (bai *BotAPIInterface) UnhideGeneralForumTopic(chatIdInt int, chatIdString 
 }
 
 /*UnpinAllGeneralForumTopicMessages clears the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup.*/
-func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -2560,7 +2560,7 @@ func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, cha
 		if err != nil {
 			return nil, err
 		}
-		msg := &objs.LogicalResult{}
+		msg := &objs.Result[bool]{}
 		err3 := json.Unmarshal(res, msg)
 		if err3 != nil {
 			return nil, err3
@@ -2572,7 +2572,7 @@ func (bai *BotAPIInterface) UnpinAllGeneralForumTopicMessages(chatIdInt int, cha
 }
 
 // SetMyDescription changes the bot's description, which is shown in the chat with the bot if the chat is empty. Returns True on success.
-func (bai *BotAPIInterface) SetMyDescription(description, languageCode string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetMyDescription(description, languageCode string) (*objs.Result[bool], error) {
 	args := objs.SetMyDescriptionArgs{
 		Description:  description,
 		LanguageCode: languageCode,
@@ -2581,7 +2581,7 @@ func (bai *BotAPIInterface) SetMyDescription(description, languageCode string) (
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2590,7 +2590,7 @@ func (bai *BotAPIInterface) SetMyDescription(description, languageCode string) (
 }
 
 // SetMyShortDescription changes the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns True on success.
-func (bai *BotAPIInterface) SetMyShortDescription(description, languageCode string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetMyShortDescription(description, languageCode string) (*objs.Result[bool], error) {
 	args := objs.SetMyShortDescriptionArgs{
 		ShortDescription: description,
 		LanguageCode:     languageCode,
@@ -2599,7 +2599,7 @@ func (bai *BotAPIInterface) SetMyShortDescription(description, languageCode stri
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2608,7 +2608,7 @@ func (bai *BotAPIInterface) SetMyShortDescription(description, languageCode stri
 }
 
 // GetMyDescription gets the current bot description for the given user language. Returns BotDescription on success.
-func (bai *BotAPIInterface) GetMyDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+func (bai *BotAPIInterface) GetMyDescription(languageCode string) (*objs.Result[*objs.BotDescription], error) {
 	args := objs.GetMyDescriptionArgs{
 		LanguageCode: languageCode,
 	}
@@ -2616,7 +2616,7 @@ func (bai *BotAPIInterface) GetMyDescription(languageCode string) (*objs.BotDesc
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.BotDescriptionResult{}
+	msg := &objs.Result[*objs.BotDescription]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2625,7 +2625,7 @@ func (bai *BotAPIInterface) GetMyDescription(languageCode string) (*objs.BotDesc
 }
 
 // GetMyShortDescription gets the current bot short description for the given user language. Returns BotShortDescription on success.
-func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.BotShortDescriptionResult, error) {
+func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.Result[*objs.BotShortDescription], error) {
 	args := objs.GetMyDescriptionArgs{
 		LanguageCode: languageCode,
 	}
@@ -2633,7 +2633,7 @@ func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.Bo
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.BotShortDescriptionResult{}
+	msg := &objs.Result[*objs.BotShortDescription]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2642,7 +2642,7 @@ func (bai *BotAPIInterface) GetMyShortDescription(languageCode string) (*objs.Bo
 }
 
 // SetMyName changes the bot's name. Returns True on success.
-func (bai *BotAPIInterface) SetMyName(name, languageCode string) (*objs.LogicalResult, error) {
+func (bai *BotAPIInterface) SetMyName(name, languageCode string) (*objs.Result[bool], error) {
 	args := objs.SetMyNameArgs{
 		Name:         name,
 		LanguageCode: languageCode,
@@ -2651,7 +2651,7 @@ func (bai *BotAPIInterface) SetMyName(name, languageCode string) (*objs.LogicalR
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.LogicalResult{}
+	msg := &objs.Result[bool]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2660,7 +2660,7 @@ func (bai *BotAPIInterface) SetMyName(name, languageCode string) (*objs.LogicalR
 }
 
 // GetMyName gets the current bot name for the given user language. Returns BotName on success.
-func (bai *BotAPIInterface) GetMyName(languageCode string) (*objs.BotNameResult, error) {
+func (bai *BotAPIInterface) GetMyName(languageCode string) (*objs.Result[*objs.BotName], error) {
 	args := objs.GetMyNameArgs{
 		LanguageCode: languageCode,
 	}
@@ -2668,7 +2668,7 @@ func (bai *BotAPIInterface) GetMyName(languageCode string) (*objs.BotNameResult,
 	if err != nil {
 		return nil, err
 	}
-	msg := &objs.BotNameResult{}
+	msg := &objs.Result[*objs.BotName]{}
 	err3 := json.Unmarshal(res, msg)
 	if err3 != nil {
 		return nil, err3
@@ -2710,7 +2710,7 @@ func (bai *BotAPIInterface) fixTheDefaultArguments(chatIdInt, reply_to_message_i
 }
 
 func (bai *BotAPIInterface) preParseResult(res []byte, method string) ([]byte, error) {
-	def := &objs.DefaultResult{}
+	def := &objs.Result[json.RawMessage]{}
 	err := json.Unmarshal(res, def)
 	if err != nil {
 		return nil, err

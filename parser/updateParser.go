@@ -11,9 +11,9 @@ import (
 	objs "github.com/SakoDroid/telego/objects"
 )
 
-//ParseUpdate parses the received update and returns the last update offset.
+// ParseUpdate parses the received update and returns the last update offset.
 func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
-	def := &objs.DefaultResult{}
+	def := &objs.Result[json.RawMessage]{}
 	err2 := json.Unmarshal(body, def)
 	if err2 != nil {
 		return 0, err2
@@ -21,7 +21,7 @@ func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, 
 	if !def.Ok {
 		return 0, &errs.MethodNotSentError{Method: "getUpdates", Reason: "server returned false for \"ok\" field."}
 	}
-	ur := &objs.UpdateResult{}
+	ur := &objs.Result[[]*objs.Update]{}
 	err := json.Unmarshal(body, ur)
 	if err != nil {
 		return 0, err
@@ -29,7 +29,7 @@ func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, 
 	return parse(ur, uc, cu, cfg)
 }
 
-func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
+func parse(ur *objs.Result[[]*objs.Update], uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
 	lastOffset := 0
 	for _, val := range ur.Result {
 		if val.Update_id > lastOffset {
@@ -40,7 +40,7 @@ func parse(ur *objs.UpdateResult, uc *chan *objs.Update, cu *chan *objs.ChatUpda
 	return lastOffset, nil
 }
 
-//ParseSingleUpdate processes the given update object.
+// ParseSingleUpdate processes the given update object.
 func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) {
 	userId, isUserBlocked := isUserBlocked(up, cfg)
 	if !isUserBlocked {

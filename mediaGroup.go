@@ -339,7 +339,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (mg *MediaGroup) Send(chatId int, silent, protectContent bool) (*objs.SendMediaGroupMethodResult, error) {
+func (mg *MediaGroup) Send(chatId int, silent, protectContent bool) (*objs.Result[[]objs.Message], error) {
 	if len(mg.media) < 2 {
 		return nil, errors.New("the number os medias should be greater than 1")
 	}
@@ -362,7 +362,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) (*objs.SendMediaGroupMethodResult, error) {
+func (mg *MediaGroup) SendToChannel(chatId string, silent, protectContent bool) (*objs.Result[[]objs.Message], error) {
 	if len(mg.media) < 2 {
 		return nil, errors.New("the number os medias should be greater than 1")
 	}

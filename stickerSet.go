@@ -145,7 +145,7 @@ func (ss *StickerSet) AddNewStickerByFile(file *os.File, userId int, emojiList, 
 }
 
 // Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
-func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	// if ss == nil {
 	// 	return nil, errors.New("sticker set is nil")
 	// }
@@ -179,7 +179,7 @@ func (ss *StickerSet) AddSticker(pngStickerFileIdOrUrl string, pngStickerFile *o
 }
 
 // Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
-func (ss *StickerSet) AddPngSticker(pngPicFileIdOrUrl, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddPngSticker(pngPicFileIdOrUrl, emojies string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	return nil, &errs.MethodDeprecated{MethodName: "AddPngSticker", Replacement: "AddNewSticker"}
 	// return ss.bot.apiInterface.AddStickerToSet(
 	// 	ss.userId, ss.stickerSet.Name, pngPicFileIdOrUrl, "", "", emojies, maskPosition, nil,
@@ -187,7 +187,7 @@ func (ss *StickerSet) AddPngSticker(pngPicFileIdOrUrl, emojies string, maskPosit
 }
 
 // Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
-func (ss *StickerSet) AddPngStickerByFile(pngPicFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddPngStickerByFile(pngPicFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	return nil, &errs.MethodDeprecated{MethodName: "AddPngStickerByFile", Replacement: "AddNewStickerByFile"}
 	// if pngPicFile == nil {
 	// 	return nil, errors.New("pngPicFile cannot be nil")
@@ -202,7 +202,7 @@ func (ss *StickerSet) AddPngStickerByFile(pngPicFile *os.File, emojies string, m
 }
 
 // Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
-func (ss *StickerSet) AddAnimatedSticker(tgsFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddAnimatedSticker(tgsFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	return nil, &errs.MethodDeprecated{MethodName: "AddAnimatedSticker", Replacement: "AddNewSticker"}
 	// if tgsFile == nil {
 	// 	return nil, errors.New("tgsFile cannot be nil")
@@ -217,7 +217,7 @@ func (ss *StickerSet) AddAnimatedSticker(tgsFile *os.File, emojies string, maskP
 }
 
 // Deprecated: This function should no longer be used for adding stickers to a sticker set. Use "AddNewSticker" method instead.
-func (ss *StickerSet) AddVideoSticker(webmFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.LogicalResult, error) {
+func (ss *StickerSet) AddVideoSticker(webmFile *os.File, emojies string, maskPosition *objs.MaskPosition) (*objs.Result[bool], error) {
 	return nil, &errs.MethodDeprecated{MethodName: "AddVideoSticker", Replacement: "AddNewSticker"}
 	// if webmFile == nil {
 	// 	return nil, errors.New("webmFile cannot be nil")
@@ -236,7 +236,7 @@ SetStickerPosition can be used to move a sticker in a set created by the bot to 
 
 "sticker" is file identifier of the sticker and "position" is new sticker position in the set, zero-based
 */
-func (ss *StickerSet) SetStickerPosition(sticker string, position int) (*objs.LogicalResult, error) {
+func (ss *StickerSet) SetStickerPosition(sticker string, position int) (*objs.Result[bool], error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")
 	}
@@ -248,7 +248,7 @@ DeleteStickerFromSet can be used to delete a sticker from a set created by the b
 
 "sticker" is file identifier of the sticker.
 */
-func (ss *StickerSet) DeleteStickerFromSet(sticker string) (*objs.LogicalResult, error) {
+func (ss *StickerSet) DeleteStickerFromSet(sticker string) (*objs.Result[bool], error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")
 	}
@@ -256,7 +256,7 @@ func (ss *StickerSet) DeleteStickerFromSet(sticker string) (*objs.LogicalResult,
 }
 
 /*SetThumb can be used to set the thumbnail of a sticker set using url or file id. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
-func (ss *StickerSet) SetThumb(userId int, thumb string) (*objs.LogicalResult, error) {
+func (ss *StickerSet) SetThumb(userId int, thumb string) (*objs.Result[bool], error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")
 	}
@@ -264,7 +264,7 @@ func (ss *StickerSet) SetThumb(userId int, thumb string) (*objs.LogicalResult, e
 }
 
 /*SetThumbByFile can be used to set the thumbnail of a sticker set using a file on the computer. Animated thumbnails can be set for animated sticker sets only. Returns True on success.*/
-func (ss *StickerSet) SetThumbByFile(userId int, thumb *os.File) (*objs.LogicalResult, error) {
+func (ss *StickerSet) SetThumbByFile(userId int, thumb *os.File) (*objs.Result[bool], error) {
 	if ss == nil {
 		return nil, errors.New("sticker set is nil")
 	}
@@ -276,11 +276,11 @@ func (ss *StickerSet) SetThumbByFile(userId int, thumb *os.File) (*objs.LogicalR
 }
 
 // SetTitle changes this sticker set's title.
-func (ss *StickerSet) SetTitle(title string) (*objs.LogicalResult, error) {
+func (ss *StickerSet) SetTitle(title string) (*objs.Result[bool], error) {
 	return ss.bot.apiInterface.SetStickerSetTitle(ss.name, title)
 }
 
 // Delete deletes a sticker set that was created by this bot.
-func (ss *StickerSet) Delete() (*objs.LogicalResult, error) {
+func (ss *StickerSet) Delete() (*objs.Result[bool], error) {
 	return ss.bot.apiInterface.DeleteStickerSet(ss.name)
 }

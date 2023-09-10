@@ -1,6 +1,7 @@
 package telego
 
 import (
+	"encoding/json"
 	"os"
 
 	objs "github.com/SakoDroid/telego/objects"
@@ -23,7 +24,7 @@ type PhotoEditor struct {
 }
 
 /*EditByFileIdOrURL edits this photo by file id or url*/
-func (pi *PhotoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
+func (pi *PhotoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.Result[json.RawMessage], error) {
 	im := &objs.InputMediaPhoto{
 		InputMediaDefault: fixTheDefault("photo", fileIdOrUrl, pi.caption, pi.parseMode, pi.captionEntities),
 	}
@@ -31,7 +32,7 @@ func (pi *PhotoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 }
 
 /*EditByFile edits this photo with an existing file in the device*/
-func (pi *PhotoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
+func (pi *PhotoEditor) EditByFile(file *os.File) (*objs.Result[json.RawMessage], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -55,7 +56,7 @@ type VideoEditor struct {
 }
 
 /*EditByFileIdOrURL edits this video by file id or url*/
-func (vi *VideoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
+func (vi *VideoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.Result[json.RawMessage], error) {
 	im := &objs.InputMediaVideo{
 		InputMediaDefault: fixTheDefault("video", fileIdOrUrl, vi.caption, vi.parseMode, vi.captionEntities),
 		Thumb:             vi.thumb,
@@ -74,7 +75,7 @@ func (vi *VideoEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 }
 
 /*EditByFile edits this video by file in the device*/
-func (vi *VideoEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
+func (vi *VideoEditor) EditByFile(file *os.File) (*objs.Result[json.RawMessage], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -124,7 +125,7 @@ type AnimationEditor struct {
 }
 
 /*EditByFileIdOrURL edits this animation file by file id or url*/
-func (ai *AnimationEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
+func (ai *AnimationEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.Result[json.RawMessage], error) {
 	im := &objs.InputMediaAnimation{
 		InputMediaDefault: fixTheDefault("animation", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
 		Thumb:             ai.thumb,
@@ -142,7 +143,7 @@ func (ai *AnimationEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultR
 }
 
 /*EditByFile edits this animation by file in the device*/
-func (ai *AnimationEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
+func (ai *AnimationEditor) EditByFile(file *os.File) (*objs.Result[json.RawMessage], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -191,7 +192,7 @@ type AudioEditor struct {
 }
 
 /*EditByFileIdOrURL edits this file by file id or url*/
-func (ai *AudioEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
+func (ai *AudioEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.Result[json.RawMessage], error) {
 	im := &objs.InputMediaAudio{
 		InputMediaDefault: fixTheDefault("audio", fileIdOrUrl, ai.caption, ai.parseMode, ai.captionEntities),
 		Thumb:             ai.thumb,
@@ -205,7 +206,7 @@ func (ai *AudioEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResul
 }
 
 /*EditByFile edits this audio by file in the device*/
-func (ai *AudioEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
+func (ai *AudioEditor) EditByFile(file *os.File) (*objs.Result[json.RawMessage], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -250,7 +251,7 @@ type DocumentEditor struct {
 }
 
 /*EditByFileIdOrURL edits this file by file id or url*/
-func (di *DocumentEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultResult, error) {
+func (di *DocumentEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.Result[json.RawMessage], error) {
 	im := &objs.InputMediaDocument{
 		InputMediaDefault:           fixTheDefault("document", fileIdOrUrl, di.caption, di.parseMode, di.captionEntities),
 		Thumb:                       di.thumb,
@@ -260,7 +261,7 @@ func (di *DocumentEditor) EditByFileIdOrURL(fileIdOrUrl string) (*objs.DefaultRe
 }
 
 /*EditByFile edits this document by file in the device*/
-func (di *DocumentEditor) EditByFile(file *os.File) (*objs.DefaultResult, error) {
+func (di *DocumentEditor) EditByFile(file *os.File) (*objs.Result[json.RawMessage], error) {
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, err
@@ -290,7 +291,7 @@ func (di *DocumentEditor) EditThumbnailFile(file *os.File) error {
 }
 
 /*EditText can be used to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -302,7 +303,7 @@ func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMod
 }
 
 /*EditCaption can be used to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -359,7 +360,7 @@ func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode str
 }
 
 /*EditReplyMarkup can be used to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *inlineKeyboard) (*objs.DefaultResult, error) {
+func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -390,11 +391,11 @@ DeleteMessage can be used to delete a message, including service messages, with 
 
 Returns True on success.
 */
-func (me *MessageEditor) DeleteMessage(messageId int) (*objs.LogicalResult, error) {
+func (me *MessageEditor) DeleteMessage(messageId int) (*objs.Result[bool], error) {
 	return me.bot.apiInterface.DeleteMessage(me.chatIdInt, me.chatIdString, messageId)
 }
 
-func (me *MessageEditor) editMedia(messageId int, inlineMessageId string, media objs.InputMedia, replyMarkup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.DefaultResult, error) {
+func (me *MessageEditor) editMedia(messageId int, inlineMessageId string, media objs.InputMedia, replyMarkup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.Result[json.RawMessage], error) {
 	return me.bot.apiInterface.EditMessageMedia(
 		me.chatIdInt, me.chatIdString, messageId, inlineMessageId, media,
 		replyMarkup, file...,

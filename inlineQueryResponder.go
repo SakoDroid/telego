@@ -744,7 +744,7 @@ func (iqs *InlineQueryResponder) SetButton(text, startParameter, webAppURL strin
 
 /*
 Sends this answer to the user.
-The returned result can have two types : LogicalResult or SentWebAppMessage.
+The returned result can have two types : Result[bool] or SentWebAppMessage.
 */
 func (iqs *InlineQueryResponder) Send() (interface{}, error) {
 	if iqs.isWebApp {

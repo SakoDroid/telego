@@ -1,6 +1,7 @@
 package telego
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 
@@ -23,7 +24,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -40,7 +41,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -351,7 +352,7 @@ Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendVenue(chatId, replyTo, messageThreadId int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply, protectContent bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenue(chatId, replyTo, messageThreadId int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent bool, allowSendingWihtoutReply, protectContent bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -375,7 +376,7 @@ Official telegram doc :
 
 Use this method to send information about a venue. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendVenueUN(chatId string, replyTo, messageThreadId int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendVenueUN(chatId string, replyTo, messageThreadId int, latitude, longitude float32, title, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -399,7 +400,7 @@ Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendContact(chatId, replyTo, messageThreadId int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContact(chatId, replyTo, messageThreadId int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -422,7 +423,7 @@ Official telegram doc :
 
 Use this method to send phone contacts. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo, messageThreadId int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendContactUN(chatId string, replyTo, messageThreadId int, phoneNumber, firstName, lastName, vCard string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -447,7 +448,7 @@ Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned
 */
-func (bot *AdvancedBot) ASendDice(chatId, replyTo, messageThreadId int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDice(chatId, replyTo, messageThreadId int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -472,7 +473,7 @@ Official telegram doc :
 
 Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned
 */
-func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo, messageThreadId int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendDiceUN(chatId string, replyTo, messageThreadId int, emoji string, silent, protectContent bool, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -506,7 +507,7 @@ Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo, messageThreadId int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo, messageThreadId int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -531,7 +532,7 @@ Official telegram doc :
 
 Use this method to send point on the map. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo, messageThreadId int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo, messageThreadId int, allowSendingWihtoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -546,7 +547,7 @@ AAnswerCallbackQuery can be used to send answers to callback queries sent from i
 
 Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @Botfather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
 */
-func (bot *AdvancedBot) AAnswerCallbackQuery(callbackQueryId, text string, showAlert bool, url string, cacheTime int) (*objs.LogicalResult, error) {
+func (bot *AdvancedBot) AAnswerCallbackQuery(callbackQueryId, text string, showAlert bool, url string, cacheTime int) (*objs.Result[bool], error) {
 	return bot.bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, url, showAlert, cacheTime)
 }
 
@@ -611,7 +612,7 @@ Official telegram doc :
 
 Use this method to send a game. On success, the sent Message is returned.
 */
-func (bot *AdvancedBot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.SendMethodsResult, error) {
+func (bot *AdvancedBot) ASendGame(chatId int, gameShortName string, silent bool, replyTo int, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
@@ -638,7 +639,7 @@ Use this method to set the score of the specified user in a game message. On suc
 
 "inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.
 */
-func (bot *AdvancedBot) ASetGameScore(userId, score, chatId, messageId int, force, disableEditMessage bool, inlineMessageId string) (*objs.DefaultResult, error) {
+func (bot *AdvancedBot) ASetGameScore(userId, score, chatId, messageId int, force, disableEditMessage bool, inlineMessageId string) (*objs.Result[json.RawMessage], error) {
 	return bot.bot.apiInterface.SetGameScore(
 		userId, score, force, disableEditMessage, chatId, messageId, inlineMessageId,
 	)
@@ -649,19 +650,19 @@ SetPassportDataErrors informs a user that some of the Telegram Passport elements
 
 Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.
 */
-func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.LogicalResult, error) {
+func (bot *AdvancedBot) SetPassportDataErrors(userId int, errors []objs.PassportElementError) (*objs.Result[bool], error) {
 	return bot.bot.apiInterface.SetPassportDataErrors(
 		userId, errors,
 	)
 }
 
 /*SetMyDefaultAdministratorRights as describe by telegram official doc : Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns True on success.*/
-func (bot *AdvancedBot) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.LogicalResult, error) {
+func (bot *AdvancedBot) SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages bool) (*objs.Result[bool], error) {
 	return bot.bot.apiInterface.SetMyDefaultAdministratorRights(forChannels, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages)
 }
 
 /*GetMyDefaultAdministratorRights as describe by telegram official doc : Use this method to get the current default administrator rights of the bot. Returns ChatAdministratorRights on success.*/
-func (bot *AdvancedBot) GetMyDefaultAdministratorRights(forChannels bool) (*objs.ChatAdministratorRightsResult, error) {
+func (bot *AdvancedBot) GetMyDefaultAdministratorRights(forChannels bool) (*objs.Result[*objs.ChatAdministratorRights], error) {
 	return bot.bot.apiInterface.GetMyDefaultAdministratorRights(forChannels)
 }
 

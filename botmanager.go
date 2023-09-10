@@ -18,7 +18,7 @@ Official telegarm doc :
 
 A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object.
 */
-func (bm *botManager) GetMe() (*objs.UserResult, error) {
+func (bm *botManager) GetMe() (*objs.Result[*objs.User], error) {
 	return bm.bot.apiInterface.GetMe()
 }
 
@@ -31,7 +31,7 @@ Arguments :
 
 2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
 */
-func (bm *botManager) SetDescription(description, languageCode string) (*objs.LogicalResult, error) {
+func (bm *botManager) SetDescription(description, languageCode string) (*objs.Result[bool], error) {
 	return bm.bot.apiInterface.SetMyDescription(description, languageCode)
 }
 
@@ -44,26 +44,26 @@ Arguments :
 
 2. languageCode : A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
 */
-func (bm *botManager) SetShortDescription(shortDescription, languageCode string) (*objs.LogicalResult, error) {
+func (bm *botManager) SetShortDescription(shortDescription, languageCode string) (*objs.Result[bool], error) {
 	return bm.bot.apiInterface.SetMyShortDescription(shortDescription, languageCode)
 }
 
 /*
 GetDescription returns description of the bot based on the specified language.
 */
-func (bm *botManager) GetDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+func (bm *botManager) GetDescription(languageCode string) (*objs.Result[*objs.BotDescription], error) {
 	return bm.bot.apiInterface.GetMyDescription(languageCode)
 }
 
 /*
 GetShortDescription returns short description of the bot based on the specified language.
 */
-func (bm *botManager) GetShortDescription(languageCode string) (*objs.BotDescriptionResult, error) {
+func (bm *botManager) GetShortDescription(languageCode string) (*objs.Result[*objs.BotDescription], error) {
 	return bm.bot.apiInterface.GetMyDescription(languageCode)
 }
 
 // GetName returns the bot's name according to the language code
-func (bm *botManager) GetName(languageCode string) (*objs.BotNameResult, error) {
+func (bm *botManager) GetName(languageCode string) (*objs.Result[*objs.BotName], error) {
 	return bm.bot.apiInterface.GetMyName(languageCode)
 }
 
@@ -76,6 +76,6 @@ Arguments :
 
 2. languageCode : A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name.
 */
-func (bm *botManager) SetName(name, languageCode string) (*objs.LogicalResult, error) {
+func (bm *botManager) SetName(name, languageCode string) (*objs.Result[bool], error) {
 	return bm.bot.apiInterface.SetMyName(name, languageCode)
 }

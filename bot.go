@@ -1,6 +1,7 @@
 package telego
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 
@@ -148,6 +149,9 @@ AddHandler adds a handler for a text message that matches the given regex patter
 "chatType" must be "private","group","supergroup","channel" or "all". Any other value will cause the function to return an error.
 */
 func (bot *Bot) AddHandler(pattern string, handler func(*objs.Update), chatTypes ...string) error {
+	if len(chatTypes) == 0 {
+		return errors.New("please specify a chat type")
+	}
 	for _, val := range chatTypes {
 		if val != "private" && val != "group" && val != "supergroup" && val != "channel" && val != "all" {
 			return errors.New("unknown chat type : " + val)
@@ -166,10 +170,9 @@ Official telegarm doc :
 
 A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object.
 */
-func (bot *Bot) GetMe() (*objs.UserResult, error) {
+func (bot *Bot) GetMe() (*objs.Result[*objs.User], error) {
 	return bot.apiInterface.GetMe()
 }
-
 
 // GetBotManager returns a bot manager, a tool for manging personal information of the bot such as name and description.
 func (bot *Bot) GetBotManager() *botManager {
@@ -184,7 +187,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
 }
 
@@ -196,39 +199,39 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
 }
 
-func (bot *Bot) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.LogicalResult, error) {
+func (bot *Bot) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.Result[bool], error) {
 	return bot.apiInterface.PinChatMessage(chatIdInt, chatIdString, messageId, disableNotification)
 }
 
-func (bot *Bot) UnpinChatMessage(chatIdInt int, chatIdString string, messageId int) (*objs.LogicalResult, error) {
+func (bot *Bot) UnpinChatMessage(chatIdInt int, chatIdString string, messageId int) (*objs.Result[bool], error) {
 	return bot.apiInterface.UnpinChatMessage(chatIdInt, chatIdString, messageId)
 }
 
-func (bot *Bot) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.LogicalResult, error) {
+func (bot *Bot) UnpinAllChatMessages(chatIdInt int, chatIdString string) (*objs.Result[bool], error) {
 	return bot.apiInterface.UnpinAllChatMessages(chatIdInt, chatIdString)
 }
 
-func (bot *Bot) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.ChatInviteLinkResult, error) {
+func (bot *Bot) CreateChatInviteLink(chatIdInt int, chatIdString, name string, expireDate, memberLimit int, createsJoinRequest bool) (*objs.Result[*objs.ChatInviteLink], error) {
 	return bot.apiInterface.CreateChatInviteLink(chatIdInt, chatIdString, name, expireDate, memberLimit, createsJoinRequest)
 }
 
-func (bot *Bot) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.DefaultResult, error) {
+func (bot *Bot) GetChatMember(chatIdInt int, chatIdString string, userId int) (*objs.Result[json.RawMessage], error) {
 	return bot.apiInterface.GetChatMember(chatIdInt, chatIdString, userId)
 }
 
-func (bot *Bot) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.LogicalResult, error) {
+func (bot *Bot) BanChatMember(chatIdInt int, chatIdString string, userId, untilDate int, revokeMessages bool) (*objs.Result[bool], error) {
 	return bot.apiInterface.BanChatMember(chatIdInt, chatIdString, userId, untilDate, revokeMessages)
 }
 
-func (bot *Bot) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.LogicalResult, error) {
+func (bot *Bot) UnbanChatMember(chatIdInt int, chatIdString string, userId int, onlyIfBanned bool) (*objs.Result[bool], error) {
 	return bot.apiInterface.UnbanChatMember(chatIdInt, chatIdString, userId, onlyIfBanned)
 }
 
-func (bot *Bot) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.LogicalResult, error) {
+func (bot *Bot) SetMyCommands(commands []objs.BotCommand, scope objs.BotCommandScope, languageCode string) (*objs.Result[bool], error) {
 	return bot.apiInterface.SetMyCommands(commands, scope, languageCode)
 }
 
@@ -459,7 +462,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendVenue(chatId, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendVenue(
 		chatId, "", latitude, longitude, title, address, "", "", "", "", replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -478,7 +481,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendVenueUN(chatId string, replyTo int, latitude, longitude float32, title, address string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendVenue(
 		0, chatId, latitude, longitude, title, address, "", "", "", "", replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -497,7 +500,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendContact(chatId, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendContact(
 		chatId, "", phoneNumber, firstName, lastName, "", replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -516,7 +519,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendContactUN(chatId string, replyTo int, phoneNumber, firstName, lastName string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendContact(
 		0, chatId, phoneNumber, firstName, lastName, "", replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -561,7 +564,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendDice(chatId, replyTo int, emoji string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendDice(
 		chatId, "", emoji, replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -582,7 +585,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, protectContent bool) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendDiceUN(chatId string, replyTo int, emoji string, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendDice(
 		0, chatId, emoji, replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -604,7 +607,7 @@ We only recommend using this method when a response from the bot will take a not
 
 action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.
 */
-func (bot *Bot) SendChatAction(chatId, messageThreadId int, action string) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendChatAction(chatId, messageThreadId int, action string) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendChatAction(chatId, messageThreadId, "", action)
 }
 
@@ -624,7 +627,7 @@ We only recommend using this method when a response from the bot will take a not
 
 action is the type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.
 */
-func (bot *Bot) SendChatActionUN(chatId, action string, messageThreadId int) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendChatActionUN(chatId, action string, messageThreadId int) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendChatAction(0, messageThreadId, chatId, action)
 }
 
@@ -643,7 +646,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendLocation(chatId int, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendLocation(
 		chatId, "", latitude, longitude, accuracy, 0, 0, 0, replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -664,7 +667,7 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendLocationUN(chatId string, silent, protectContent bool, latitude, longitude, accuracy float32, replyTo int) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendLocation(
 		0, chatId, latitude, longitude, accuracy, 0, 0, 0, replyTo, 0, silent, false, protectContent, nil,
 	)
@@ -681,7 +684,7 @@ Official telegram doc :
 
 Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 */
-func (bot *Bot) GetUserProfilePhotos(userId, offset, limit int) (*objs.ProfilePhototsResult, error) {
+func (bot *Bot) GetUserProfilePhotos(userId, offset, limit int) (*objs.Result[*objs.UserProfilePhotos], error) {
 	return bot.apiInterface.GetUserProfilePhotos(userId, offset, limit)
 }
 
@@ -727,7 +730,7 @@ AnswerCallbackQuery can be used to send answers to callback queries sent from in
 
 Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @Botfather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
 */
-func (bot *Bot) AnswerCallbackQuery(callbackQueryId, text string, showAlert bool) (*objs.LogicalResult, error) {
+func (bot *Bot) AnswerCallbackQuery(callbackQueryId, text string, showAlert bool) (*objs.Result[bool], error) {
 	return bot.apiInterface.AnswerCallbackQuery(callbackQueryId, text, "", showAlert, 0)
 }
 
@@ -787,7 +790,7 @@ func (bot *Bot) GetStickerSet(name string) (*StickerSet, error) {
 }
 
 /*UploadStickerFile can be used to upload a .PNG file with a sticker for later use in CreateNewStickerSet and AddStickerToSet methods (can be used multiple times). Returns the uploaded File on success.*/
-func (bot *Bot) UploadStickerFile(userId int, stickerFormat string, eomjis, keywords []string, stickerFile *os.File) (*objs.GetFileResult, error) {
+func (bot *Bot) UploadStickerFile(userId int, stickerFormat string, eomjis, keywords []string, stickerFile *os.File) (*objs.Result[*objs.File], error) {
 	stat, err := stickerFile.Stat()
 	if err != nil {
 		return nil, err
@@ -812,7 +815,7 @@ func (bot *Bot) GetStickerEditor(stickerFileId string) *stickerEditor {
 Deprecated : This method has been completely deprecated. Use CreateStickerSet instead.
 */
 func (bot *Bot) CreateNewStickerSet(userId int, name, title, pngStickerFileIdOrUrl string, pngStickerFile *os.File, tgsSticker *os.File, webmSticker *os.File, emojies string, containsMask bool, maskPosition *objs.MaskPosition) (*StickerSet, error) {
-	// var res *objs.LogicalResult
+	// var res *objs.Result[bool]
 	// var err error
 	// if tgsSticker == nil {
 	// 	if pngStickerFile == nil {
@@ -963,7 +966,7 @@ If you sent an invoice requesting a shipping address and the parameter is_flexib
 
 "errorMessage" : Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
 */
-func (bot *Bot) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.LogicalResult, error) {
+func (bot *Bot) AnswerShippingQuery(shippingQueryId string, ok bool, shippingOptions []objs.ShippingOption, errorMessage string) (*objs.Result[bool], error) {
 	return bot.apiInterface.AnswerShippingQuery(shippingQueryId, ok, shippingOptions, errorMessage)
 }
 
@@ -980,7 +983,7 @@ Once the user has confirmed their payment and shipping details, the Bot API send
 
 "errorMessage" : Required if ok is False. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
 */
-func (bot *Bot) AnswerPreCheckoutQuery(shippingQueryId string, ok bool, errorMessage string) (*objs.LogicalResult, error) {
+func (bot *Bot) AnswerPreCheckoutQuery(shippingQueryId string, ok bool, errorMessage string) (*objs.Result[bool], error) {
 	return bot.apiInterface.AnswerPreCheckoutQuery(shippingQueryId, ok, errorMessage)
 }
 
@@ -995,7 +998,7 @@ Official telegram doc :
 
 Use this method to send a game. On success, the sent Message is returned.
 */
-func (bot *Bot) SendGame(chatId int, gameShortName string, silent bool, replyTo int) (*objs.SendMethodsResult, error) {
+func (bot *Bot) SendGame(chatId int, gameShortName string, silent bool, replyTo int) (*objs.Result[*objs.Message], error) {
 	return bot.apiInterface.SendGame(
 		chatId, gameShortName, silent, replyTo, false, nil,
 	)
@@ -1013,7 +1016,7 @@ Use this method to set the score of the specified user in a game message. On suc
 
 "score" is new score, must be non-negative.
 */
-func (bot *Bot) SetGameScore(userId, score, chatId, messageId int) (*objs.DefaultResult, error) {
+func (bot *Bot) SetGameScore(userId, score, chatId, messageId int) (*objs.Result[json.RawMessage], error) {
 	return bot.apiInterface.SetGameScore(
 		userId, score, false, false, chatId, messageId, "",
 	)
@@ -1036,7 +1039,7 @@ This method will currently return scores for the target user, plus two of their 
 
 "inlineMessageId" : Required if chat_id and message_id are not specified. Identifier of the inline message.
 */
-func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.GameHighScoresResult, error) {
+func (bot *Bot) GetGameHighScores(userId, chatId, messageId int, inlineMessageId string) (*objs.Result[[]*objs.GameHighScore], error) {
 	return bot.apiInterface.GetGameHighScores(userId, chatId, messageId, inlineMessageId)
 }
 
@@ -1049,7 +1052,7 @@ Official telegram doc :
 
 Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns MenuButton on success.
 */
-func (bot *Bot) GetChatMenuButton(chatId int64) (*objs.MenuButtonResult, error) {
+func (bot *Bot) GetChatMenuButton(chatId int64) (*objs.Result[*objs.MenuButton], error) {
 	return bot.apiInterface.GetChatMenuButton(chatId)
 }
 
@@ -1062,7 +1065,7 @@ Official telegram doc :
 
 Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.
 */
-func (bot *Bot) SetCommandChatMenuButton(chatId int64) (*objs.LogicalResult, error) {
+func (bot *Bot) SetCommandChatMenuButton(chatId int64) (*objs.Result[bool], error) {
 	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "commands"})
 }
 
@@ -1075,7 +1078,7 @@ Official telegram doc :
 
 Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.
 */
-func (bot *Bot) SetDefaultChatMenuButton(chatId int64) (*objs.LogicalResult, error) {
+func (bot *Bot) SetDefaultChatMenuButton(chatId int64) (*objs.Result[bool], error) {
 	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "default"})
 }
 
@@ -1088,7 +1091,7 @@ Official telegram doc :
 
 Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.
 */
-func (bot *Bot) SetWebAppChatMenuButton(chatId int64, text, url string) (*objs.LogicalResult, error) {
+func (bot *Bot) SetWebAppChatMenuButton(chatId int64, text, url string) (*objs.Result[bool], error) {
 	return bot.apiInterface.SetChatMenuButton(chatId, &objs.MenuButton{Type: "web_app", Text: text, WebApp: &objs.WebAppInfo{URL: url}})
 }
 
@@ -1101,7 +1104,7 @@ Official telegram doc  :
 
 Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of Sticker objects.
 */
-func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.StickersResult, error) {
+func (bot *Bot) GetCustomEmojiStickers(IDs []string) (*objs.Result[[]*objs.Sticker], error) {
 	return bot.apiInterface.GetCustomEmojiStickers(IDs)
 }
 
@@ -1114,7 +1117,7 @@ Official telegram doc  :
 
 Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user. Requires no parameters. Returns an Array of Sticker objects.
 */
-func (bot *Bot) GetForumTopicIconStickers() (*objs.StickersResult, error) {
+func (bot *Bot) GetForumTopicIconStickers() (*objs.Result[[]*objs.Sticker], error) {
 	return bot.apiInterface.GetForumTopicIconStickers()
 }
 
@@ -1137,7 +1140,7 @@ Arguments (as described in telegram bot api):
 
 4. iconCustomEmojiId  : Unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
 */
-func (bot *Bot) CreateForumTopic(chatId int, name string, iconColor int, iconCustomEmojiId string) (*objs.ForumTopicResult, error) {
+func (bot *Bot) CreateForumTopic(chatId int, name string, iconColor int, iconCustomEmojiId string) (*objs.Result[*objs.ForumTopic], error) {
 	return bot.apiInterface.CreateForumTopic(chatId, "", name, iconCustomEmojiId, iconColor)
 }
 
@@ -1160,7 +1163,7 @@ Arguments (as described in telegram bot api):
 
 4. iconCustomEmojiId  : Unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
 */
-func (bot *Bot) CreateForumTopicUN(username, name string, iconColor int, iconCustomEmojiId string) (*objs.ForumTopicResult, error) {
+func (bot *Bot) CreateForumTopicUN(username, name string, iconColor int, iconCustomEmojiId string) (*objs.Result[*objs.ForumTopic], error) {
 	return bot.apiInterface.CreateForumTopic(0, username, name, iconCustomEmojiId, iconColor)
 }
 

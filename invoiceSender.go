@@ -33,7 +33,7 @@ Official telegram doc :
 
 Use this method to send invoices. On success, the sent Message is returned.
 */
-func (is *Invoice) Send(replyTo, messageThreadId int, silent bool) (*objs.SendMethodsResult, error) {
+func (is *Invoice) Send(replyTo, messageThreadId int, silent bool) (*objs.Result[*objs.Message], error) {
 	return is.bot.apiInterface.SendInvoice(
 		is.chatIdInt, is.chatIdString, is.title, is.description, is.payload, is.providerToken,
 		is.currency, is.prices, is.maxTipAmount, is.suggestedTipAmounts, is.startParameter, is.providerData,
@@ -51,7 +51,7 @@ Official telegram doc :
 
 Use this method to create a link for an invoice. Returns the created invoice link as String on success.
 */
-func (is *Invoice) CreateLink() (*objs.StringResult, error) {
+func (is *Invoice) CreateLink() (*objs.Result[string], error) {
 	return is.bot.apiInterface.CreateInvoiceLink(is.title, is.description, is.payload, is.providerToken,
 		is.currency, is.prices, is.maxTipAmount, is.suggestedTipAmounts, is.providerData,
 		is.photoURL, is.photoSize, is.photoWidth, is.photoHeight, is.needName, is.needPhoneNumber, is.needEmail, is.needShippingAddress,
