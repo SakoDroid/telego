@@ -49,6 +49,8 @@ You can support Telego by donating to the project or even giving it a star! Any 
 If you want to donate to telego project and keep it running, [click here](https://github.com/SakoDroid/telego/blob/master/donate.md)
 
 ---------------------------------
+## Upgrading to v2
+Telego v2 is a ground breaking change in Telego. Many new features have been added and many methods declarations have been changed. Some methods have been completely deprecated. Please read the change log before upgrading to v2 and take extra caution while upgrading.
 
 ## Features
 * Fast and reliable
