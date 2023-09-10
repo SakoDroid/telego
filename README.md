@@ -77,6 +77,12 @@ and monitor the poll update via a go channel.
  ```bash
  $ go get -u github.com/SakoDroid/telego
  ```
+ To install v2 (recomended) :
+
+ ```bash
+ $ go get -u github.com/SakoDroid/telego/v2@v2.0.0
+ ```
+
  Git needs to be installed on your computer.
 
  --------------------------------
