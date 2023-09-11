@@ -42,7 +42,7 @@ A Go library for creating telegram bots.
 * [License](#license)
 
 ---------------------------------
-## Supporintg Telego
+## Supporting Telego
 If you like Telego and it has helped you to build your telegram bot easily 🫶🏼, then you can support it to get even better!
 You can support Telego by donating to the project or even giving it a star! Any kind of support is appreciated ❤️
 
@@ -937,7 +937,7 @@ Telego gives you the ability to block a user. You can also implement a mechanism
 
 ## License
 
-telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
+Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License). Which means it can be used for commercial and private apps and can be modified.
 
 ---------------------------
 
