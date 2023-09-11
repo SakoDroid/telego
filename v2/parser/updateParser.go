@@ -1,55 +1,32 @@
 package parser
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
 	"github.com/SakoDroid/telego/v2/configs"
-	errs "github.com/SakoDroid/telego/v2/errors"
 	"github.com/SakoDroid/telego/v2/logger"
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
-// ParseUpdate parses the received update and returns the last update offset.
-func ParseUpdate(body []byte, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
-	def := &objs.Result[json.RawMessage]{}
-	err2 := json.Unmarshal(body, def)
-	if err2 != nil {
-		return 0, err2
-	}
-	if !def.Ok {
-		return 0, &errs.MethodNotSentError{Method: "getUpdates", Reason: "server returned false for \"ok\" field."}
-	}
-	ur := &objs.Result[[]*objs.Update]{}
-	err := json.Unmarshal(body, ur)
-	if err != nil {
-		return 0, err
-	}
-	return parse(ur, uc, cu, cfg)
+// ExecuteChain executes the chained middlewares
+func ExecuteChain(up *objs.Update) {
+	middlewares.executeChain(up)
 }
 
-func parse(ur *objs.Result[[]*objs.Update], uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) (int, error) {
-	lastOffset := 0
-	for _, val := range ur.Result {
-		if val.Update_id > lastOffset {
-			lastOffset = val.Update_id
+// GetUpdateParserMiddleware returns a middleware that processes the given update object.
+func GetUpdateParserMiddleware(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) func(up *objs.Update, next func()) {
+	//next is not called because this middleware is always the last middleware.
+	return func(up *objs.Update, next func()) {
+		userId, isUserBlocked := isUserBlocked(up, cfg)
+		if !isUserBlocked {
+			logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
+			if !checkHandlers(up) && !processChat(up, cu) {
+				*uc <- up
+			}
+		} else {
+			logger.Log("Update", "\t\t\t\t", up.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
 		}
-		ParseSingleUpdate(val, uc, cu, cfg)
-	}
-	return lastOffset, nil
-}
-
-// ParseSingleUpdate processes the given update object.
-func ParseSingleUpdate(up *objs.Update, uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) {
-	userId, isUserBlocked := isUserBlocked(up, cfg)
-	if !isUserBlocked {
-		logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
-		if !checkHandlers(up) && !processChat(up, cu) {
-			*uc <- up
-		}
-	} else {
-		logger.Log("Update", "\t\t\t\t", up.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
 	}
 }
 

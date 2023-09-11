@@ -14,7 +14,7 @@ import (
 	errs "github.com/SakoDroid/telego/v2/errors"
 	logger "github.com/SakoDroid/telego/v2/logger"
 	objs "github.com/SakoDroid/telego/v2/objects"
-	up "github.com/SakoDroid/telego/v2/parser"
+	"github.com/SakoDroid/telego/v2/parser"
 )
 
 var interfaceCreated = false
@@ -89,8 +89,8 @@ loop:
 }
 
 func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
-	of, err := up.ParseUpdate(
-		body, bai.updateChannel, bai.chatUpadateChannel, bai.botConfigs,
+	of, err := bai.ParseUpdate(
+		body,
 	)
 	if err != nil {
 		return err
@@ -99,6 +99,32 @@ func (bai *BotAPIInterface) parseUpdateresults(body []byte) error {
 		bai.lastOffset = of
 	}
 	return nil
+}
+
+// ParseUpdate parses the received update and returns the last update offset.
+func (bai *BotAPIInterface) ParseUpdate(body []byte) (int, error) {
+	def := &objs.Result[json.RawMessage]{}
+	err2 := json.Unmarshal(body, def)
+	if err2 != nil {
+		return 0, err2
+	}
+	if !def.Ok {
+		return 0, &errs.MethodNotSentError{Method: "getUpdates", Reason: "server returned false for \"ok\" field."}
+	}
+	ur := &objs.Result[[]*objs.Update]{}
+	err := json.Unmarshal(body, ur)
+	if err != nil {
+		return 0, err
+	}
+
+	lastOffset := 0
+	for _, val := range ur.Result {
+		if val.Update_id > lastOffset {
+			lastOffset = val.Update_id
+		}
+		go parser.ExecuteChain(val)
+	}
+	return lastOffset, nil
 }
 
 func (bai *BotAPIInterface) isChatIdOk(chatIdInt int, chatIdString string) bool {
@@ -2751,5 +2777,6 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	ch := make(chan *objs.Update)
 	ch3 := make(chan *objs.ChatUpdate)
 	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, chatUpadateChannel: &ch3}
+	parser.AddMiddleWare(parser.GetUpdateParserMiddleware(&ch, &ch3, botCfg))
 	return temp, nil
 }

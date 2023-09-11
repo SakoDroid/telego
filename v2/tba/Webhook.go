@@ -13,15 +13,16 @@ import (
 )
 
 var configs *cfg.BotConfigs
-var interfaceUpdateChannel *chan *objs.Update
-var chatUpdateChannel *chan *objs.ChatUpdate
+
+// var interfaceUpdateChannel *chan *objs.Update
+// var chatUpdateChannel *chan *objs.ChatUpdate
 var isSecretTokenSet bool
 
-//StartWebHook starts the webhook.
-func StartWebHook(cfg *cfg.BotConfigs, iuc *chan *objs.Update, cuc *chan *objs.ChatUpdate) error {
+// StartWebHook starts the webhook.
+func StartWebHook(cfg *cfg.BotConfigs) error {
 	configs = cfg
-	interfaceUpdateChannel = iuc
-	chatUpdateChannel = cuc
+	// interfaceUpdateChannel = iuc
+	// chatUpdateChannel = cuc
 	isSecretTokenSet = cfg.WebHookConfigs.SecretToken != ""
 	startTheServer()
 	return nil
@@ -62,7 +63,8 @@ func handleReq(wr http.ResponseWriter, req *http.Request) {
 				update := &objs.Update{}
 				jsonErr := json.Unmarshal(body, update)
 				if jsonErr == nil {
-					up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel, configs)
+					// up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel, configs)
+					up.ExecuteChain(update)
 				} else {
 					log.Logger.Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
 				}

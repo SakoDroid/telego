@@ -35,7 +35,7 @@ func (bot *Bot) Run(autoPause bool) error {
 	go bot.botCfg.StartCfgUpdateRoutine()
 	var err error
 	if bot.botCfg.Webhook {
-		err = tba.StartWebHook(bot.botCfg, bot.interfaceUpdateChannel, bot.chatUpdateChannel)
+		err = tba.StartWebHook(bot.botCfg)
 	} else {
 		err = bot.apiInterface.StartUpdateRoutine()
 	}

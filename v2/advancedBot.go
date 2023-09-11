@@ -6,6 +6,7 @@ import (
 	"os"
 
 	objs "github.com/SakoDroid/telego/v2/objects"
+	"github.com/SakoDroid/telego/v2/parser"
 )
 
 /*
@@ -734,6 +735,19 @@ func (bot *AdvancedBot) UnRegisterChannel(chatId, mediaType string) {
 			delete(bot.bot.channelsMap, chatId)
 		}
 	}
+}
+
+/*
+AddMiddleware adds a new middleware to middleware chain.
+
+Arguemnts :
+
+1. update : The received update
+
+2. next : next is a function that invokes the next middleware in chain. If it is not called in you middleware function, then the middleare chain execution will stop.
+*/
+func (bot *AdvancedBot) AddMiddleware(md func(update *objs.Update, next func())) {
+	parser.AddMiddleWare(md)
 }
 
 func (bot *AdvancedBot) getChannel(chatId, media string) *chan *objs.Update {
