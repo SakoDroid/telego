@@ -1,9 +1,8 @@
 # Telego
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/SakoDroid/telego/v2.svg)](https://pkg.go.dev/github.com/SakoDroid/telego/v2)
-![example workflow](https://github.com/SakoDroid/telego/v2/actions/workflows/go.yml/badge.svg)
+![example workflow](https://github.com/SakoDroid/telego/actions/workflows/go.yml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/SakoDroid/telego/v2)](https://goreportcard.com/report/github.com/SakoDroid/telego/v2)
-![Version](https://img.shields.io/badge/%20%20Version%20%20-%20%201.8.0%20-brightgreen)
 ![Development status](https://img.shields.io/badge/%20%20Development%20%20-%20%20Active%20%20-blueviolet)
 
 A Go library for creating telegram bots.
