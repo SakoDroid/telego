@@ -91,45 +91,44 @@ and monitor the poll update via a go channel.
 
  ```go
  import (
-    "fmt"
-    
+	"fmt"
+
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
 	objs "github.com/SakoDroid/telego/v2/objects"
- )
+)
 
- func main(){
+func main() {
 
-    bot, err := bt.NewBot(cfg.Default("your API key"))
+	bot, err := bt.NewBot(cfg.Default("your API key"))
 
-    if err == nil{
-        err == bot.Run(false)
-        if err == nil{
-            go start(bot)
-        }
-    }
- }
+	if err != nil {
+		panic(err)
+	}
 
- func start(bot *bt.Bot){
+	// The general update channel.
+	updateChannel := *(bot.GetUpdateChannel())
 
-     //The general update channel.
-     updateChannel := bot.GetUpdateChannel()
-
-    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
-    bot.AddHandler("hi",func(u *objs.Update) {
-		_,err := bot.SendMessage(u.Message.Chat.Id,"hi to you too","",u.Message.MessageId,false,false)
-		if err != nil{
+	// Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
+	bot.AddHandler("hi", func(u *objs.Update) {
+		_, err := bot.SendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false, false)
+		if err != nil {
 			fmt.Println(err)
 		}
-	},"private")
+	}, "private")
 
-    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
-     for {
-         update := <- updateChannel
+	// Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+	go func() {
+		for {
+			update := <-updateChannel
+			fmt.Println(update.Update_id)
 
-        //Some processing on the update
-     }
- }
+			//Some processing on the update
+		}
+	}()
+
+	bot.Run(true)
+}
  ```
  ## Step by step
 
@@ -247,30 +246,28 @@ This struct is located in the `configs` package. To use webhook, first you need 
 import (
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
-	objs "github.com/SakoDroid/telego/v2/objects"
- )
+)
 
- func main(){
+func main() {
 
-    //WebHookConfigs. We are using 8443 port here.
-    whcfg := &cfg.WebHookConfigs{
+	//WebHookConfigs. We are using 8443 port here.
+	whcfg := &cfg.WebHookConfigs{
 		URL:      "https://example.com:8443",
 		IP:       "123.45.78.90",
 		KeyFile:  "keyfile.key",
 		CertFile: "certfile.crt",
 		Port:     8443,
 	}
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", Webhook: true, WebHookConfigs: whcfg, LogFileAddress: cfg.DefaultLogFile}
 
-    bot, err := bt.NewBot(&cf)
-    if err == nil{
-        err == bot.Run(false)
-        if err == nil{
-            //Do anything you want with the bot.
-        }
-    }
- }
+	cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", Webhook: true, WebHookConfigs: whcfg, LogFileAddress: cfg.DefaultLogFile}
+
+	bot, err := bt.NewBot(&cf)
+	if err != nil {
+		panic(err)
+	}
+
+	bot.Run(true)
+}
 ```
 ### **Loading and saving the configs**
 You can load the bot configs from config file or save it in the file using `Load` and `Dump` methods. Config file's name is `config.json`. These methods are located in configs package. In the example code below first we create a config, then save it and then load it again into a new config :
@@ -305,12 +302,11 @@ fmt.Println(reflect.DeepEqual(bc1, bc2)) //Prints true
     cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
 
     bot, err := bt.NewBot(&cf)
-    if err == nil{
-        err == bot.Run(false)
-        if err == nil{
-            //Do anything you want with the bot.
-        }
-    }
+	if err != nil {
+		panic(err)
+	}
+
+	bot.Run(true)
  }
 ```
 
@@ -329,20 +325,19 @@ Now that the bot is running it will receive updates from api server and passes t
     cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile}
 
     bot, err := bt.NewBot(&cf)
-    if err == nil{
-        err == bot.Run(false)
-        if err == nil{
-            go start(bot)
-        }
-    }
- }
+	if err != nil {
+		panic(err)
+	}
 
- func start(bot *bt.Bot){
-     updateChannel := bot.GetUpdateChannel()
-     for {
-         update := <- updateChannel
-         //Do your own processing.
-     }
+    updateChannel := *(bot.GetUpdateChannel())
+    go func(){
+        for {
+            update := <- updateChannel
+            //Do your own processing.
+        }
+    }()
+
+	bot.Run(true)
  }
 ```
 
@@ -424,67 +419,64 @@ Handlers and special channels can be used together. For example the below code a
 
 ```go
 import (
-    "fmt"
-    
+	"fmt"
+	"strconv"
+
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
 	objs "github.com/SakoDroid/telego/v2/objects"
- )
+)
 
- func main(){
-    up := cfg.DefaultUpdateConfigs()
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
+func main() {
+	up := cfg.DefaultUpdateConfigs()
 
-    bot, err := bt.NewBot(&cf)
+	cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile, ConfigFile: "configs.json"}
 
-    if err == nil{
+	bot, err := bt.NewBot(&cf)
+	if err != nil {
+		panic(err)
+	}
 
-        err == bot.Run(false)
+	// The general update channel.
+	updateChannel := *(bot.GetUpdateChannel())
 
-        if err == nil{
-            go start(bot)
-        }
-    }
- }
+	//Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
 
- func start(bot *bt.Bot){
+	bot.AddHandler("hi", func(u *objs.Update) {
 
-     //The general update channel.
-     updateChannel := bot.GetUpdateChannel()
-
-    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
-
-    bot.AddHandler("hi",func(u *objs.Update) {
-
-        //Register channel for receiving messages from this chat.
+		//Register channel for receiving messages from this chat.
 		cc, _ := bot.AdvancedMode().RegisterChannel(strconv.Itoa(u.Message.Chat.Id), "message")
 
-        //Sends back a message
-		_, err := bot.SendMessage(u.Message.Chat.Id, "hi to you too, send me a location", "", u.Message.MessageId, false,false)
+		//Sends back a message
+		_, err := bot.SendMessage(u.Message.Chat.Id, "hi to you too, send me a location", "", u.Message.MessageId, false, false)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-        //Waits for an update from this chat
+		//Waits for an update from this chat
 		up := <-*cc
 
-        //Sends back the received location
-		_, err = bot.SendLocation(up.Message.Chat.Id, false,false, up.Message.Location.Latitude, up.Message.Location.Longitude, up.Message.Location.HorizontalAccuracy, up.Message.MessageId)
-
+		//Sends back the received location
+		_, err = bot.SendLocation(up.Message.Chat.Id, false, false, up.Message.Location.Latitude, up.Message.Location.Longitude, up.Message.Location.HorizontalAccuracy, up.Message.MessageId)
 
 		if err != nil {
 			fmt.Println(err)
 		}
-	},"private")
+	}, "private")
 
-    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
-     for {
-         update := <- updateChannel
+	go func() {
+		// Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+		for {
+			update := <-updateChannel
 
-        //Some processing on the update
-     }
- }
+			//Some processing on the update
+		}
+
+	}()
+
+	bot.Run(true)
+}
+
 ```
 
 ### **Methods**
@@ -516,7 +508,7 @@ tf.AddItalic("italic text")
 tf.AddSpoiler("spoiler text")
 tf.AddTextLink("google", "https://google.com")
 _, err := bot.AdvancedMode().ASendMessage(
-        msg.Message.Chat.Id, tf.GetText(), "", msg.Message.MessageId, false, false, tf.GetEntities(),
+        msg.Message.Chat.Id, tf.GetText(), "", msg.Message.MessageId,0, false, false, tf.GetEntities(),
         false, false, nil,
 	)
 ```
@@ -655,61 +647,57 @@ In Telego you can create custom keyboards and inline keyboards easily with an am
 You can create this type of keyboard by calling `CreateKeyboard` method of the bot. It has some arguments that are fully documented in the source code. Calling this method will return a keyboard which has several methods for adding buttons to it. After you have added the buttons you can pass the keyboard to a method that supports keyboards (for example : `ASendMessage`). Methods that support keyboards are located in the advanced bot. Example :
 
 ```go
- import (
-    "fmt"
-    
+import (
+	"fmt"
+
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
 	objs "github.com/SakoDroid/telego/v2/objects"
- )
+)
 
- func main(){
-    up := cfg.DefaultUpdateConfigs()
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
+func main() {
+	up := cfg.DefaultUpdateConfigs()
 
-    bot, err := bt.NewBot(&cf)
+	cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile, ConfigFile: "configs.json"}
 
-    if err == nil{
+	bot, err := bt.NewBot(&cf)
+	if err != nil {
+		panic(err)
+	}
 
-        err == bot.Run(false)
+	//The general update channel.
+	updateChannel := *(bot.GetUpdateChannel())
 
-        if err == nil{
-            go start(bot)
-        }
-    }
- }
+	//Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
+	bot.AddHandler("hi", func(u *objs.Update) {
 
- func start(bot *bt.Bot){
+		//Create the custom keyboard.
+		kb := bot.CreateKeyboard(false, false, false, "type ...")
 
-     //The general update channel.
-     updateChannel := bot.GetUpdateChannel()
+		//Add buttons to it. First argument is the button's text and the second one is the row number that the button will be added to it.
+		kb.AddButton("button1", 1)
+		kb.AddButton("button2", 1)
+		kb.AddButton("button3", 2)
 
-    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
-    bot.AddHandler("hi",func(u *objs.Update) {
-        
-        //Create the custom keyboard.
-        kb := bot.CreateKeyboard(false,false,false,"type ...")
-
-        //Add buttons to it. First argument is the button's text and the second one is the row number that the button will be added to it.
-        kb.AddButton("button1",1)
-        kb.AddButton("button2",1)
-        kb.AddButton("button3",2)
-
-        //Sends the message along with the keyboard.
-		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false,false, nil, false, false, kb)
+		//Sends the message along with the keyboard.
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId,0, false, false, nil, false, false, kb)
 		if err != nil {
 			fmt.Println(err)
 		}
-	},"private")
+	}, "private")
 
-    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
-     for {
-         update := <- updateChannel
+	go func() {
+		//Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+		for {
+			update := <-updateChannel
 
-        //Some processing on the update
-     }
- }
+			//Some processing on the update
+		}
+	}()
+
+	bot.Run(true)
+}
+
 ```
 
 The result of the above code will be like this : 
@@ -723,49 +711,40 @@ Inline keyboards appear below the message they have been sent with. To create in
  Example :
 
 ```go
- import (
-    "fmt"
-    
+import (
+	"fmt"
+
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
 	objs "github.com/SakoDroid/telego/v2/objects"
- )
+)
 
- func main(){
-    up := cfg.DefaultUpdateConfigs()
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
+func main() {
+	up := cfg.DefaultUpdateConfigs()
 
-    bot, err := bt.NewBot(&cf)
+	cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile, ConfigFile: "configs.json"}
 
-    if err == nil{
+	bot, err := bt.NewBot(&cf)
+	if err != nil {
+		panic(err)
+	}
 
-        err == bot.Run(false)
+	//The general update channel.
+	updateChannel := *(bot.GetUpdateChannel())
 
-        if err == nil{
-            go start(bot)
-        }
-    }
- }
+	//Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
+	bot.AddHandler("hi", func(u *objs.Update) {
 
- func start(bot *bt.Bot){
+		//Creates the inline keyboard
+		kb := bot.CreateInlineKeyboard()
 
-     //The general update channel.
-     updateChannel := bot.GetUpdateChannel()
-
-    //Adding a handler. Everytime the bot receives message "hi" in a private chat, it will respond "hi to you too".
-    bot.AddHandler("hi",func(u *objs.Update) {
-        
-        //Creates the inline keyboard
-        kb := bot.CreateInlineKeyboard()
-
-        //Adds a button that will open a url when pressed.
+		//Adds a button that will open a url when pressed.
 		kb.AddURLButton("url", "https://google.com", 1)
 
-        //Adds a callback button with no handler
+		//Adds a callback button with no handler
 		kb.AddCallbackButton("call back without handler", "callback data 1", 2)
 
-        //Adds a callback button with handler.
+		//Adds a callback button with handler.
 		kb.AddCallbackButtonHandler("callabck with handler", "callback data 2", 3, func(u *objs.Update) {
 			_, err3 := bot.AdvancedMode().AAnswerCallbackQuery(u.CallbackQuery.Id, "callback received", true, "", 0)
 			if err3 != nil {
@@ -773,20 +752,24 @@ Inline keyboards appear below the message they have been sent with. To create in
 			}
 		})
 
-        //Sends the message along with the keyboard.
-		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, false,false, nil, false, false, kb)
+		//Sends the message along with the keyboard.
+		_, err := bot.AdvancedMode().ASendMessage(u.Message.Chat.Id, "hi to you too", "", u.Message.MessageId, 0, false, false, nil, false, false, kb)
 		if err != nil {
 			fmt.Println(err)
 		}
-	},"private")
+	}, "private")
 
-    //Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
-     for {
-         update := <- updateChannel
+	go func() {
+		//Monitores any other update. (Updates that don't contain text message "hi" in a private chat)
+		for {
+			update := <-updateChannel
 
-        //Some processing on the update
-     }
- }
+			//Some processing on the update
+		}
+	}()
+
+	bot.Run(true)
+}
 ```
 
 The result of the above code will be like this : 
@@ -805,73 +788,66 @@ Let's see an example code. The code below registers a channel for inline queries
 
 ```go
 import (
-    "fmt"
-    
+	"fmt"
+
 	bt "github.com/SakoDroid/telego/v2"
 	cfg "github.com/SakoDroid/telego/v2/configs"
-	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
-func main(){
-    up := cfg.DefaultUpdateConfigs()
-    
-    cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile,ConfigFile: "configs.json"}
+func main() {
+	up := cfg.DefaultUpdateConfigs()
 
-    bot, err := bt.NewBot(&cf)
+	cf := cfg.BotConfigs{BotAPI: cfg.DefaultBotAPI, APIKey: "your api key", UpdateConfigs: up, Webhook: false, LogFileAddress: cfg.DefaultLogFile, ConfigFile: "configs.json"}
 
-    if err == nil{
+	bot, err := bt.NewBot(&cf)
+	if err != nil {
+		panic(err)
+	}
 
-        err == bot.Run(false)
+	//The general update channel.
+	updateChannel := *(bot.GetUpdateChannel())
 
-        if err == nil{
-            go start(bot)
-        }
-    }
+	//The inline query channel
+	inlineQueryChannel, _ := bot.AdvancedMode().RegisterChannel("", "inline_query")
+
+	go func() {
+		for {
+			select {
+
+			case up := <-updateChannel:
+				//Processing received updates other than inline queries.
+
+			case in := <-*inlineQueryChannel:
+
+				//Prints the query
+				fmt.Println("inline query :", in.InlineQuery.Query)
+
+				//Create an inline query responder
+				iqs := bot.AdvancedMode().AAnswerInlineQuery(in.InlineQuery.Id, 0, false, "", "", "")
+
+				//Create a text message
+				message := iqs.CreateTextMessage(
+					"telego is a go library for creating telegram bots",
+					"",
+					nil,
+					false,
+				)
+
+				//Add an article
+				iqs.AddArticle("12345", "telego library", "https://github.com/SakoDroid/telego/v2", "", "", 0, 0, false, message, nil)
+
+				//Send the results
+				_, err := iqs.Send()
+
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+		}
+	}()
+
+	bot.Run(true)
 }
-
-func start(bot *bt.Bot){
-
-    //The general update channel.
-    updateChannel := bot.GetUpdateChannel()
-
-    //The inline query channel
-    inlineQueryChannel, _ := bot.AdvancedMode().RegisterChannel("","inline_query")
-
-    for {
-        select {
-
-        case up := <-*updateChannel:
-            //Processing received updates other than inline queries.
-
-        case in := <-*inlineQueryChannel:
-
-            //Prints the query
-            fmt.Println("inline query :", in.InlineQuery.Query)
-
-            //Create an inline query responder
-            iqs := bot.AdvancedMode().AAnswerInlineQuery(in.InlineQuery.Id, 0, false, "", "", "")
-
-            //Create a text message
-            message := iqs.CreateTextMessage(
-                "telego is a go library for creating telegram bots",
-                "",
-                nil,
-                false,
-            )
-
-            //Add an article
-            iqs.AddArticle("12345", "telego library", "https://github.com/SakoDroid/telego/v2", "", "", 0, 0, false, message, nil)
-
-            //Send the results
-            _, err := iqs.Send()
-
-            if err != nil {
-                fmt.Println(err)
-            }
-        }
-    }
-}
-
 ```
 
 This is how this code looks like in telegram ( "type test" that is seen in the input field can be set using BotFather ) :
