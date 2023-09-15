@@ -29,9 +29,9 @@ type KeyboardButton struct {
 	/*Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed*/
 	Text string `json:"text"`
 	/*Optional. If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a “user_shared” service message. Available in private chats only.*/
-	RequestUser *KeyboardButtonRequestUser `json:"request_user"`
+	RequestUser *KeyboardButtonRequestUser `json:"request_user,omitempty"`
 	/*Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.*/
-	RequestChat *KeyboardButtonRequestChat `json:"request_chat"`
+	RequestChat *KeyboardButtonRequestChat `json:"request_chat,omitempty"`
 	/*Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only
 	Note: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.*/
 	RequestContact bool `json:"request_contact"`
@@ -73,9 +73,9 @@ type KeyboardButtonRequestChat struct {
 	/*Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.*/
 	ChatIsCreated bool `json:"chat_is_created"`
 	/*Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.*/
-	UserAdministratorRights *ChatAdministratorRights `json:"user_administrator_rights"`
+	UserAdministratorRights *ChatAdministratorRights `json:"user_administrator_rights,omitempty"`
 	/*Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.*/
-	BotAdministratorRights *ChatAdministratorRights `json:"bot_administrator_rights"`
+	BotAdministratorRights *ChatAdministratorRights `json:"bot_administrator_rights,omitempty"`
 	/*Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.*/
 	BotIsMemeber bool `json:"bot_is_member"`
 }
@@ -119,7 +119,7 @@ type InlineKeyboardButton struct {
 	This offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.*/
 	SwitchInlineQueryCurrentChat string `json:"switch_inline_query_current_chat,omitempty"`
 	//Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field
-	SwitchInlineQueryChosenChat *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat"`
+	SwitchInlineQueryChosenChat *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat,omitempty"`
 	/*Optional. Description of the game that will be launched when the user presses the button.
 
 	NOTE: This type of button must always be the first button in the first row.*/

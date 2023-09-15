@@ -1973,7 +1973,7 @@ func (args *GetGameHighScoresArgs) ToMultiPart(wr *mp.Writer) {
 
 type AnswerWebAppQueryArgs struct {
 	WebAppQueryId string            `json:"web_app_query_id"`
-	Result        InlineQueryResult `json:"result"`
+	Result        InlineQueryResult `json:"result,omitempty"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.

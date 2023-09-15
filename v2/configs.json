@@ -1,0 +1,13 @@
+{
+ "bot_api": "https://api.telegram.org/bot",
+ "api_key": "5078468473:AAHLCQfMnJTIFM25rFlbU2k422EZKmARK0s",
+ "update_configs": {
+  "limit": 100,
+  "timeout": 0,
+  "update_freq": 300000000
+ },
+ "webhook": false,
+ "log_file": "STDOUT",
+ "blocked_users": null,
+ "config_name": "configs.json"
+}
