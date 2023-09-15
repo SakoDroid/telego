@@ -38,6 +38,7 @@ A Go library for creating telegram bots.
             * [Sticker Sets](#sticker-sets)
             * [Editing stickers](#editing-stickers)
         * [Blocking users](#blocking-users)
+		* [Middlewares](#middlewares)
 * [License](#license)
 
 ---------------------------------
@@ -75,7 +76,7 @@ and monitor the poll update via a go channel.
  Install the package into your [$GOPATH](https://github.com/golang/go/wiki/GOPATH "GOPATH") with the [go command](https://golang.org/cmd/go/ "go command") from terminal :
 
  ```bash
- $ go get -u github.com/SakoDroid/telego/v2@v2.0.0
+ $ go get -u github.com/SakoDroid/telego/v2@v2.1.0
  ```
 
  Git needs to be installed on your computer.
@@ -908,6 +909,46 @@ As of Telego v2.0.0 a new *sticker editor* has been added to the bot. This tool 
 ### **Blocking users**
 Telego gives you the ability to block a user. You can also implement a mechanism to block the user more customized or you can use builtin blocking option. To block a user you can simply call `Block` method of the bot and pass the **User** object to the method. When a user is blocked, received updates from the user will be ignored.
 
+### **Middlewares**
+As of version 2.1.0 of Telego, middleware feature has been added. Middlewares allow you to add custom middlewares that can interact with the recceived update. Middlewares are chained, meaning that they will be executed in order.
+Notes about the middlewares :
+
+1. As said, middlewares are chained. They are executed in the same order that they have been added.
+2. Any change on the received update will stay with the update.
+3. Middlewares accept and argument called `next`. `next` is function that will invoke the next middleware in the chain. If `next` is not called, the execution of middleware will be stopped.
+
+Middlewares can be added via `AddMiddleware` method of the `AdvancedBot`. Example code :
+
+```go
+import (
+	"fmt"
+
+	bt "github.com/SakoDroid/telego/v2"
+	cfg "github.com/SakoDroid/telego/v2/configs"
+	"github.com/SakoDroid/telego/v2/objects"
+)
+
+func main() {
+	bot, err := bt.NewBot(cfg.Default("Your API key"))
+	if err != nil {
+		panic(err)
+	}
+
+    //Adding a middleware that will check if the update contains chat shared object. If it contains the object
+    //the next middleware is invoked.
+	bot.AdvancedMode().AddMiddleware(func(update *objects.Update, next func()) {
+		if update.Message != nil && update.Message.ChatShared != nil {
+			fmt.Printf("Update %d is a chat shared update", update.Update_id)
+			next()
+		} else {
+			fmt.Printf("Update %d is not a chat shared update", update.Update_id)
+		}
+	})
+
+	bot.Run(true)
+}
+```
+
 ---------------------------
 
 ## License
@@ -917,6 +958,12 @@ Telego is licensed under [MIT lisence](https://en.wikipedia.org/wiki/MIT_License
 ---------------------------
 
 ## Change logs
+
+### v2.1.0
+* Introduced middlewares. You can now add middlewares to the bot to be executed before the update hits the handlers and channels.
+* Added `DeleteIn` method to `MessageEditor` tool. This method can be used for deleting messages with a delay.
+* Fixing ISSUE #17 and #11. All tools are now exported so they can be returned in user defined methods.
+* Bug fixes.
 
 ### v2.0.0
 **Improvements** :
