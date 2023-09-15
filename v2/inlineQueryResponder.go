@@ -21,7 +21,7 @@ Adds an article to the result. No more than 50 results are allowed. Also only on
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddArticle(id, title, url, description, thumbUrl string, thumbWidth, thumbHeight int, hideUrl bool, message objs.InputMessageContent, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddArticle(id, title, url, description, thumbUrl string, thumbWidth, thumbHeight int, hideUrl bool, message objs.InputMessageContent, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -53,7 +53,7 @@ Represents a link to a photo. By default, this photo will be sent by the user wi
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddPhoto(id, title, photoURL, description, caption, parseMode, thumbUrl string, photoWidth, photoHeight int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddPhoto(id, title, photoURL, description, caption, parseMode, thumbUrl string, photoWidth, photoHeight int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -87,7 +87,7 @@ Represents a link to an animated GIF file. By default, this animated GIF file wi
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddGif(id, title, gifURL, caption, parseMode, thumbUrl, thumbMIMEType string, gifWidth, gifHeight, gifDuration int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddGif(id, title, gifURL, caption, parseMode, thumbUrl, thumbMIMEType string, gifWidth, gifHeight, gifDuration int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -122,7 +122,7 @@ Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). B
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddMpeg4Gif(id, title, mpeg4URL, caption, parseMode, thumbUrl, thumbMIMEType string, mpeg4Width, mpeg4Height, mpeg4Duration int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddMpeg4Gif(id, title, mpeg4URL, caption, parseMode, thumbUrl, thumbMIMEType string, mpeg4Width, mpeg4Height, mpeg4Duration int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -159,7 +159,7 @@ If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube),
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddVideo(id, title, videoURL, mimeType, caption, description, parseMode, thumbUrl string, videoWidth, videoHeight, videoDuration int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddVideo(id, title, videoURL, mimeType, caption, description, parseMode, thumbUrl string, videoWidth, videoHeight, videoDuration int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -195,7 +195,7 @@ Represents a link to an MP3 audio file. By default, this audio file will be sent
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddAudio(id, title, audioURL, caption, parseMode, performer string, audioDuration int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddAudio(id, title, audioURL, caption, parseMode, performer string, audioDuration int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -227,7 +227,7 @@ Represents a link to a voice recording in an .OGG container encoded with OPUS. B
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing".You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddVoice(id, title, voiceURL, caption, parseMode string, voiceDuration int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddVoice(id, title, voiceURL, caption, parseMode string, voiceDuration int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -258,7 +258,7 @@ Represents a link to a file. By default, this file will be sent by the user with
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddDocument(id, title, documentURL, mimeType, description, thumbUrl, caption, parseMode string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddDocument(id, title, documentURL, mimeType, description, thumbUrl, caption, parseMode string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -293,7 +293,7 @@ Represents a location on a map. By default, the location will be sent by the use
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddLocation(id, title, thumbUrl string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddLocation(id, title, thumbUrl string, latitude, longitude, horizontalAccuracy float32, livePeriod, heading, proximityAlertRadius, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -328,7 +328,7 @@ Represents a venue. By default, the venue will be sent by the user. Alternativel
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddVenue(id, title, thumbUrl string, latitude, longitude float32, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddVenue(id, title, thumbUrl string, latitude, longitude float32, address, foursquareId, foursquareType, googlePlaceId, googlePlaceType string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -364,7 +364,7 @@ Represents a contact with a phone number. By default, this contact will be sent 
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddContact(id, title, thumbUrl, phoneNumber, firstName, lastName, vCard string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddContact(id, title, thumbUrl, phoneNumber, firstName, lastName, vCard string, thumbWidth, thumbHeight int, message objs.InputMessageContent, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -395,7 +395,7 @@ Adds a game to the result. No more than 50 results are allowed. Also only one re
 
 Represents a game
 */
-func (iqs *InlineQueryResponder) AddGame(id, gameShortName string, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddGame(id, gameShortName string, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -418,7 +418,7 @@ Represents a link to a photo stored on the Telegram servers. By default, this ph
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedPhoto(id, title, photoFileId, description, caption, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedPhoto(id, title, photoFileId, description, caption, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -449,7 +449,7 @@ Represents a link to an animated GIF file stored on the Telegram servers. By def
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedGif(id, title, gifFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedGif(id, title, gifFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -479,7 +479,7 @@ Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) st
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedMpeg4Gif(id, title, mpeg4FileId, caption, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedMpeg4Gif(id, title, mpeg4FileId, caption, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -509,7 +509,7 @@ Represents a link to a sticker stored on the Telegram servers. By default, this 
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedSticker(id, stickerFileId string, message objs.InputMessageContent, keyboard *inlineKeyboard) error {
+func (iqs *InlineQueryResponder) AddCachedSticker(id, stickerFileId string, message objs.InputMessageContent, keyboard *InlineKeyboard) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -533,7 +533,7 @@ Represents a link to a file stored on the Telegram servers. By default, this fil
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedDocument(id, title, documentFileId, description, caption, parseMode string, messsage objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedDocument(id, title, documentFileId, description, caption, parseMode string, messsage objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -564,7 +564,7 @@ Represents a link to a video file stored on the Telegram servers. By default, th
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedVideo(id, title, videoFileId, caption, description, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedVideo(id, title, videoFileId, caption, description, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -595,7 +595,7 @@ Represents a link to an MP3 audio file stored on the Telegram servers. By defaul
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedAudio(id, title, audioFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedAudio(id, title, audioFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -625,7 +625,7 @@ Represents a link to a voice message stored on the Telegram servers. By default,
 
 "message" argument is the message that will be sent if this result is pressed. It is necessary and if it's not passed the API server will return "400 bad request, message_text is missing". You can use "Create***Message" method to create this messages.
 */
-func (iqs *InlineQueryResponder) AddCachedVoice(id, title, voiceFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *inlineKeyboard, captionEntities []objs.MessageEntity) error {
+func (iqs *InlineQueryResponder) AddCachedVoice(id, title, voiceFileId, caption, parseMode string, message objs.InputMessageContent, keyboard *InlineKeyboard, captionEntities []objs.MessageEntity) error {
 	if iqs.isWebApp && len(iqs.results) >= 1 {
 		return errors.New("cant add moer than 1 result for web app response")
 	}
@@ -756,7 +756,7 @@ func (iqs *InlineQueryResponder) Send() (interface{}, error) {
 	)
 }
 
-func (iqs *InlineQueryResponder) fixTheKeyboard(keyboard *inlineKeyboard) *objs.InlineKeyboardMarkup {
+func (iqs *InlineQueryResponder) fixTheKeyboard(keyboard *InlineKeyboard) *objs.InlineKeyboardMarkup {
 	var replyMarkup *objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		kb := keyboard.toInlineKeyboardMarkup()

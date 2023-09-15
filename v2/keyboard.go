@@ -10,14 +10,14 @@ type MarkUps interface {
 	toMarkUp() objs.ReplyMarkup
 }
 
-// keyboard is a normal keyboard.
-type keyboard struct {
+// Keyboard is a normal Keyboard.
+type Keyboard struct {
 	keys                                                     [][]*objs.KeyboardButton
 	resizeKeyBoard, oneTimeKeyboard, isPersistent, selective bool
 	inputFieldPlaceHolder                                    string
 }
 
-func (kb *keyboard) fixRows(row int) {
+func (kb *Keyboard) fixRows(row int) {
 	dif := (row) - len(kb.keys)
 	for i := 0; i < dif; i++ {
 		kb.keys = append(kb.keys, make([]*objs.KeyboardButton, 0))
@@ -29,7 +29,7 @@ AddButton adds a new button holding the given text to the specified row. Accordi
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
-func (kb *keyboard) AddButton(text string, row int) {
+func (kb *Keyboard) AddButton(text string, row int) {
 	kb.addButton(text, row, false, false, nil, nil, nil, nil)
 }
 
@@ -38,7 +38,7 @@ AddButtonHandler adds a new button holding the given text to the specified row. 
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
-func (kb *keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
+func (kb *Keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
 	kb.addButton(text, row, false, false, nil, nil, nil, nil)
 	upp.AddHandler(text, handler, chatTypes...)
 }
@@ -50,7 +50,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
-func (kb *keyboard) AddContactButton(text string, row int) {
+func (kb *Keyboard) AddContactButton(text string, row int) {
 	kb.addButton(text, row, true, false, nil, nil, nil, nil)
 }
 
@@ -61,7 +61,7 @@ Note: ContactButtons and LocationButtons will only work in Telegram versions rel
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
-func (kb *keyboard) AddLocationButton(text string, row int) {
+func (kb *Keyboard) AddLocationButton(text string, row int) {
 	kb.addButton(text, row, false, true, nil, nil, nil, nil)
 }
 
@@ -74,7 +74,7 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 
 Note : poll type can be "regular" or "quiz". Any other value will cause the button not to be added.
 */
-func (kb *keyboard) AddPollButton(text string, row int, pollType string) {
+func (kb *Keyboard) AddPollButton(text string, row int, pollType string) {
 	if pollType == "regular" || pollType == "quiz" {
 		kb.addButton(text, row, false, false, &objs.KeyboardButtonPollType{Type: pollType}, nil, nil, nil)
 	}
@@ -85,7 +85,7 @@ AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
-func (kb *keyboard) AddWebAppButton(text string, row int, url string) {
+func (kb *Keyboard) AddWebAppButton(text string, row int, url string) {
 	kb.addButton(text, row, false, false, nil, nil, nil, &objs.WebAppInfo{URL: url})
 }
 
@@ -104,7 +104,7 @@ Arguments :
 
 4. handler : A handler that will be executed when the user presses this button. If handler is not nil, bot automatically parses the incoming updates on this request id. Pass nil if you don't want any handler.
 */
-func (kb *keyboard) AddRequestUserButton(text string, row, requestId int, userIsBot, userIsPremium bool, handler func(*objs.Update)) {
+func (kb *Keyboard) AddRequestUserButton(text string, row, requestId int, userIsBot, userIsPremium bool, handler func(*objs.Update)) {
 	kb.addButton(text, row, false, false, nil, &objs.KeyboardButtonRequestUser{
 		RequestId:     requestId,
 		UserIsBot:     userIsBot,
@@ -140,7 +140,7 @@ Arguments :
 
 9. handler : A handler that will be executed when the user presses this button. If handler is not nil, bot automatically parses the incoming updates on this request id. Pass nil if you don't want any handler.
 */
-func (kb *keyboard) AddRequestChatButton(text string, row, requestId int, chatIsChannel, chatIsForum, chatHasUsername, chatIsCreated, botIsMember bool, userAdminRights, botAdminRights *objs.ChatAdministratorRights, handler func(*objs.Update)) {
+func (kb *Keyboard) AddRequestChatButton(text string, row, requestId int, chatIsChannel, chatIsForum, chatHasUsername, chatIsCreated, botIsMember bool, userAdminRights, botAdminRights *objs.ChatAdministratorRights, handler func(*objs.Update)) {
 	kb.addButton(text, row, false, false, nil, nil, &objs.KeyboardButtonRequestChat{
 		RequestId:               requestId,
 		ChatIsChannel:           chatIsChannel,
@@ -156,7 +156,7 @@ func (kb *keyboard) AddRequestChatButton(text string, row, requestId int, chatIs
 	}
 }
 
-func (kb *keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType, requestUser *objs.KeyboardButtonRequestUser, requestChat *objs.KeyboardButtonRequestChat, webApp *objs.WebAppInfo) {
+func (kb *Keyboard) addButton(text string, row int, contact, location bool, poll *objs.KeyboardButtonPollType, requestUser *objs.KeyboardButtonRequestUser, requestChat *objs.KeyboardButtonRequestChat, webApp *objs.WebAppInfo) {
 	if row >= 1 {
 		kb.fixRows(row)
 		kb.keys[row-1] = append(kb.keys[row-1], &objs.KeyboardButton{
@@ -171,7 +171,7 @@ func (kb *keyboard) addButton(text string, row int, contact, location bool, poll
 	}
 }
 
-func (kb *keyboard) toMarkUp() objs.ReplyMarkup {
+func (kb *Keyboard) toMarkUp() objs.ReplyMarkup {
 	return &objs.ReplyKeyboardMarkup{
 		Keyboard:              kb.keys,
 		IsPersistent:          kb.isPersistent,
@@ -182,7 +182,7 @@ func (kb *keyboard) toMarkUp() objs.ReplyMarkup {
 	}
 }
 
-type inlineKeyboard struct {
+type InlineKeyboard struct {
 	keys [][]*objs.InlineKeyboardButton
 }
 
@@ -191,7 +191,7 @@ AddURLButton adds a button that will open an url when pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added
 */
-func (in *inlineKeyboard) AddURLButton(text, url string, row int) {
+func (in *InlineKeyboard) AddURLButton(text, url string, row int) {
 	in.addButton(text, url, "", "", "", nil, nil, nil, nil, false, row)
 }
 
@@ -210,7 +210,7 @@ Arguments :
 
 4. requestWriteAccess : Pass True to request the permission for your bot to send messages to the user.
 */
-func (in *inlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername string, requestWriteAccess bool, row int) {
+func (in *InlineKeyboard) AddLoginURLButton(text, url, forwardText, botUsername string, requestWriteAccess bool, row int) {
 	in.addButton(text, "", "", "", "", nil, &objs.LoginUrl{
 		URL:                url,
 		ForwardText:        forwardText,
@@ -224,7 +224,7 @@ AddCallbackButton adds a button that when its pressed, a call back query with th
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
-func (in *inlineKeyboard) AddCallbackButton(text, callbackData string, row int) {
+func (in *InlineKeyboard) AddCallbackButton(text, callbackData string, row int) {
 	in.addButton(text, "", callbackData, "", "", nil, nil, nil, nil, false, row)
 }
 
@@ -233,7 +233,7 @@ AddCallbackButtonHandler adds a button that when its pressed, a call back query 
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
-func (in *inlineKeyboard) AddCallbackButtonHandler(text, callbackData string, row int, handler func(*objs.Update)) {
+func (in *InlineKeyboard) AddCallbackButtonHandler(text, callbackData string, row int, handler func(*objs.Update)) {
 	in.addButton(text, "", callbackData, "", "", nil, nil, nil, nil, false, row)
 	upp.AddCallbackHandler(callbackData, handler)
 }
@@ -245,7 +245,7 @@ Note : If "currentChat" option is true, the inline query will be inserted in the
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
-func (in *inlineKeyboard) AddSwitchInlineQueryButton(text, inlineQuery string, row int, currenChat bool) {
+func (in *InlineKeyboard) AddSwitchInlineQueryButton(text, inlineQuery string, row int, currenChat bool) {
 	if currenChat {
 		in.addButton(text, "", "", "", inlineQuery, nil, nil, nil, nil, false, row)
 	} else {
@@ -268,7 +268,7 @@ allowGroupChats : True, if group and supergroup chats can be chosen
 
 allowChannelChats : True, if channel chats can be chosen
 */
-func (in *inlineKeyboard) AddSwitchInlineQueryChoseChatButton(text, inlineQuery string, allowUserChats, allowBotChats, allowGroupChats, allowChannelChats bool, row int) {
+func (in *InlineKeyboard) AddSwitchInlineQueryChoseChatButton(text, inlineQuery string, allowUserChats, allowBotChats, allowGroupChats, allowChannelChats bool, row int) {
 	in.addButton(text, "", "", "", "", &objs.SwitchInlineQueryChosenChat{
 		Query:             inlineQuery,
 		AllowUserChats:    allowUserChats,
@@ -282,7 +282,7 @@ func (in *inlineKeyboard) AddSwitchInlineQueryChoseChatButton(text, inlineQuery 
 AddGameButton adds a game button. Everytime a user presses this button a game will be launched. Use botfather to set up a game.
 NOTE: This type of button must always be the first button in the first row.
 */
-func (in *inlineKeyboard) AddGameButton(text string, row int) {
+func (in *InlineKeyboard) AddGameButton(text string, row int) {
 	in.addButton(text, "", "", "", "", nil, nil, &objs.CallbackGame{}, nil, false, row)
 }
 
@@ -293,7 +293,7 @@ NOTE: This type of button must always be the first button in the first row and c
 
 Note : This method does not accept row number. This button is automatically added to row 1.
 */
-func (in *inlineKeyboard) AddPayButton(text string) {
+func (in *InlineKeyboard) AddPayButton(text string) {
 	btn := &objs.InlineKeyboardButton{
 		Text:                         text,
 		URL:                          "",
@@ -318,11 +318,11 @@ AddWebAppButton adds a button which opens a web app when it's pressed.
 
 Note : row number starts from 1. (it's not zero based). If any number lower than 1 is passed, no button will be added.
 */
-func (in *inlineKeyboard) AddWebAppButton(text string, row int, url string) {
+func (in *InlineKeyboard) AddWebAppButton(text string, row int, url string) {
 	in.addButton(text, "", "", "", "", nil, nil, nil, &objs.WebAppInfo{URL: url}, false, row)
 }
 
-func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, switchInlineQueryChosenChat *objs.SwitchInlineQueryChosenChat, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, webApp *objs.WebAppInfo, pay bool, row int) {
+func (in *InlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat string, switchInlineQueryChosenChat *objs.SwitchInlineQueryChosenChat, loginUrl *objs.LoginUrl, callbackGame *objs.CallbackGame, webApp *objs.WebAppInfo, pay bool, row int) {
 	if row >= 1 {
 		in.fixRows(row)
 		in.keys[row-1] = append(in.keys[row-1], &objs.InlineKeyboardButton{
@@ -340,20 +340,20 @@ func (in *inlineKeyboard) addButton(text, url, callbackData, switchInlineQuery, 
 	}
 }
 
-func (in *inlineKeyboard) fixRows(row int) {
+func (in *InlineKeyboard) fixRows(row int) {
 	dif := (row) - len(in.keys)
 	for i := 0; i < dif; i++ {
 		in.keys = append(in.keys, make([]*objs.InlineKeyboardButton, 0))
 	}
 }
 
-func (in *inlineKeyboard) toInlineKeyboardMarkup() objs.InlineKeyboardMarkup {
+func (in *InlineKeyboard) toInlineKeyboardMarkup() objs.InlineKeyboardMarkup {
 	return objs.InlineKeyboardMarkup{
 		InlineKeyboard: in.keys,
 	}
 }
 
-func (in *inlineKeyboard) toMarkUp() objs.ReplyMarkup {
+func (in *InlineKeyboard) toMarkUp() objs.ReplyMarkup {
 	return &objs.InlineKeyboardMarkup{
 		InlineKeyboard: in.keys,
 	}

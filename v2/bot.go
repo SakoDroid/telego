@@ -175,8 +175,8 @@ func (bot *Bot) GetMe() (*objs.Result[*objs.User], error) {
 }
 
 // GetBotManager returns a bot manager, a tool for manging personal information of the bot such as name and description.
-func (bot *Bot) GetBotManager() *botManager {
-	return &botManager{bot: bot}
+func (bot *Bot) GetBotManager() *BotManager {
+	return &BotManager{bot: bot}
 }
 
 /*
@@ -807,8 +807,8 @@ GetStickerEditor returns a special object for editing stickers. Setting emoji li
 
 stickerFileId : File identifier of the sticker
 */
-func (bot *Bot) GetStickerEditor(stickerFileId string) *stickerEditor {
-	return &stickerEditor{bot: bot, stickerId: stickerFileId}
+func (bot *Bot) GetStickerEditor(stickerFileId string) *StickerEditor {
+	return &StickerEditor{bot: bot, stickerId: stickerFileId}
 }
 
 /*
@@ -1170,29 +1170,29 @@ func (bot *Bot) CreateForumTopicUN(username, name string, iconColor int, iconCus
 /*
 GetForumTopicManager returns a forum topic manager which can be used for managing forum topics.
 */
-func (bot *Bot) GetForumTopicManager(chatId, messageThreadId int) *forumTopicManager {
-	return &forumTopicManager{bot: bot, messageThreadId: messageThreadId, chatId: chatId}
+func (bot *Bot) GetForumTopicManager(chatId, messageThreadId int) *ForumTopicManager {
+	return &ForumTopicManager{bot: bot, messageThreadId: messageThreadId, chatId: chatId}
 }
 
 /*
 GetForumTopicManager returns a forum topic manager which can be used for managing forum topics.
 */
-func (bot *Bot) GetForumTopicManagerUN(username string, messageThreadId int) *forumTopicManager {
-	return &forumTopicManager{bot: bot, messageThreadId: messageThreadId, chatIdString: username}
+func (bot *Bot) GetForumTopicManagerUN(username string, messageThreadId int) *ForumTopicManager {
+	return &ForumTopicManager{bot: bot, messageThreadId: messageThreadId, chatIdString: username}
 }
 
 /*
 GetGeneralForumTopicManager returns a general forum topic manager which can be used for managing general forum topics.
 */
-func (bot *Bot) GetGeneralForumTopicManager(chatId, messageThreadId int) *generalForumTopicManager {
-	return &generalForumTopicManager{bot: bot, chatId: chatId}
+func (bot *Bot) GetGeneralForumTopicManager(chatId, messageThreadId int) *GeneralForumTopicManager {
+	return &GeneralForumTopicManager{bot: bot, chatId: chatId}
 }
 
 /*
 GetGeneralForumTopicManagerUN returns a general forum topic manager which can be used for managing general forum topics.
 */
-func (bot *Bot) GetGeneralForumTopicManagerUN(username string, messageThreadId int) *generalForumTopicManager {
-	return &generalForumTopicManager{bot: bot, chatIdString: username}
+func (bot *Bot) GetGeneralForumTopicManagerUN(username string, messageThreadId int) *GeneralForumTopicManager {
+	return &GeneralForumTopicManager{bot: bot, chatIdString: username}
 }
 
 /*
@@ -1214,8 +1214,8 @@ Arguments (as described in telegram bot api):
 
 Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
 */
-func (bot *Bot) CreateKeyboard(resizeKeyboard, isPersistent, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *keyboard {
-	return &keyboard{
+func (bot *Bot) CreateKeyboard(resizeKeyboard, isPersistent, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *Keyboard {
+	return &Keyboard{
 		keys:                  make([][]*objs.KeyboardButton, 0),
 		resizeKeyBoard:        resizeKeyboard,
 		oneTimeKeyboard:       oneTimeKeyboard,
@@ -1229,8 +1229,8 @@ CreateInlineKeyboard creates a keyboard an returns it. The created keyboard has 
 
 You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of a method. The methods that supoort keyboard are mostly located in the advanced mode.
 */
-func (bot *Bot) CreateInlineKeyboard() *inlineKeyboard {
-	return &inlineKeyboard{}
+func (bot *Bot) CreateInlineKeyboard() *InlineKeyboard {
+	return &InlineKeyboard{}
 }
 
 /*GetTextFormatter returns a MessageFormatter that can be used for formatting a text message. You can add bold,italic,underline,spoiler,mention,url,link and some other texts with this tool.*/

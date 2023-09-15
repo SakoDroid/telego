@@ -571,7 +571,7 @@ ACreateInvoice returns an InvoiceSender which has several methods for creating a
 
 This method is suitable for sending this invoice to a chat that has an id, to send the invoice to channels use "ACreateInvoiceUN" method.
 */
-func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) (*Invoice, error) {
+func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *InlineKeyboard) (*Invoice, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		if !keyboard.keys[0][0].Pay {
@@ -588,7 +588,7 @@ func (bot *AdvancedBot) ACreateInvoice(chatId int, title, description, payload, 
 }
 
 /*ACreateInvoiceUN returns an InvoiceSender which has several methods for creating and sending an invoice.*/
-func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *inlineKeyboard) (*Invoice, error) {
+func (bot *AdvancedBot) ACreateInvoiceUN(chatId string, title, description, payload, providerToken, currency string, prices []objs.LabeledPrice, maxTipAmount int, suggestedTipAmounts []int, startParameter, providerData, photoURL string, photoSize, photoWidth, photoHeight int, needName, needPhoneNumber, needEmail, needSippingAddress, sendPhoneNumberToProvider, sendEmailToProvider, isFlexible, bool, allowSendingWithoutReply bool, keyboard *InlineKeyboard) (*Invoice, error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		if !keyboard.keys[0][0].Pay {

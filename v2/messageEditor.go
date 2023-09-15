@@ -3,6 +3,7 @@ package telego
 import (
 	"encoding/json"
 	"os"
+	"time"
 
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
@@ -291,7 +292,7 @@ func (di *DocumentEditor) EditThumbnailFile(file *os.File) error {
 }
 
 /*EditText can be used to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
+func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMode string, entities []objs.MessageEntity, disableWebPagePreview bool, keyboard *InlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -303,7 +304,7 @@ func (me *MessageEditor) EditText(messageId int, text, inlineMessageId, parseMod
 }
 
 /*EditCaption can be used to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
+func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, parseMode string, captionEntities []objs.MessageEntity, keyboard *InlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -315,7 +316,7 @@ func (me *MessageEditor) EditCaption(messageId int, caption, inlineMessageId, pa
 }
 
 /*EditMediaPhoto returns a PhotoEditor to edit a photo*/
-func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *PhotoEditor {
+func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string, captionEntitie []objs.MessageEntity, keyboard *InlineKeyboard) *PhotoEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -324,7 +325,7 @@ func (mg *MessageEditor) EditMediaPhoto(messageId int, caption, parseMode string
 }
 
 /*EditMediaVideo returns a VideoEditor to edit a video*/
-func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *VideoEditor {
+func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string, width, height, duration int, supportsStreaming bool, captionEntitie []objs.MessageEntity, keyboard *InlineKeyboard) *VideoEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -333,7 +334,7 @@ func (mg *MessageEditor) EditMediaVideo(messageId int, caption, parseMode string
 }
 
 /*EditMediaAnimation returns an AnimationEditor to edit an animation*/
-func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AnimationEditor {
+func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode string, width, height, duration int, captionEntitie []objs.MessageEntity, keyboard *InlineKeyboard) *AnimationEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -342,7 +343,7 @@ func (mg *MessageEditor) EditMediaAnimation(messageId int, caption, parseMode st
 }
 
 /*EditMediaAudio returns an AudioEditor to edit an audio*/
-func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *AudioEditor {
+func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, performer, title string, duration int, captionEntitie []objs.MessageEntity, keyboard *InlineKeyboard) *AudioEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -351,7 +352,7 @@ func (mg *MessageEditor) EditMediaAudio(messageId int, caption, parseMode, perfo
 }
 
 /*EditMediaDocument returns a DocumentEditor to edit a document*/
-func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity, keyboard *inlineKeyboard) *DocumentEditor {
+func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode string, disableContentTypeDetection bool, captionEntitie []objs.MessageEntity, keyboard *InlineKeyboard) *DocumentEditor {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -360,7 +361,7 @@ func (mg *MessageEditor) EditMediaDocument(messageId int, caption, parseMode str
 }
 
 /*EditReplyMarkup can be used to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.*/
-func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *inlineKeyboard) (*objs.Result[json.RawMessage], error) {
+func (me *MessageEditor) EditReplyMarkup(messageId int, inlineMessageId string, keyboard *InlineKeyboard) (*objs.Result[json.RawMessage], error) {
 	var replyMarkup objs.InlineKeyboardMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toInlineKeyboardMarkup()
@@ -393,6 +394,18 @@ Returns True on success.
 */
 func (me *MessageEditor) DeleteMessage(messageId int) (*objs.Result[bool], error) {
 	return me.bot.apiInterface.DeleteMessage(me.chatIdInt, me.chatIdString, messageId)
+}
+
+/*
+DeletIn deletes the message with a delay. Delay should be in time.Duration format. Once this method is called it cannot be canceled.
+All the rules of DeleteMessage method apply to this method too.
+*/
+func (me *MessageEditor) DeletIn(messageId int, delay time.Duration) {
+	go func() {
+		timer := time.NewTimer(delay)
+		<-timer.C
+		me.DeleteMessage(messageId)
+	}()
 }
 
 func (me *MessageEditor) editMedia(messageId int, inlineMessageId string, media objs.InputMedia, replyMarkup *objs.InlineKeyboardMarkup, file ...*os.File) (*objs.Result[json.RawMessage], error) {
