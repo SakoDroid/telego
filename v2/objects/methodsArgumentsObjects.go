@@ -1245,6 +1245,9 @@ type PromoteChatMemberArgs struct {
 	CanPostMessages     bool            `json:"can_post_messages"`
 	CanEditMessages     bool            `json:"can_edit_messages"`
 	CanDeleteMessages   bool            `json:"can_delete_messages"`
+	CanPostStories      bool            `json:"can_post_stories"`
+	CanEditStories      bool            `json:"can_edit_stories"`
+	CanDeleteStories    bool            `json:"can_delete_stories"`
 	CanManageVideoChats bool            `json:"can_manage_video_chats"`
 	CanRestrictMembers  bool            `json:"can_restrict_members"`
 	CanPromoteMembers   bool            `json:"can_promote_members"`

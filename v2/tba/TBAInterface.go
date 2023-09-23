@@ -914,7 +914,7 @@ func (bai *BotAPIInterface) RestrictChatMember(chatIdInt int, chatIdString strin
 }
 
 /*PromoteChatMember promotes a chat member*/
-func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages, canManageTopics bool) (*objs.Result[bool], error) {
+func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string, userId int, isAnonymous, canManageChat, canPostmessages, canEditMessages, canDeleteMessages, canPostStories, canEditStories, canDeleteStoreis, canManageVideoChats, canRestrictMembers, canPromoteMembers, canChangeInfo, canInviteUsers, canPinMessages, canManageTopics bool) (*objs.Result[bool], error) {
 	args := &objs.PromoteChatMemberArgs{
 		UserId:              userId,
 		IsAnonymous:         isAnonymous,
@@ -922,6 +922,9 @@ func (bai *BotAPIInterface) PromoteChatMember(chatIdInt int, chatIdString string
 		CanPostMessages:     canPostmessages,
 		CanEditMessages:     canEditMessages,
 		CanDeleteMessages:   canDeleteMessages,
+		CanPostStories:      canPostmessages,
+		CanEditStories:      canEditMessages,
+		CanDeleteStories:    canDeleteMessages,
 		CanManageVideoChats: canManageVideoChats,
 		CanRestrictMembers:  canRestrictMembers,
 		CanPromoteMembers:   canPromoteMembers,

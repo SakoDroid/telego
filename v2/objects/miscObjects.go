@@ -29,6 +29,12 @@ type ChatAdministratorRights struct {
 	CanEditMessages bool `json:"can_edit_messages,omitempty"`
 	/*Optional. True, if the user is allowed to pin messages; groups and supergroups only*/
 	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+	/*Optional. True, if the administrator can post stories in the channel; channels only*/
+	CanPostStories bool `json:"can_post_stories"`
+	/*Optional. True, if the administrator can edit stories posted by other users; channels only*/
+	CanEditStories bool `json:"can_edit_stories"`
+	/*Optional. True, if the administrator can delete stories posted by other users; channels only*/
+	CanDeleteStories bool `json:"can_delete_stories"`
 	/*Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only*/
 	CanManageTopics bool `json:"can_manage_topics"`
 }
