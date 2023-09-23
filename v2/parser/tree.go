@@ -6,26 +6,26 @@ import (
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
-//TreeNode is a special tree element containing handlers.
+// TreeNode is a special tree element containing handlers.
 type TreeNode struct {
 	father      *TreeNode
 	right, left *TreeNode
 	data        *handler
 }
 
-//HandlerTree is a special binary tree for storing handlers. Right node hase a value that does not match the it's father regex and the left node matches it's father regex.
-type HandlerTree struct {
+// handlerTree is a special binary tree for storing handlers. Right node hase a value that does not match the it's father regex and the left node matches it's father regex.
+type handlerTree struct {
 	root *TreeNode
 }
 
-//AddHandler adds a new handler to the tree.
-func (tr *HandlerTree) AddHandler(hdl *handler) {
+// AddHandler adds a new handler to the tree.
+func (tr *handlerTree) AddHandler(hdl *handler) {
 	tn := TreeNode{data: hdl}
 	tr.addNode(&tn)
 }
 
-//GetHandler gets the proper handler for the given text.
-func (tr *HandlerTree) GetHandler(msg *objs.Message) *handler {
+// GetHandler gets the proper handler for the given text.
+func (tr *handlerTree) GetHandler(msg *objs.Message) *handler {
 	tn := tr.findTheNodeRegex(msg.Text, msg.Chat.Type)
 	if tn != nil {
 		return tn.data
@@ -33,7 +33,7 @@ func (tr *HandlerTree) GetHandler(msg *objs.Message) *handler {
 	return nil
 }
 
-func (tr *HandlerTree) findTheNodeRegex(text, chatType string) *TreeNode {
+func (tr *handlerTree) findTheNodeRegex(text, chatType string) *TreeNode {
 	node := tr.root
 	for {
 		if node == nil {
@@ -57,7 +57,7 @@ func (tr *HandlerTree) findTheNodeRegex(text, chatType string) *TreeNode {
 	return tr.checkForChatTypes(node, chatType, text)
 }
 
-func (tr *HandlerTree) checkForChatTypes(currentNode *TreeNode, chatType, text string) *TreeNode {
+func (tr *handlerTree) checkForChatTypes(currentNode *TreeNode, chatType, text string) *TreeNode {
 	for {
 		if currentNode == nil {
 			break
@@ -71,8 +71,8 @@ func (tr *HandlerTree) checkForChatTypes(currentNode *TreeNode, chatType, text s
 	return currentNode
 }
 
-//Finds the perfect location for this handler.
-func (tr *HandlerTree) addNode(tn *TreeNode) {
+// Finds the perfect location for this handler.
+func (tr *handlerTree) addNode(tn *TreeNode) {
 	var fatherNode *TreeNode
 	node := tr.root
 	dir := 0
@@ -105,7 +105,7 @@ func (tr *HandlerTree) addNode(tn *TreeNode) {
 	}
 }
 
-func (tr *HandlerTree) checkRegex(father, child *TreeNode) bool {
+func (tr *handlerTree) checkRegex(father, child *TreeNode) bool {
 	return father.data.regex.Match(
 		[]byte(child.data.regex.String()),
 	)

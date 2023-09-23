@@ -7,7 +7,7 @@ import (
 	"github.com/SakoDroid/telego/v2/objects"
 )
 
-var tree = &HandlerTree{}
+var tree = &handlerTree{}
 var testTable []handlerTest
 
 type handlerTest struct {

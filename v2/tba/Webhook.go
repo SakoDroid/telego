@@ -12,43 +12,44 @@ import (
 	up "github.com/SakoDroid/telego/v2/parser"
 )
 
-var configs *cfg.BotConfigs
-
-// var interfaceUpdateChannel *chan *objs.Update
-// var chatUpdateChannel *chan *objs.ChatUpdate
-var isSecretTokenSet bool
+type Webhook struct {
+	configs          *cfg.BotConfigs
+	isSecretTokenSet bool
+	parser           *up.UpdateParser
+}
 
 // StartWebHook starts the webhook.
-func StartWebHook(cfg *cfg.BotConfigs) error {
-	configs = cfg
+func (w *Webhook) StartWebHook(cfg *cfg.BotConfigs, parser *up.UpdateParser) error {
+	w.configs = cfg
 	// interfaceUpdateChannel = iuc
 	// chatUpdateChannel = cuc
-	isSecretTokenSet = cfg.WebHookConfigs.SecretToken != ""
-	startTheServer()
+	w.isSecretTokenSet = cfg.WebHookConfigs.SecretToken != ""
+	w.parser = parser
+	w.startTheServer()
 	return nil
 }
 
-func startTheServer() {
+func (w *Webhook) startTheServer() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", mainHandler)
-	mux.HandleFunc("/"+configs.APIKey, handleReq)
+	mux.HandleFunc("/", w.mainHandler)
+	mux.HandleFunc("/"+w.configs.APIKey, w.handleReq)
 	go func() {
-		err := http.ListenAndServeTLS(":"+strconv.Itoa(configs.WebHookConfigs.Port), configs.WebHookConfigs.CertFile, configs.WebHookConfigs.KeyFile, mux)
+		err := http.ListenAndServeTLS(":"+strconv.Itoa(w.configs.WebHookConfigs.Port), w.configs.WebHookConfigs.CertFile, w.configs.WebHookConfigs.KeyFile, mux)
 		if err != nil {
 			log.Logger.Fatalln("Webhook : Failed to start the HTTPS server.", err)
 		}
 	}()
 }
 
-func mainHandler(wr http.ResponseWriter, req *http.Request) {
+func (w *Webhook) mainHandler(wr http.ResponseWriter, req *http.Request) {
 	wr.WriteHeader(404)
 	wr.Write([]byte{})
 }
 
-func handleReq(wr http.ResponseWriter, req *http.Request) {
-	if isSecretTokenSet {
+func (w *Webhook) handleReq(wr http.ResponseWriter, req *http.Request) {
+	if w.isSecretTokenSet {
 		token := req.Header.Get("X-Telegram-Bot-Api-Secret-Token")
-		if token != configs.WebHookConfigs.SecretToken {
+		if token != w.configs.WebHookConfigs.SecretToken {
 			wr.WriteHeader(403)
 			wr.Write([]byte{})
 			return
@@ -64,7 +65,7 @@ func handleReq(wr http.ResponseWriter, req *http.Request) {
 				jsonErr := json.Unmarshal(body, update)
 				if jsonErr == nil {
 					// up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel, configs)
-					up.ExecuteChain(update)
+					w.parser.ExecuteChain(update)
 				} else {
 					log.Logger.Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
 				}
@@ -75,15 +76,15 @@ func handleReq(wr http.ResponseWriter, req *http.Request) {
 			wr.Write([]byte{})
 		} else {
 			log.Logger.Println("Webhook : Request has no body. Address :", req.RemoteAddr)
-			send400(&wr, "Request has no body")
+			w.send400(&wr, "Request has no body")
 		}
 	} else {
 		log.Logger.Println("Webhook : \"Content-Type\" header is not json or it's missing. Address :", req.RemoteAddr)
-		send400(&wr, " \"Content-Type\" header is not json or it's missing")
+		w.send400(&wr, " \"Content-Type\" header is not json or it's missing")
 	}
 }
 
-func send400(wr *http.ResponseWriter, reason string) {
+func (w *Webhook) send400(wr *http.ResponseWriter, reason string) {
 	(*wr).Header().Add("Content-Type", "text/plain")
 	(*wr).Header().Add("Content-Length", strconv.Itoa(len(reason)))
 	(*wr).WriteHeader(400)

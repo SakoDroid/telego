@@ -43,7 +43,3 @@ func (l *middlewareLinkedList) addToBegin(elm func(update *objs.Update, next fun
 func (l *middlewareLinkedList) executeChain(up *objs.Update) {
 	l.first.execute(up)
 }
-
-func AddMiddleWare(middleware func(update *objs.Update, next func())) {
-	middlewares.addToBegin(middleware)
-}

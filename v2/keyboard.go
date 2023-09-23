@@ -12,6 +12,7 @@ type MarkUps interface {
 
 // Keyboard is a normal Keyboard.
 type Keyboard struct {
+	up                                                       *upp.UpdateParser
 	keys                                                     [][]*objs.KeyboardButton
 	resizeKeyBoard, oneTimeKeyboard, isPersistent, selective bool
 	inputFieldPlaceHolder                                    string
@@ -40,7 +41,7 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 */
 func (kb *Keyboard) AddButtonHandler(text string, row int, handler func(*objs.Update), chatTypes ...string) {
 	kb.addButton(text, row, false, false, nil, nil, nil, nil)
-	upp.AddHandler(text, handler, chatTypes...)
+	kb.up.AddHandler(text, handler, chatTypes...)
 }
 
 /*
@@ -111,7 +112,7 @@ func (kb *Keyboard) AddRequestUserButton(text string, row, requestId int, userIs
 		UserIsPremium: userIsBot,
 	}, nil, nil)
 	if handler != nil {
-		upp.AddUserSharedHandler(requestId, handler)
+		kb.up.AddUserSharedHandler(requestId, handler)
 	}
 }
 
@@ -152,7 +153,7 @@ func (kb *Keyboard) AddRequestChatButton(text string, row, requestId int, chatIs
 		BotAdministratorRights:  botAdminRights,
 	}, nil)
 	if handler != nil {
-		upp.AddChatSharedHandler(requestId, handler)
+		kb.up.AddChatSharedHandler(requestId, handler)
 	}
 }
 
@@ -183,6 +184,7 @@ func (kb *Keyboard) toMarkUp() objs.ReplyMarkup {
 }
 
 type InlineKeyboard struct {
+	up   *upp.UpdateParser
 	keys [][]*objs.InlineKeyboardButton
 }
 
@@ -235,7 +237,7 @@ Note : row number starts from 1. (it's not zero based). If any number lower than
 */
 func (in *InlineKeyboard) AddCallbackButtonHandler(text, callbackData string, row int, handler func(*objs.Update)) {
 	in.addButton(text, "", callbackData, "", "", nil, nil, nil, nil, false, row)
-	upp.AddCallbackHandler(callbackData, handler)
+	in.up.AddCallbackHandler(callbackData, handler)
 }
 
 /*

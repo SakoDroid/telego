@@ -9,19 +9,29 @@ import (
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
+type UpdateParser struct {
+	uc                 *chan *objs.Update
+	cu                 *chan *objs.ChatUpdate
+	cfg                *configs.BotConfigs
+	handlers           *handlerTree
+	callbackHandlers   threadSafeMap[string, *callbackHandler]
+	userSharedHandlers threadSafeMap[int, *chatRequestHandler]
+	chatSharedHandlers threadSafeMap[int, *chatRequestHandler]
+}
+
 // ExecuteChain executes the chained middlewares
-func ExecuteChain(up *objs.Update) {
+func (u *UpdateParser) ExecuteChain(up *objs.Update) {
 	middlewares.executeChain(up)
 }
 
 // GetUpdateParserMiddleware returns a middleware that processes the given update object.
-func GetUpdateParserMiddleware(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) func(up *objs.Update, next func()) {
+func (u *UpdateParser) GetUpdateParserMiddleware(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) func(up *objs.Update, next func()) {
 	//next is not called because this middleware is always the last middleware.
 	return func(up *objs.Update, next func()) {
-		userId, isUserBlocked := isUserBlocked(up, cfg)
+		userId, isUserBlocked := u.isUserBlocked(up, cfg)
 		if !isUserBlocked {
 			logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
-			if !checkHandlers(up) && !processChat(up, cu) {
+			if !u.checkHandlers(up) && !u.processChat(up, cu) {
 				*uc <- up
 			}
 		} else {
@@ -30,7 +40,7 @@ func GetUpdateParserMiddleware(uc *chan *objs.Update, cu *chan *objs.ChatUpdate,
 	}
 }
 
-func processChat(update *objs.Update, chatUpdateChannel *chan *objs.ChatUpdate) bool {
+func (u *UpdateParser) processChat(update *objs.Update, chatUpdateChannel *chan *objs.ChatUpdate) bool {
 	var chat *objs.Chat
 	switch {
 	case update.Message != nil:
@@ -53,11 +63,11 @@ func processChat(update *objs.Update, chatUpdateChannel *chan *objs.ChatUpdate) 
 	if chat == nil {
 		return false
 	}
-	*chatUpdateChannel <- createChatUpdate(chat, update)
+	*chatUpdateChannel <- u.createChatUpdate(chat, update)
 	return true
 }
 
-func createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
+func (u *UpdateParser) createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
 	out := objs.ChatUpdate{Update: update}
 	if chat.Type == "channel" {
 		out.ChatId = chat.Username
@@ -67,34 +77,65 @@ func createChatUpdate(chat *objs.Chat, update *objs.Update) *objs.ChatUpdate {
 	return &out
 }
 
-func isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) (int, bool) {
+func (u *UpdateParser) isUserBlocked(up *objs.Update, cfg *configs.BotConfigs) (int, bool) {
 	switch up.GetType() {
 	case "message":
-		return checkBlocked(up.Message.From, cfg)
+		return u.checkBlocked(up.Message.From, cfg)
 	case "edited_message":
-		return checkBlocked(up.EditedMessage.From, cfg)
+		return u.checkBlocked(up.EditedMessage.From, cfg)
 	case "inline_query":
-		return checkBlocked(up.InlineQuery.From, cfg)
+		return u.checkBlocked(up.InlineQuery.From, cfg)
 	case "chosen_inline_result":
-		return checkBlocked(&up.ChosenInlineResult.From, cfg)
+		return u.checkBlocked(&up.ChosenInlineResult.From, cfg)
 	case "callback_query":
-		return checkBlocked(&up.CallbackQuery.From, cfg)
+		return u.checkBlocked(&up.CallbackQuery.From, cfg)
 	case "shipping_query":
-		return checkBlocked(up.ShippingQuery.From, cfg)
+		return u.checkBlocked(up.ShippingQuery.From, cfg)
 	case "pre_checkout_query":
-		return checkBlocked(up.PreCheckoutQuery.From, cfg)
+		return u.checkBlocked(up.PreCheckoutQuery.From, cfg)
 	case "poll_answer":
-		return checkBlocked(up.PollAnswer.User, cfg)
+		return u.checkBlocked(up.PollAnswer.User, cfg)
 	default:
 		return 0, false
 	}
 }
 
-func checkBlocked(user *objs.User, cfg *configs.BotConfigs) (int, bool) {
+func (u *UpdateParser) checkBlocked(user *objs.User, cfg *configs.BotConfigs) (int, bool) {
 	for _, us := range cfg.BlockedUsers {
 		if us.UserID == user.Id {
 			return us.UserID, true
 		}
 	}
 	return 0, false
+}
+
+func (u *UpdateParser) AddMiddleWare(middleware func(update *objs.Update, next func())) {
+	middlewares.addToBegin(middleware)
+}
+
+func CreateUpdateParser(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) *UpdateParser {
+	up := &UpdateParser{
+		uc:                 uc,
+		cu:                 cu,
+		cfg:                cfg,
+		handlers:           &handlerTree{},
+		callbackHandlers:   threadSafeMap[string, *callbackHandler]{internal: make(map[string]*callbackHandler)},
+		userSharedHandlers: threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)},
+		chatSharedHandlers: threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)},
+	}
+
+	up.AddMiddleWare(
+		func(update *objs.Update, next func()) {
+			userId, isUserBlocked := up.isUserBlocked(update, cfg)
+			if !isUserBlocked {
+				logger.Log("Update", "\t\t\t\t", update.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
+				if !up.checkHandlers(update) && !up.processChat(update, cu) {
+					*uc <- update
+				}
+			} else {
+				logger.Log("Update", "\t\t\t\t", update.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
+			}
+		},
+	)
+	return up
 }

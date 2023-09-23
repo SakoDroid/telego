@@ -26,6 +26,7 @@ type BotAPIInterface struct {
 	updateChannel        *chan *objs.Update
 	chatUpadateChannel   *chan *objs.ChatUpdate
 	updateRoutineChannel chan bool
+	updateParser         *parser.UpdateParser
 	lastOffset           int
 }
 
@@ -60,6 +61,11 @@ func (bai *BotAPIInterface) GetUpdateChannel() *chan *objs.Update {
 /*GetChatUpdateChannel returnes the chat update channel*/
 func (bai *BotAPIInterface) GetChatUpdateChannel() *chan *objs.ChatUpdate {
 	return bai.chatUpadateChannel
+}
+
+// GetUpdateParser returns the bot's update parser that has been initialized upon bot creation.
+func (bai *BotAPIInterface) GetUpdateParser() *parser.UpdateParser {
+	return bai.updateParser
 }
 
 func (bai *BotAPIInterface) startReceiving() {
@@ -122,7 +128,7 @@ func (bai *BotAPIInterface) ParseUpdate(body []byte) (int, error) {
 		if val.Update_id > lastOffset {
 			lastOffset = val.Update_id
 		}
-		go parser.ExecuteChain(val)
+		go bai.updateParser.ExecuteChain(val)
 	}
 	return lastOffset, nil
 }
@@ -2776,7 +2782,11 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 	interfaceCreated = true
 	ch := make(chan *objs.Update)
 	ch3 := make(chan *objs.ChatUpdate)
-	temp := &BotAPIInterface{botConfigs: botCfg, updateChannel: &ch, chatUpadateChannel: &ch3}
-	parser.AddMiddleWare(parser.GetUpdateParserMiddleware(&ch, &ch3, botCfg))
+	temp := &BotAPIInterface{
+		botConfigs:         botCfg,
+		updateChannel:      &ch,
+		chatUpadateChannel: &ch3,
+		updateParser:       parser.CreateUpdateParser(&ch, &ch3, botCfg),
+	}
 	return temp, nil
 }

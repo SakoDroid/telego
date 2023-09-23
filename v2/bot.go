@@ -9,7 +9,6 @@ import (
 	errs "github.com/SakoDroid/telego/v2/errors"
 	logger "github.com/SakoDroid/telego/v2/logger"
 	objs "github.com/SakoDroid/telego/v2/objects"
-	upp "github.com/SakoDroid/telego/v2/parser"
 	tba "github.com/SakoDroid/telego/v2/tba"
 )
 
@@ -35,7 +34,8 @@ func (bot *Bot) Run(autoPause bool) error {
 	go bot.botCfg.StartCfgUpdateRoutine()
 	var err error
 	if bot.botCfg.Webhook {
-		err = tba.StartWebHook(bot.botCfg)
+		wh := tba.Webhook{}
+		err = wh.StartWebHook(bot.botCfg, bot.apiInterface.GetUpdateParser())
 	} else {
 		err = bot.apiInterface.StartUpdateRoutine()
 	}
@@ -157,7 +157,7 @@ func (bot *Bot) AddHandler(pattern string, handler func(*objs.Update), chatTypes
 			return errors.New("unknown chat type : " + val)
 		}
 	}
-	return upp.AddHandler(pattern, handler, chatTypes...)
+	return bot.apiInterface.GetUpdateParser().AddHandler(pattern, handler, chatTypes...)
 
 }
 
@@ -1216,6 +1216,7 @@ Example: A user requests to change the bot's language, bot replies to the reques
 */
 func (bot *Bot) CreateKeyboard(resizeKeyboard, isPersistent, oneTimeKeyboard, selective bool, inputFieldPlaceholder string) *Keyboard {
 	return &Keyboard{
+		up:                    bot.apiInterface.GetUpdateParser(),
 		keys:                  make([][]*objs.KeyboardButton, 0),
 		resizeKeyBoard:        resizeKeyboard,
 		oneTimeKeyboard:       oneTimeKeyboard,
@@ -1230,7 +1231,9 @@ CreateInlineKeyboard creates a keyboard an returns it. The created keyboard has 
 You can send the keyboard along with messages by passing the keyboard as the "keyboard" argument of a method. The methods that supoort keyboard are mostly located in the advanced mode.
 */
 func (bot *Bot) CreateInlineKeyboard() *InlineKeyboard {
-	return &InlineKeyboard{}
+	return &InlineKeyboard{
+		up: bot.apiInterface.GetUpdateParser(),
+	}
 }
 
 /*GetTextFormatter returns a MessageFormatter that can be used for formatting a text message. You can add bold,italic,underline,spoiler,mention,url,link and some other texts with this tool.*/

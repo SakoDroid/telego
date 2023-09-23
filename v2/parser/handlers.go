@@ -7,10 +7,10 @@ import (
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
-var handlers = HandlerTree{}
-var callbackHandlers = threadSafeMap[string, *callbackHandler]{internal: make(map[string]*callbackHandler)}
-var userSharedHandlers = threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)}
-var chatSharedHandlers = threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)}
+// var handlers = handlerTree{}
+// var callbackHandlers = threadSafeMap[string, *callbackHandler]{internal: make(map[string]*callbackHandler)}
+// var userSharedHandlers = threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)}
+// var chatSharedHandlers = threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)}
 
 type handler struct {
 	regex    *regexp.Regexp      //The compiled regex.
@@ -23,24 +23,24 @@ type callbackHandler struct {
 	function     *func(*objs.Update)
 }
 
-func AddHandler(patern string, handlerFunc func(*objs.Update), chatType ...string) error {
+func (up *UpdateParser) AddHandler(patern string, handlerFunc func(*objs.Update), chatType ...string) error {
 	hl := handler{chatType: strings.Join(chatType, ","), function: &handlerFunc}
 	rgxp, err := regexp.Compile(patern)
 	if err != nil {
 		return err
 	}
 	hl.regex = rgxp
-	handlers.AddHandler(&hl)
+	up.handlers.AddHandler(&hl)
 	return nil
 }
 
-func AddCallbackHandler(data string, handlerFun func(*objs.Update)) {
+func (up *UpdateParser) AddCallbackHandler(data string, handlerFun func(*objs.Update)) {
 	hl := callbackHandler{callbackData: data, function: &handlerFun}
-	callbackHandlers.Add(data, &hl)
+	up.callbackHandlers.Add(data, &hl)
 }
 
-func AddUserSharedHandler(requestId int, handler func(*objs.Update)) {
-	userSharedHandlers.Add(
+func (up *UpdateParser) AddUserSharedHandler(requestId int, handler func(*objs.Update)) {
+	up.userSharedHandlers.Add(
 		requestId,
 		&chatRequestHandler{
 			requestId: requestId,
@@ -49,8 +49,8 @@ func AddUserSharedHandler(requestId int, handler func(*objs.Update)) {
 	)
 }
 
-func AddChatSharedHandler(requestId int, handler func(*objs.Update)) {
-	chatSharedHandlers.Add(
+func (up *UpdateParser) AddChatSharedHandler(requestId int, handler func(*objs.Update)) {
+	up.chatSharedHandlers.Add(
 		requestId,
 		&chatRequestHandler{
 			requestId: requestId,
@@ -59,54 +59,54 @@ func AddChatSharedHandler(requestId int, handler func(*objs.Update)) {
 	)
 }
 
-func checkHandlers(up *objs.Update) bool {
-	if up.CallbackQuery != nil {
-		return checkCallbackHanlders(up)
+func (up *UpdateParser) checkHandlers(update *objs.Update) bool {
+	if update.CallbackQuery != nil {
+		return up.checkCallbackHanlders(update)
 	}
 
-	if up.Message.UserShared != nil {
-		return checkUserSharedHandlers(up)
+	if update.Message.UserShared != nil {
+		return up.checkUserSharedHandlers(update)
 	}
 
-	if up.Message.ChatShared != nil {
-		return checkChatSharedHandlers(up)
+	if update.Message.ChatShared != nil {
+		return up.checkChatSharedHandlers(update)
 	}
 
-	return checkTextMsgHandlers(up)
+	return up.checkTextMsgHandlers(update)
 }
 
-func checkCallbackHanlders(up *objs.Update) bool {
-	hdl, ok := callbackHandlers.Load(up.CallbackQuery.Data)
+func (up *UpdateParser) checkCallbackHanlders(update *objs.Update) bool {
+	hdl, ok := up.callbackHandlers.Load(update.CallbackQuery.Data)
 	if ok && hdl != nil {
-		go (*hdl.function)(up)
+		go (*hdl.function)(update)
 		return true
 	}
 	return false
 }
 
-func checkUserSharedHandlers(up *objs.Update) bool {
-	hdl, ok := userSharedHandlers.LoadAndDelete(up.Message.UserShared.RequestId)
+func (up *UpdateParser) checkUserSharedHandlers(update *objs.Update) bool {
+	hdl, ok := up.userSharedHandlers.LoadAndDelete(update.Message.UserShared.RequestId)
 	if ok && hdl != nil && hdl.function != nil {
-		go (*hdl.function)(up)
+		go (*hdl.function)(update)
 		return true
 	}
 	return false
 }
 
-func checkChatSharedHandlers(up *objs.Update) bool {
-	hdl, ok := chatSharedHandlers.Load(up.Message.ChatShared.RequestId)
+func (up *UpdateParser) checkChatSharedHandlers(update *objs.Update) bool {
+	hdl, ok := up.chatSharedHandlers.Load(update.Message.ChatShared.RequestId)
 	if ok && hdl != nil && hdl.function != nil {
-		go (*hdl.function)(up)
+		go (*hdl.function)(update)
 		return true
 	}
 	return false
 }
 
-func checkTextMsgHandlers(up *objs.Update) bool {
-	if up.Message != nil && up.Message.Text != "" {
-		hndl := handlers.GetHandler(up.Message)
+func (up *UpdateParser) checkTextMsgHandlers(update *objs.Update) bool {
+	if update.Message != nil && update.Message.Text != "" {
+		hndl := up.handlers.GetHandler(update.Message)
 		if hndl != nil {
-			go (*hndl.function)(up)
+			go (*hndl.function)(update)
 			return true
 		}
 	}
