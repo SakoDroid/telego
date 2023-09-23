@@ -5,7 +5,6 @@ import (
 	"os"
 
 	errs "github.com/SakoDroid/telego/v2/errors"
-	logger "github.com/SakoDroid/telego/v2/logger"
 	objs "github.com/SakoDroid/telego/v2/objects"
 )
 
@@ -26,7 +25,7 @@ func (ss *StickerSet) update() {
 	if ss.created && ss != nil {
 		res, err := ss.bot.apiInterface.GetStickerSet(ss.name)
 		if err != nil {
-			logger.Logger.Println("Error while updating sticker set.", err.Error())
+			ss.bot.logger.GetRaw().Println("Error while updating sticker set.", err.Error())
 		} else {
 			ss.stickerSet = res.Result
 		}

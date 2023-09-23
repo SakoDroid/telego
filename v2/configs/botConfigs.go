@@ -2,6 +2,8 @@ package configs
 
 import (
 	"encoding/json"
+	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -21,6 +23,8 @@ const DefaultLogFile = "STDOUT"
 
 // BotConfigs is a struct holding the bots configs.
 type BotConfigs struct {
+	/*Name is the bot's custom name. This is used in logging*/
+	BotName string `json:"bot_name"`
 	/*This is the bot api server. If you dont have a local bot api server, use "configs.DefaultBotAPI" for this field.*/
 	BotAPI string `json:"bot_api"`
 	/*The API key for your bot. You can get the api key (token) from botfather*/
@@ -44,6 +48,10 @@ type BotConfigs struct {
 
 // Check checks the bot configs for any problem.
 func (bc *BotConfigs) Check() bool {
+	//Setting a random name
+	if bc.BotName == "" {
+		bc.BotName = fmt.Sprintf("bot-%d", rand.Intn(20))
+	}
 	if bc.BotAPI == "" {
 		return false
 	}

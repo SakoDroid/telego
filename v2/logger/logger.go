@@ -7,10 +7,16 @@ import (
 	cfg "github.com/SakoDroid/telego/v2/configs"
 )
 
-//Logger is the default logger of the bot.
-var Logger *log.Logger
+type BotLogger struct {
+	// logger is the default logger of the bot.
+	logger    *log.Logger
+	colorized bool
+}
 
-//colorized indicates if logs should be colored, default is true.
+// Logger is the default logger of the bot.
+// var Logger *log.Logger
+
+// colorized indicates if logs should be colored, default is true.
 var colorized = true
 
 const (
@@ -25,41 +31,48 @@ const (
 	UNDERLINE string = "\033[4m"
 )
 
-//InitiTheLogger initializes the default logger of the bot.
-func InitTheLogger(botCfg *cfg.BotConfigs) {
-	if Logger == nil {
-		var file *os.File
-		if botCfg.LogFileAddress == "STDOUT" {
-			file = os.Stdout
-		} else {
-			var err error
-			file, err = os.OpenFile(botCfg.LogFileAddress, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-			if err != nil {
-				panic("Could not init the logger. Reason : " + err.Error())
-			}
-		}
-		Logger = log.New(file, "", log.Ldate|log.Ltime)
+// InitiTheLogger initializes the default logger of the bot.
+func InitTheLogger(botCfg *cfg.BotConfigs) *BotLogger {
+	logger := &BotLogger{
+		colorized: true,
 	}
+	var file *os.File
+	if botCfg.LogFileAddress == "STDOUT" {
+		file = os.Stdout
+	} else {
+		var err error
+		file, err = os.OpenFile(botCfg.LogFileAddress, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			panic("Could not init the logger. Reason : " + err.Error())
+		}
+	}
+	logger.logger = log.New(file, botCfg.BotName+" | ", log.Ldate|log.Ltime)
+	return logger
 }
 
-//Log logs the given paramteres based on the defined format.
-func Log(header, space, content, after, headerColor, contentColor, afterColor string) {
+// Log logs the given paramteres based on the defined format.
+func (l *BotLogger) Log(header, space, content, after, headerColor, contentColor, afterColor string) {
 	if colorized {
 		text := "| " + headerColor + header + ENDC + space + contentColor + content + ENDC + " |" + afterColor + after + ENDC
-		Logger.Println(text)
+		l.logger.Println(text)
 	} else {
 		text := "| " + header + space + content + "|" + after
-		Logger.Println(text)
+		l.logger.Println(text)
 	}
 
 }
 
-//Uncolor, clears the colors of the logs.
-func Uncolor() {
+// GetRaw returns the internal logger
+func (l *BotLogger) GetRaw() *log.Logger {
+	return l.logger
+}
+
+// Uncolor, clears the colors of the logs.
+func (l *BotLogger) Uncolor() {
 	colorized = false
 }
 
-//Color adds color to the logs.
-func Color() {
+// Color adds color to the logs.
+func (l *BotLogger) Color() {
 	colorized = true
 }

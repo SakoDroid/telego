@@ -16,6 +16,7 @@ type Webhook struct {
 	configs          *cfg.BotConfigs
 	isSecretTokenSet bool
 	parser           *up.UpdateParser
+	Logger           *log.BotLogger
 }
 
 // StartWebHook starts the webhook.
@@ -36,7 +37,7 @@ func (w *Webhook) startTheServer() {
 	go func() {
 		err := http.ListenAndServeTLS(":"+strconv.Itoa(w.configs.WebHookConfigs.Port), w.configs.WebHookConfigs.CertFile, w.configs.WebHookConfigs.KeyFile, mux)
 		if err != nil {
-			log.Logger.Fatalln("Webhook : Failed to start the HTTPS server.", err)
+			w.Logger.GetRaw().Fatalln("Webhook : Failed to start the HTTPS server.", err)
 		}
 	}()
 }
@@ -67,19 +68,19 @@ func (w *Webhook) handleReq(wr http.ResponseWriter, req *http.Request) {
 					// up.ParseSingleUpdate(update, interfaceUpdateChannel, chatUpdateChannel, configs)
 					w.parser.ExecuteChain(update)
 				} else {
-					log.Logger.Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
+					w.Logger.GetRaw().Println("Webhook : Error parsing the update. Address :", req.RemoteAddr, ". Error :", jsonErr)
 				}
 			} else {
-				log.Logger.Println("Webhook : Error reading the body. Address :", req.RemoteAddr, ". Error :", err)
+				w.Logger.GetRaw().Println("Webhook : Error reading the body. Address :", req.RemoteAddr, ". Error :", err)
 			}
 			wr.WriteHeader(200)
 			wr.Write([]byte{})
 		} else {
-			log.Logger.Println("Webhook : Request has no body. Address :", req.RemoteAddr)
+			w.Logger.GetRaw().Println("Webhook : Request has no body. Address :", req.RemoteAddr)
 			w.send400(&wr, "Request has no body")
 		}
 	} else {
-		log.Logger.Println("Webhook : \"Content-Type\" header is not json or it's missing. Address :", req.RemoteAddr)
+		w.Logger.GetRaw().Println("Webhook : \"Content-Type\" header is not json or it's missing. Address :", req.RemoteAddr)
 		w.send400(&wr, " \"Content-Type\" header is not json or it's missing")
 	}
 }

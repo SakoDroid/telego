@@ -20,13 +20,14 @@ type Bot struct {
 	chatUpdateChannel      *chan *objs.ChatUpdate
 	prcRoutineChannel      *chan bool
 	ab                     *AdvancedBot
+	logger                 *logger.BotLogger
 }
 
 /*Run starts the bot. If the bot has already been started it returns an error.*/
 func (bot *Bot) Run(autoPause bool) error {
 	logger.InitTheLogger(bot.botCfg)
 	if !bot.checkWebHook() {
-		logger.Logger.Fatalln("Webhook check failed. See the logs for more info.")
+		bot.logger.GetRaw().Fatalln("Webhook check failed. See the logs for more info.")
 	}
 	go bot.startChatUpdateRoutine()
 	go bot.startUpdateProcessing()
@@ -34,7 +35,9 @@ func (bot *Bot) Run(autoPause bool) error {
 	go bot.botCfg.StartCfgUpdateRoutine()
 	var err error
 	if bot.botCfg.Webhook {
-		wh := tba.Webhook{}
+		wh := tba.Webhook{
+			Logger: bot.logger,
+		}
 		err = wh.StartWebHook(bot.botCfg, bot.apiInterface.GetUpdateParser())
 	} else {
 		err = bot.apiInterface.StartUpdateRoutine()
@@ -52,37 +55,37 @@ func (bot *Bot) Run(autoPause bool) error {
 func (bot *Bot) checkWebHook() bool {
 	wi, err := bot.apiInterface.GetWebhookInfo()
 	if err != nil {
-		logger.Logger.Println(err)
+		bot.logger.GetRaw().Println(err)
 		return false
 	}
 	if wi.Result.URL == "" {
 		if bot.botCfg.Webhook {
 			err2 := bot.setWebhook()
 			if err2 != nil {
-				logger.Logger.Println("Unable to set a new webhook.", err2)
+				bot.logger.GetRaw().Println("Unable to set a new webhook.", err2)
 				return false
 			}
 		}
 	} else {
 		if bot.botCfg.Webhook {
 			if wi.Result.URL != bot.botCfg.WebHookConfigs.URL {
-				logger.Logger.Println("A webhook is already set in the API server to this url :", wi.Result.URL, ". Deleting the webhook ...")
+				bot.logger.GetRaw().Println("A webhook is already set in the API server to this url :", wi.Result.URL, ". Deleting the webhook ...")
 				err2 := bot.deleteWebhook()
 				if err2 != nil {
-					logger.Logger.Println("Unable to delete webhook.", err2)
+					bot.logger.GetRaw().Println("Unable to delete webhook.", err2)
 					return false
 				}
 				err3 := bot.setWebhook()
 				if err3 != nil {
-					logger.Logger.Println("Unable to set webhook.", err3)
+					bot.logger.GetRaw().Println("Unable to set webhook.", err3)
 					return false
 				}
 			}
 		} else {
-			logger.Logger.Println("A webhook has been set.")
+			bot.logger.GetRaw().Println("A webhook has been set.")
 			err2 := bot.deleteWebhook()
 			if err2 != nil {
-				logger.Logger.Println("Unable to delete webhook.", err2)
+				bot.logger.GetRaw().Println("Unable to delete webhook.", err2)
 				return false
 			}
 		}
@@ -92,7 +95,7 @@ func (bot *Bot) checkWebHook() bool {
 
 /*Sets a new webhook*/
 func (bot *Bot) setWebhook() error {
-	logger.Logger.Println("Setting webhook ...")
+	bot.logger.GetRaw().Println("Setting webhook ...")
 	whcfg := bot.botCfg.WebHookConfigs
 	var fl *os.File
 	if whcfg.SelfSigned {
@@ -114,7 +117,7 @@ func (bot *Bot) setWebhook() error {
 
 /*Deletes a webhook*/
 func (bot *Bot) deleteWebhook() error {
-	logger.Logger.Println("Deleting the webhook ...")
+	bot.logger.GetRaw().Println("Deleting the webhook ...")
 	res, err2 := bot.apiInterface.DeleteWebhook(false)
 	if err2 != nil {
 		return err2
@@ -1292,12 +1295,12 @@ func (bot *Bot) processPoll(update *objs.Update) {
 	id := update.Poll.Id
 	pl := Polls[id]
 	if pl == nil {
-		logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`. Not found in the Polls map", "917", logger.BOLD+logger.FAIL, logger.WARNING, "")
+		bot.logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`. Not found in the Polls map", "917", logger.BOLD+logger.FAIL, logger.WARNING, "")
 		*bot.channelsMap["global"]["all"] <- update
 	} else {
 		err3 := pl.Update(update.Poll)
 		if err3 != nil {
-			logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`."+err3.Error(), "922", logger.BOLD+logger.FAIL, logger.WARNING, "")
+			bot.logger.Log("Error", "\t\t\t", "Could not update poll `"+id+"`."+err3.Error(), "922", logger.BOLD+logger.FAIL, logger.WARNING, "")
 		}
 	}
 }
@@ -1329,13 +1332,21 @@ func NewBot(cfg *cfg.BotConfigs) (*Bot, error) {
 	if !cfg.Check() {
 		return nil, errors.New("config check failed. Please check the configs")
 	}
-	api, err := tba.CreateInterface(cfg)
+	botLogger := logger.InitTheLogger(cfg)
+	api, err := tba.CreateInterface(cfg, botLogger)
 	if err != nil {
 		return nil, err
 	}
 	ch := make(chan bool)
 	uc := make(chan *objs.Update)
-	bt := &Bot{botCfg: cfg, apiInterface: api, interfaceUpdateChannel: api.GetUpdateChannel(), chatUpdateChannel: api.GetChatUpdateChannel(), prcRoutineChannel: &ch, channelsMap: make(map[string]map[string]*chan *objs.Update)}
+	bt := &Bot{botCfg: cfg,
+		apiInterface:           api,
+		interfaceUpdateChannel: api.GetUpdateChannel(),
+		chatUpdateChannel:      api.GetChatUpdateChannel(),
+		prcRoutineChannel:      &ch,
+		channelsMap:            make(map[string]map[string]*chan *objs.Update),
+		logger:                 botLogger,
+	}
 	bt.channelsMap["global"] = make(map[string]*chan *objs.Update)
 	bt.channelsMap["global"]["all"] = &uc
 	bt.ab = &AdvancedBot{bot: bt}

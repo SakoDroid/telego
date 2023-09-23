@@ -28,6 +28,7 @@ type BotAPIInterface struct {
 	updateRoutineChannel chan bool
 	updateParser         *parser.UpdateParser
 	lastOffset           int
+	logger               *logger.BotLogger
 }
 
 /*StartUpdateRoutine starts the update routine to receive updates from api sever*/
@@ -83,12 +84,12 @@ loop:
 			}
 			res, err := cl.sendHttpReqJson("getUpdates", &args)
 			if err != nil {
-				logger.Logger.Println("Error receiving updates.", err)
+				bai.logger.GetRaw().Println("Error receiving updates.", err)
 				continue loop
 			}
 			err = bai.parseUpdateresults(res)
 			if err != nil {
-				logger.Logger.Println("Error parsing the result of the update. " + err.Error())
+				bai.logger.GetRaw().Println("Error parsing the result of the update. " + err.Error())
 			}
 		}
 	}
@@ -2724,10 +2725,10 @@ func (bai *BotAPIInterface) SendCustom(methodName string, args objs.MethodArgume
 	}
 	done := time.Now().UnixMicro()
 	if err2 != nil {
-		logger.Log(methodName, "\t\t\t", "Error  ", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.FAIL, "")
+		bai.logger.Log(methodName, "\t\t\t", "Error  ", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.FAIL, "")
 		return nil, err2
 	}
-	logger.Log(methodName, "\t\t\t", "Success", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.OKGREEN, "")
+	bai.logger.Log(methodName, "\t\t\t", "Success", strconv.FormatInt((done-start), 10)+"µs", logger.BOLD+logger.OKBLUE, logger.OKGREEN, "")
 	return bai.preParseResult(res, methodName)
 }
 
@@ -2778,7 +2779,7 @@ func (bai *BotAPIInterface) fixChatId(chatIdInt int, chatIdString string) []byte
 CreateInterface returns an iterface to communicate with the bot api.
 If the updateFrequency argument is not nil, the update routine begins automtically
 */
-func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
+func CreateInterface(botCfg *cfgs.BotConfigs, botLogger *logger.BotLogger) (*BotAPIInterface, error) {
 	if interfaceCreated {
 		return nil, &errs.BotInterfaceAlreadyCreated{}
 	}
@@ -2789,7 +2790,8 @@ func CreateInterface(botCfg *cfgs.BotConfigs) (*BotAPIInterface, error) {
 		botConfigs:         botCfg,
 		updateChannel:      &ch,
 		chatUpadateChannel: &ch3,
-		updateParser:       parser.CreateUpdateParser(&ch, &ch3, botCfg),
+		updateParser:       parser.CreateUpdateParser(&ch, &ch3, botCfg, botLogger),
+		logger:             botLogger,
 	}
 	return temp, nil
 }

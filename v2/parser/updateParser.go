@@ -17,6 +17,7 @@ type UpdateParser struct {
 	callbackHandlers   threadSafeMap[string, *callbackHandler]
 	userSharedHandlers threadSafeMap[int, *chatRequestHandler]
 	chatSharedHandlers threadSafeMap[int, *chatRequestHandler]
+	logger             *logger.BotLogger
 }
 
 // ExecuteChain executes the chained middlewares
@@ -30,12 +31,12 @@ func (u *UpdateParser) GetUpdateParserMiddleware(uc *chan *objs.Update, cu *chan
 	return func(up *objs.Update, next func()) {
 		userId, isUserBlocked := u.isUserBlocked(up, cfg)
 		if !isUserBlocked {
-			logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
+			u.logger.Log("Update", "\t\t\t\t", up.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
 			if !u.checkHandlers(up) && !u.processChat(up, cu) {
 				*uc <- up
 			}
 		} else {
-			logger.Log("Update", "\t\t\t\t", up.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
+			u.logger.Log("Update", "\t\t\t\t", up.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
 		}
 	}
 }
@@ -113,7 +114,7 @@ func (u *UpdateParser) AddMiddleWare(middleware func(update *objs.Update, next f
 	middlewares.addToBegin(middleware)
 }
 
-func CreateUpdateParser(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs) *UpdateParser {
+func CreateUpdateParser(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *configs.BotConfigs, botLogger *logger.BotLogger) *UpdateParser {
 	up := &UpdateParser{
 		uc:                 uc,
 		cu:                 cu,
@@ -122,18 +123,19 @@ func CreateUpdateParser(uc *chan *objs.Update, cu *chan *objs.ChatUpdate, cfg *c
 		callbackHandlers:   threadSafeMap[string, *callbackHandler]{internal: make(map[string]*callbackHandler)},
 		userSharedHandlers: threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)},
 		chatSharedHandlers: threadSafeMap[int, *chatRequestHandler]{internal: make(map[int]*chatRequestHandler)},
+		logger:             botLogger,
 	}
 
 	up.AddMiddleWare(
 		func(update *objs.Update, next func()) {
 			userId, isUserBlocked := up.isUserBlocked(update, cfg)
 			if !isUserBlocked {
-				logger.Log("Update", "\t\t\t\t", update.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
+				up.logger.Log("Update", "\t\t\t\t", update.GetType(), "Parsed", logger.HEADER, logger.OKCYAN, logger.OKGREEN)
 				if !up.checkHandlers(update) && !up.processChat(update, cu) {
 					*uc <- update
 				}
 			} else {
-				logger.Log("Update", "\t\t\t\t", update.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
+				up.logger.Log("Update", "\t\t\t\t", update.GetType(), fmt.Sprintf("User %d is blocked", userId), logger.HEADER, logger.OKCYAN, logger.FAIL)
 			}
 		},
 	)
