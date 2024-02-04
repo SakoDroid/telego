@@ -64,11 +64,11 @@ func checkHandlers(up *objs.Update) bool {
 		return checkCallbackHanlders(up)
 	}
 
-	if up.Message.UserShared != nil {
+	if up.Message!=nil && up.Message.UserShared != nil {
 		return checkUserSharedHandlers(up)
 	}
 
-	if up.Message.ChatShared != nil {
+	if up.Message!=nil && up.Message.ChatShared != nil {
 		return checkChatSharedHandlers(up)
 	}
 
