@@ -103,7 +103,7 @@ func (up *UpdateParser) checkChatSharedHandlers(update *objs.Update) bool {
 }
 
 func (up *UpdateParser) checkTextMsgHandlers(update *objs.Update) bool {
-	if update.Message != nil && update.Message.Text != "" {
+	if update.Message != nil && (update.Message.Text != "" || update.Message.Caption != "") {
 		hndl := up.handlers.GetHandler(update.Message)
 		if hndl != nil {
 			go (*hndl.function)(update)

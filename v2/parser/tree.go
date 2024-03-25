@@ -26,7 +26,11 @@ func (tr *handlerTree) AddHandler(hdl *handler) {
 
 // GetHandler gets the proper handler for the given text.
 func (tr *handlerTree) GetHandler(msg *objs.Message) *handler {
-	tn := tr.findTheNodeRegex(msg.Text, msg.Chat.Type)
+	msgText := msg.Text
+	if msg.Caption != "" {
+		msgText = msg.Caption
+	}
+	tn := tr.findTheNodeRegex(msgText, msg.Chat.Type)
 	if tn != nil {
 		return tn.data
 	}
