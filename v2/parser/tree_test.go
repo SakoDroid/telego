@@ -65,5 +65,12 @@ func initTheTable() {
 	test6 := handlerTest{msg: &objects.Message{Text: "hi everyone", Chat: &objects.Chat{Type: "channel"}}, expectedRegex: "hi"}
 	test7 := handlerTest{msg: &objects.Message{Text: "start again", Chat: &objects.Chat{Type: "group"}}, expectedRegex: "start"}
 	test8 := handlerTest{msg: &objects.Message{Text: "start again", Chat: &objects.Chat{Type: "private"}}, expectedRegex: "start again"}
-	testTable = []handlerTest{test1, test2, test3, test4, test5, test6, test7, test8}
+	test9 := handlerTest{msg: &objects.Message{Caption: "hi guys", Chat: &objects.Chat{Type: "group"}}, expectedRegex: "hi"}
+	test10 := handlerTest{msg: &objects.Message{Caption: "start", Chat: &objects.Chat{Type: "group"}}, expectedRegex: "start"}
+	test11 := handlerTest{msg: &objects.Message{Caption: "start bot", Chat: &objects.Chat{Type: "supergroup"}}, expectedRegex: "start bot"}
+	test12 := handlerTest{msg: &objects.Message{Caption: "hi everyone", Chat: &objects.Chat{Type: "group"}}, expectedRegex: "hi everyone"}
+	test13 := handlerTest{msg: &objects.Message{Caption: "hi everyone", Chat: &objects.Chat{Type: "channel"}}, expectedRegex: "hi"}
+	test14 := handlerTest{msg: &objects.Message{Caption: "start again", Chat: &objects.Chat{Type: "group"}}, expectedRegex: "start"}
+	test15 := handlerTest{msg: &objects.Message{Caption: "start again", Chat: &objects.Chat{Type: "private"}}, expectedRegex: "start again"}
+	testTable = []handlerTest{test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11, test12, test13, test14, test15}
 }
