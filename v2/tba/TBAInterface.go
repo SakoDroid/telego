@@ -160,7 +160,7 @@ func (bai *BotAPIInterface) GetMe() (*objs.Result[*objs.User], error) {
 SendMessage sends a message to the user. chatIdInt is used for all chats but channles and chatidString is used for channels (in form of @channleusername) and only of them has be populated, otherwise ChatIdProblem error will be returned.
 "chatId" and "text" arguments are required. other arguments are optional for bot api.
 */
-func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, disable_web_page_preview, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id, messageThreadId int, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
+func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parseMode string, entities []objs.MessageEntity, linkPreviewOptions *objs.LinkPreviewOptions, disable_notification, allow_sending_without_reply, ProtectContent bool, reply_to_message_id, messageThreadId int, reply_markup objs.ReplyMarkup) (*objs.Result[*objs.Message], error) {
 	if chatIdInt != 0 && chatIdString != "" {
 		return nil, &errs.ChatIdProblem{}
 	}
@@ -168,7 +168,7 @@ func (bai *BotAPIInterface) SendMessage(chatIdInt int, chatIdString, text, parse
 		def := bai.fixTheDefaultArguments(chatIdInt, reply_to_message_id, messageThreadId, chatIdString, disable_notification, allow_sending_without_reply, ProtectContent, reply_markup)
 		args := &objs.SendMessageArgs{
 			Text:                        text,
-			DisableWebPagePreview:       disable_web_page_preview,
+			LinkPreviewOptions:          linkPreviewOptions,
 			DefaultSendMethodsArguments: def,
 			ParseMode:                   parseMode,
 			Entities:                    entities,
