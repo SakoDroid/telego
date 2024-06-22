@@ -150,7 +150,7 @@ type SendMessageArgs struct {
 	/*A JSON-serialized list of special entities that appear in message text, which can be specified instead of parse_mode*/
 	Entities []MessageEntity `json:"entities,omitempty"`
 	/*Disables link previews for links in this message*/
-	DisableWebPagePreview bool `json:"disable_web_page_preview,omitempty"`
+	LinkPreviewOptions *LinkPreviewOptions `json:"link_preview_options,omitempty"`
 }
 
 // ToJson converts this strcut into json to be sent to the API server.

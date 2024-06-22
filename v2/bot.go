@@ -190,8 +190,8 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
-	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
+func (bot *Bot) SendMessage(chatId int, text, parseMode string, replyTo int, silent, protectContent bool, linkPreviewOptions *objs.LinkPreviewOptions) (*objs.Result[*objs.Message], error) {
+	return bot.apiInterface.SendMessage(chatId, "", text, parseMode, nil, linkPreviewOptions, silent, false, protectContent, replyTo, 0, nil)
 }
 
 /*
@@ -202,8 +202,8 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool) (*objs.Result[*objs.Message], error) {
-	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, false, silent, false, protectContent, replyTo, 0, nil)
+func (bot *Bot) SendMessageUN(chatId, text, parseMode string, replyTo int, silent, protectContent bool, linkPreviewOptions *objs.LinkPreviewOptions) (*objs.Result[*objs.Message], error) {
+	return bot.apiInterface.SendMessage(0, chatId, text, parseMode, nil, linkPreviewOptions, silent, false, protectContent, replyTo, 0, nil)
 }
 
 func (bot *Bot) PinChatMessage(chatIdInt int, chatIdString string, messageId int, disableNotification bool) (*objs.Result[bool], error) {

@@ -24,12 +24,12 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
+func (bot *AdvancedBot) ASendMessage(chatId int, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, linkPreviewOptions *objs.LinkPreviewOptions, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, disabelWebPagePreview,
+	return bot.bot.apiInterface.SendMessage(chatId, "", text, parseMode, entites, linkPreviewOptions,
 		silent, allowSendingWithoutReply, protectContent, replyTo, messageThreadId, replyMarkup)
 }
 
@@ -41,12 +41,12 @@ If "silent" argument is true, the message will be sent without notification.
 
 If "protectContent" argument is true, the message can't be forwarded or saved.
 */
-func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, disabelWebPagePreview, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
+func (bot *AdvancedBot) ASendMesssageUN(chatId, text, parseMode string, replyTo, messageThreadId int, silent, protectContent bool, entites []objs.MessageEntity, linkPreviewOptions *objs.LinkPreviewOptions, allowSendingWithoutReply bool, keyboard MarkUps) (*objs.Result[*objs.Message], error) {
 	var replyMarkup objs.ReplyMarkup
 	if keyboard != nil {
 		replyMarkup = keyboard.toMarkUp()
 	}
-	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, disabelWebPagePreview,
+	return bot.bot.apiInterface.SendMessage(0, chatId, text, parseMode, entites, linkPreviewOptions,
 		silent, allowSendingWithoutReply, protectContent, replyTo, messageThreadId, replyMarkup)
 }
 

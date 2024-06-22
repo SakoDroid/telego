@@ -15,6 +15,11 @@ A Go library for creating telegram bots.
 All versions and releases before v2.0.0 (including v1.8.0) have been deprecated and are considered out of date. Please consider updating to [v2](https://github.com/SakoDroid/telego/tree/master/v2) ASAP.
 
 ---------------------------------
+## ⚠️ Breaking Change Notice ⚠️
+### PR #25: Changes to `SendMessage` Method
+The pull request [#25](https://github.com/SakoDroid/telego/pull/25) introduces a breaking change to the `SendMessage` method by adding a new parameter. This change will affect all existing implementations of `SendMessage`. Please review the changes and update your code accordingly.
+
+---------------------------------
 ## ✅ Upgrading to v2
 Telego [v2](https://github.com/SakoDroid/telego/tree/master/v2) is a ground breaking change in Telego. Many new features have been added and many methods declarations have been changed. Some methods have been completely deprecated. Please read the change log before upgrading to [v2](https://github.com/SakoDroid/telego/tree/master/v2) and take extra caution while upgrading.
 
