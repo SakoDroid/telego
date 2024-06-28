@@ -60,12 +60,16 @@ func (up *UpdateParser) AddChatSharedHandler(requestId int, handler func(*objs.U
 }
 
 func (up *UpdateParser) checkHandlers(update *objs.Update) bool {
-	if update == nil || update.Message == nil {
+	if update == nil {
 		return false
 	}
 
 	if update.CallbackQuery != nil {
 		return up.checkCallbackHanlders(update)
+	}
+
+	if update.Message == nil {
+		return false
 	}
 
 	if update.Message.UserShared != nil {
